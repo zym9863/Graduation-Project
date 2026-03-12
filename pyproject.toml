@@ -1,7 +1,27 @@
 [project]
 name = "graduation-project"
 version = "0.1.0"
-description = "Add your description here"
+description = "基于新闻价值理论的多模态新闻推荐系统"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+	"httpx>=0.28.1",
+	"numpy>=2.2.4",
+	"pillow>=11.1.0",
+	"scikit-learn>=1.6.1",
+	"torch>=2.6.0",
+	"tqdm>=4.67.1",
+	"transformers>=4.49.0",
+]
+
+[dependency-groups]
+dev = [
+	"pytest>=8.3.5",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.uv]
+package = false
