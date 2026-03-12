@@ -1,0 +1,51 @@
+[English](./README-EN.md) | [中文](./README.md)
+
+# Multimodal News Recommendation System Based on News Value Theory
+
+This repository implements a multimodal news recommendation experimental pipeline based on MIND-small:
+
+- SigLIP for offline extraction of news text and image features
+- Offline annotation of news value five elements
+- NRMS user encoder for click prediction
+- Supports both concatenation fusion and gated fusion news encoding schemes
+
+## Environment Setup
+
+The project uses `uv` for dependency management.
+
+```bash
+uv sync
+```
+
+Common commands:
+
+```bash
+uv run python main.py preprocess
+uv run python main.py extract-features --batch-size 16
+uv run python main.py annotate-news-value --provider heuristic
+uv run python main.py train --epochs 3 --fusion concat
+uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
+```
+
+You can also run scripts directly:
+
+```bash
+uv run python scripts/train.py --epochs 3
+```
+
+## Data Conventions
+
+- `MINDsmall_train/` and `MINDsmall_dev/` are the original MIND-small data
+- `newData/` is the image directory aligned with news IDs, with filename format `{NewsID}.jpg`
+- `data/news_siglip_features.pt` contains offline image-text features
+- `data/news_value_scores.json` contains news value five elements scores
+
+If offline feature files do not exist, training and evaluation will use zero vectors as placeholders, only for pipeline verification, not representing the final experimental configuration.
+
+## Current Implementation Scope
+
+- Original MIND data parsing and category mapping
+- SigLIP feature extraction script
+- News value scoring script, supporting heuristic mode and OpenAI-compatible interface
+- NRMS main model, gated fusion, training and evaluation scripts
+- Preprocessing and forward pass basic tests

@@ -1,3 +1,5 @@
+[English](./README-EN.md) | [中文](./README.md)
+
 # 基于新闻价值理论的多模态新闻推荐系统
 
 这个仓库实现一套基于 MIND-small 的多模态新闻推荐实验管线：
