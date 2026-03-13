@@ -10,12 +10,15 @@ from tqdm import tqdm
 from src.data.preprocess import load_news_corpus
 from src.features.news_value_annotator import NewsValueAnnotator
 from src.utils.config import ExperimentConfig
+from src.utils.env import load_project_env
 
 
 VALUE_DIMENSIONS = ("timeliness", "importance", "prominence", "proximity", "interest")
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    load_project_env()
+
     parser = argparse.ArgumentParser(description="离线标注新闻价值五要素。")
     parser.add_argument("--provider", choices=["heuristic", "openai-compatible"], default="heuristic")
     parser.add_argument("--model", type=str, default=os.getenv("NEWS_VALUE_MODEL", "ZhipuAI/GLM-5"))

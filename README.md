@@ -30,6 +30,16 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 
 单条新闻价值特征提取（真实 API case）：
 
+推荐在项目根目录创建 `.env`：
+
+```bash
+NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
+NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
+NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+```
+
+也支持临时设置环境变量（Windows CMD）：
+
 ```bash
 set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
 set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>

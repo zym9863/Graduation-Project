@@ -30,6 +30,16 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 
 Single news value feature extraction (real API case):
 
+Recommended: create a `.env` file in the project root:
+
+```bash
+NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
+NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
+NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+```
+
+You can also set environment variables temporarily (Windows CMD):
+
 ```bash
 set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
 set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>

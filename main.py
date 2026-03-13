@@ -6,6 +6,7 @@ from scripts.evaluate import main as evaluate_main
 from scripts.extract_features import main as extract_features_main
 from scripts.preprocess import main as preprocess_main
 from scripts.train import main as train_main
+from src.utils.env import load_project_env
 
 
 COMMANDS = {
@@ -19,6 +20,8 @@ COMMANDS = {
 
 
 def main() -> None:
+    load_project_env()
+
     parser = argparse.ArgumentParser(
         description="多模态新闻推荐系统命令行入口。",
     )
