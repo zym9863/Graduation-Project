@@ -28,6 +28,22 @@ uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 ```
 
+Single news value feature extraction (real API case):
+
+```bash
+set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
+set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
+set NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+
+uv run python main.py annotate-news-value --provider openai-compatible --single-title "Breaking: major policy released" --single-abstract "Authorities released a new policy today with broad industry impact." --single-category news --single-subcategory policy
+```
+
+The output includes:
+
+- Input article content
+- Five-dimensional value scores (`timeliness`, `importance`, `prominence`, `proximity`, `interest`)
+- Vector array, e.g. `[4, 4, 3, 3, 2]`
+
 You can also run scripts directly:
 
 ```bash

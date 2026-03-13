@@ -4,7 +4,7 @@ import json
 import re
 from dataclasses import dataclass
 
-import httpx
+from openai import OpenAI
 
 
 SYSTEM_PROMPT = """你是新闻价值标注器。请基于给定新闻内容，对以下五个要素分别打 1 到 5 分整数：timeliness、importance、prominence、proximity、interest。只返回 JSON。"""
@@ -34,12 +34,15 @@ def parse_news_value_response(raw_content: str) -> list[int]:
             parsed.get("interest") or parsed.get("趣味性"),
         ]
 
+    if len(values) != 5:
+        raise ValueError("News value response must contain exactly five scores.")
+
     normalized: list[int] = []
     for value in values:
+        if value is None:
+            raise ValueError("News value response contains empty score.")
         score = int(value)
         normalized.append(max(1, min(score, 5)))
-    if len(normalized) != 5:
-        raise ValueError("News value response must contain exactly five scores.")
     return normalized
 
 
@@ -52,20 +55,24 @@ class NewsValueAnnotator:
     timeout: float = 60.0
 
     def annotate(self, article: dict[str, str]) -> list[int]:
-        if self.provider == "heuristic" or not self.api_key:
+        if self.provider == "heuristic":
             return heuristic_news_value_scores(article)
 
         if self.provider != "openai-compatible":
             raise ValueError(f"Unsupported provider: {self.provider}")
 
+        if not self.api_key:
+            raise ValueError("api_key is required for openai-compatible provider.")
+
         if not self.base_url:
             raise ValueError("base_url is required for openai-compatible provider.")
 
-        payload = {
-            "model": self.model,
-            "temperature": 0,
-            "response_format": {"type": "json_object"},
-            "messages": [
+        client = OpenAI(base_url=self.base_url, api_key=self.api_key, timeout=self.timeout)
+        response = client.chat.completions.create(
+            model=self.model,
+            temperature=0,
+            response_format={"type": "json_object"},
+            messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {
                     "role": "user",
@@ -80,15 +87,11 @@ class NewsValueAnnotator:
                     ),
                 },
             ],
-        }
+        )
 
-        with httpx.Client(timeout=self.timeout) as client:
-            response = client.post(
-                self.base_url.rstrip("/") + "/chat/completions",
-                headers={"Authorization": f"Bearer {self.api_key}"},
-                json=payload,
-            )
-            response.raise_for_status()
-            data = response.json()
-        content = data["choices"][0]["message"]["content"]
+        content = response.choices[0].message.content
+        if not content:
+            raise ValueError("Empty completion content from news value provider.")
+        if not isinstance(content, str):
+            content = json.dumps(content, ensure_ascii=False)
         return parse_news_value_response(content)

@@ -28,6 +28,22 @@ uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 ```
 
+单条新闻价值特征提取（真实 API case）：
+
+```bash
+set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
+set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
+set NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+
+uv run python main.py annotate-news-value --provider openai-compatible --single-title "突发：某地发布重大政策" --single-abstract "官方今天发布新规，影响多个行业。" --single-category news --single-subcategory policy
+```
+
+输出示例会包含：
+
+- 输入新闻内容
+- 五维价值打分（`timeliness`、`importance`、`prominence`、`proximity`、`interest`）
+- 向量数组，例如 `[4, 4, 3, 3, 2]`
+
 也可以直接运行脚本：
 
 ```bash
