@@ -21,6 +21,7 @@ Common commands:
 
 ```bash
 uv run python main.py preprocess
+uv run python main.py dataset-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
@@ -37,10 +38,26 @@ uv run python scripts/train.py --epochs 3
 
 - `MINDsmall_train/` and `MINDsmall_dev/` are the original MIND-small data
 - `newData/` is the image directory aligned with news IDs, with filename format `{NewsID}.jpg`
+- `data/processed/metadata.json` includes basic summary and detailed statistics fields
+- `data/processed/analytics/` includes the generated dataset report, figures, and CSV tables
 - `data/news_siglip_features.pt` contains offline image-text features
 - `data/news_value_scores.json` contains news value five elements scores
 
 If offline feature files do not exist, training and evaluation will use zero vectors as placeholders, only for pipeline verification, not representing the final experimental configuration.
+
+## Dataset Report (Scale, Distribution, Examples)
+
+Run the command below to generate the full data report (PNG + CSV + Markdown):
+
+```bash
+uv run python main.py dataset-report
+```
+
+Output directory:
+
+- `data/processed/analytics/data_report.md` (report)
+- `data/processed/analytics/figures/` (charts)
+- `data/processed/analytics/tables/` (statistics tables)
 
 ## Current Implementation Scope
 

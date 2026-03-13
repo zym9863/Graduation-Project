@@ -1,0 +1,6385 @@
+{
+  "summary": {
+    "unique_news": 65238,
+    "categories": 18,
+    "subcategories": 270,
+    "train_behaviors": 156965,
+    "dev_behaviors": 73152,
+    "train_unique_users": 50000,
+    "dev_unique_users": 50000,
+    "train_impressions": 5843444,
+    "dev_impressions": 2740998,
+    "train_clicks": 236344,
+    "dev_clicks": 111383,
+    "train_ctr": 0.040446010948338,
+    "dev_ctr": 0.040635928957263014
+  },
+  "distributions": {
+    "news_category": [
+      {
+        "category": "news",
+        "count": 20039
+      },
+      {
+        "category": "sports",
+        "count": 19368
+      },
+      {
+        "category": "finance",
+        "count": 3786
+      },
+      {
+        "category": "foodanddrink",
+        "count": 3123
+      },
+      {
+        "category": "travel",
+        "count": 3013
+      },
+      {
+        "category": "lifestyle",
+        "count": 2991
+      },
+      {
+        "category": "video",
+        "count": 2712
+      },
+      {
+        "category": "weather",
+        "count": 2601
+      },
+      {
+        "category": "health",
+        "count": 2207
+      },
+      {
+        "category": "autos",
+        "count": 2076
+      },
+      {
+        "category": "tv",
+        "count": 1027
+      },
+      {
+        "category": "music",
+        "count": 902
+      },
+      {
+        "category": "entertainment",
+        "count": 695
+      },
+      {
+        "category": "movies",
+        "count": 672
+      },
+      {
+        "category": "kids",
+        "count": 22
+      },
+      {
+        "category": "middleeast",
+        "count": 2
+      },
+      {
+        "category": "games",
+        "count": 1
+      },
+      {
+        "category": "northamerica",
+        "count": 1
+      }
+    ],
+    "news_subcategory": [
+      {
+        "subcategory": "newsus",
+        "count": 8840
+      },
+      {
+        "subcategory": "football_nfl",
+        "count": 7464
+      },
+      {
+        "subcategory": "newspolitics",
+        "count": 3478
+      },
+      {
+        "subcategory": "newscrime",
+        "count": 2665
+      },
+      {
+        "subcategory": "weathertopstories",
+        "count": 2599
+      },
+      {
+        "subcategory": "baseball_mlb",
+        "count": 2166
+      },
+      {
+        "subcategory": "football_ncaa",
+        "count": 2107
+      },
+      {
+        "subcategory": "newsworld",
+        "count": 2022
+      },
+      {
+        "subcategory": "basketball_nba",
+        "count": 1997
+      },
+      {
+        "subcategory": "news",
+        "count": 1711
+      },
+      {
+        "subcategory": "newstrends",
+        "count": 1616
+      },
+      {
+        "subcategory": "newsscienceandtechnology",
+        "count": 1599
+      },
+      {
+        "subcategory": "more_sports",
+        "count": 1498
+      },
+      {
+        "subcategory": "travelarticle",
+        "count": 1428
+      },
+      {
+        "subcategory": "travelnews",
+        "count": 1141
+      },
+      {
+        "subcategory": "autosnews",
+        "count": 1133
+      },
+      {
+        "subcategory": "lifestylebuzz",
+        "count": 1132
+      },
+      {
+        "subcategory": "basketball_ncaa",
+        "count": 1012
+      },
+      {
+        "subcategory": "financenews",
+        "count": 956
+      },
+      {
+        "subcategory": "finance-real-estate",
+        "count": 765
+      },
+      {
+        "subcategory": "icehockey_nhl",
+        "count": 721
+      },
+      {
+        "subcategory": "finance-companies",
+        "count": 621
+      },
+      {
+        "subcategory": "medical",
+        "count": 612
+      },
+      {
+        "subcategory": "mma",
+        "count": 585
+      },
+      {
+        "subcategory": "golf",
+        "count": 551
+      },
+      {
+        "subcategory": "newsoffbeat",
+        "count": 546
+      },
+      {
+        "subcategory": "musicnews",
+        "count": 531
+      },
+      {
+        "subcategory": "health-news",
+        "count": 527
+      },
+      {
+        "subcategory": "recipes",
+        "count": 503
+      },
+      {
+        "subcategory": "tvnews",
+        "count": 490
+      },
+      {
+        "subcategory": "markets",
+        "count": 438
+      },
+      {
+        "subcategory": "racing",
+        "count": 420
+      },
+      {
+        "subcategory": "wellness",
+        "count": 401
+      },
+      {
+        "subcategory": "tv-celebrity",
+        "count": 370
+      },
+      {
+        "subcategory": "newsopinion",
+        "count": 335
+      },
+      {
+        "subcategory": "foodnews",
+        "count": 286
+      },
+      {
+        "subcategory": "animals",
+        "count": 283
+      },
+      {
+        "subcategory": "movienews",
+        "count": 283
+      },
+      {
+        "subcategory": "tipsandtricks",
+        "count": 278
+      },
+      {
+        "subcategory": "traveltripideas",
+        "count": 263
+      },
+      {
+        "subcategory": "autosenthusiasts",
+        "count": 260
+      },
+      {
+        "subcategory": "lifestyleroyals",
+        "count": 247
+      },
+      {
+        "subcategory": "nutrition",
+        "count": 244
+      },
+      {
+        "subcategory": "viral",
+        "count": 231
+      },
+      {
+        "subcategory": "movies-celebrity",
+        "count": 218
+      },
+      {
+        "subcategory": "music-celebrity",
+        "count": 215
+      },
+      {
+        "subcategory": "soccer",
+        "count": 213
+      },
+      {
+        "subcategory": "lifestylefamily",
+        "count": 195
+      },
+      {
+        "subcategory": "lifestylehomeandgarden",
+        "count": 194
+      },
+      {
+        "subcategory": "football_nfl_videos",
+        "count": 187
+      },
+      {
+        "subcategory": "newsgoodnews",
+        "count": 187
+      },
+      {
+        "subcategory": "restaurantsandnews",
+        "count": 182
+      },
+      {
+        "subcategory": "autosmotorcycles",
+        "count": 178
+      },
+      {
+        "subcategory": "gaming",
+        "count": 172
+      },
+      {
+        "subcategory": "tennis",
+        "count": 162
+      },
+      {
+        "subcategory": "finance-career-education",
+        "count": 156
+      },
+      {
+        "subcategory": "entertainment-celebrity",
+        "count": 155
+      },
+      {
+        "subcategory": "voices",
+        "count": 155
+      },
+      {
+        "subcategory": "science",
+        "count": 152
+      },
+      {
+        "subcategory": "celebrity",
+        "count": 148
+      },
+      {
+        "subcategory": "autosclassics",
+        "count": 146
+      },
+      {
+        "subcategory": "finance-top-stocks",
+        "count": 145
+      },
+      {
+        "subcategory": "lifestyle",
+        "count": 144
+      },
+      {
+        "subcategory": "elections-2020-us",
+        "count": 136
+      },
+      {
+        "subcategory": "weightloss",
+        "count": 136
+      },
+      {
+        "subcategory": "personalfinance",
+        "count": 126
+      },
+      {
+        "subcategory": "entertainment-books",
+        "count": 123
+      },
+      {
+        "subcategory": "fitness",
+        "count": 123
+      },
+      {
+        "subcategory": "lifestyledidyouknow",
+        "count": 112
+      },
+      {
+        "subcategory": "shop-holidays",
+        "count": 110
+      },
+      {
+        "subcategory": "lifestylepets",
+        "count": 109
+      },
+      {
+        "subcategory": "videos",
+        "count": 107
+      },
+      {
+        "subcategory": "popculture",
+        "count": 106
+      },
+      {
+        "subcategory": "video",
+        "count": 106
+      },
+      {
+        "subcategory": "finance-video",
+        "count": 105
+      },
+      {
+        "subcategory": "peopleandplaces",
+        "count": 88
+      },
+      {
+        "subcategory": "finance-saving-investing",
+        "count": 84
+      },
+      {
+        "subcategory": "tv-gallery",
+        "count": 83
+      },
+      {
+        "subcategory": "finance-retirement",
+        "count": 81
+      },
+      {
+        "subcategory": "movievideo",
+        "count": 81
+      },
+      {
+        "subcategory": "traveltips",
+        "count": 81
+      },
+      {
+        "subcategory": "lifestylepetsanimals",
+        "count": 78
+      },
+      {
+        "subcategory": "finance-savemoney",
+        "count": 76
+      },
+      {
+        "subcategory": "lifestylesmartliving",
+        "count": 76
+      },
+      {
+        "subcategory": "newsbusiness",
+        "count": 74
+      },
+      {
+        "subcategory": "autossuvs",
+        "count": 72
+      },
+      {
+        "subcategory": "beverages",
+        "count": 71
+      },
+      {
+        "subcategory": "movies-gallery",
+        "count": 68
+      },
+      {
+        "subcategory": "autossports",
+        "count": 66
+      },
+      {
+        "subcategory": "lifestylecelebstyle",
+        "count": 62
+      },
+      {
+        "subcategory": "lifestylehoroscope",
+        "count": 61
+      },
+      {
+        "subcategory": "music-gallery",
+        "count": 52
+      },
+      {
+        "subcategory": "lifestylerelationships",
+        "count": 51
+      },
+      {
+        "subcategory": "quickandeasy",
+        "count": 48
+      },
+      {
+        "subcategory": "outdoors",
+        "count": 46
+      },
+      {
+        "subcategory": "soccer_mls",
+        "count": 46
+      },
+      {
+        "subcategory": "football_ncaa_videos",
+        "count": 44
+      },
+      {
+        "subcategory": "factcheck",
+        "count": 43
+      },
+      {
+        "subcategory": "baseball_mlb_videos",
+        "count": 42
+      },
+      {
+        "subcategory": "finance-taxes",
+        "count": 42
+      },
+      {
+        "subcategory": "tvvideos",
+        "count": 42
+      },
+      {
+        "subcategory": "lifestyleparenting",
+        "count": 41
+      },
+      {
+        "subcategory": "finance-small-business",
+        "count": 39
+      },
+      {
+        "subcategory": "healthnews",
+        "count": 39
+      },
+      {
+        "subcategory": "autosbuying",
+        "count": 38
+      },
+      {
+        "subcategory": "cma-awards",
+        "count": 38
+      },
+      {
+        "subcategory": "autostrucks",
+        "count": 37
+      },
+      {
+        "subcategory": "shop-all",
+        "count": 37
+      },
+      {
+        "subcategory": "lifestylemindandsoul",
+        "count": 36
+      },
+      {
+        "subcategory": "lifestylebeauty",
+        "count": 34
+      },
+      {
+        "subcategory": "lifestylefamilyandrelationships",
+        "count": 34
+      },
+      {
+        "subcategory": "soccer_epl",
+        "count": 34
+      },
+      {
+        "subcategory": "lifestylecareer",
+        "count": 33
+      },
+      {
+        "subcategory": "autosownership",
+        "count": 29
+      },
+      {
+        "subcategory": "causes",
+        "count": 29
+      },
+      {
+        "subcategory": "lifestylecleaningandorganizing",
+        "count": 28
+      },
+      {
+        "subcategory": "advice",
+        "count": 27
+      },
+      {
+        "subcategory": "awards",
+        "count": 27
+      },
+      {
+        "subcategory": "humor",
+        "count": 27
+      },
+      {
+        "subcategory": "music-awards",
+        "count": 27
+      },
+      {
+        "subcategory": "finance-technology",
+        "count": 26
+      },
+      {
+        "subcategory": "autosluxury",
+        "count": 24
+      },
+      {
+        "subcategory": "newsphotos",
+        "count": 22
+      },
+      {
+        "subcategory": "finance-credit",
+        "count": 21
+      },
+      {
+        "subcategory": "autossema",
+        "count": 20
+      },
+      {
+        "subcategory": "boxing",
+        "count": 20
+      },
+      {
+        "subcategory": "finance-career",
+        "count": 20
+      },
+      {
+        "subcategory": "musicvideos",
+        "count": 20
+      },
+      {
+        "subcategory": "lifestylefashion",
+        "count": 19
+      },
+      {
+        "subcategory": "autosresearch",
+        "count": 18
+      },
+      {
+        "subcategory": "autosresearchguides",
+        "count": 18
+      },
+      {
+        "subcategory": "basketball_ncaa_videos",
+        "count": 18
+      },
+      {
+        "subcategory": "lifestylelovesex",
+        "count": 18
+      },
+      {
+        "subcategory": "lifestylevideo",
+        "count": 18
+      },
+      {
+        "subcategory": "newsfactcheck",
+        "count": 18
+      },
+      {
+        "subcategory": "newsscience",
+        "count": 18
+      },
+      {
+        "subcategory": "shop-apparel",
+        "count": 17
+      },
+      {
+        "subcategory": "tv-recaps",
+        "count": 17
+      },
+      {
+        "subcategory": "wines",
+        "count": 17
+      },
+      {
+        "subcategory": "finance-insurance",
+        "count": 16
+      },
+      {
+        "subcategory": "lifestyleweddings",
+        "count": 15
+      },
+      {
+        "subcategory": "finance-healthcare",
+        "count": 14
+      },
+      {
+        "subcategory": "lifestyle-news-feature",
+        "count": 14
+      },
+      {
+        "subcategory": "lifestylediy",
+        "count": 14
+      },
+      {
+        "subcategory": "newsweather",
+        "count": 14
+      },
+      {
+        "subcategory": "finance-billstopay",
+        "count": 13
+      },
+      {
+        "subcategory": "finance-education",
+        "count": 13
+      },
+      {
+        "subcategory": "pregnancyparenting",
+        "count": 13
+      },
+      {
+        "subcategory": "awardstyle",
+        "count": 12
+      },
+      {
+        "subcategory": "movies-awards",
+        "count": 12
+      },
+      {
+        "subcategory": "travel-points-rewards",
+        "count": 12
+      },
+      {
+        "subcategory": "ads-lung-health",
+        "count": 11
+      },
+      {
+        "subcategory": "lifestyledecor",
+        "count": 11
+      },
+      {
+        "subcategory": "lifestyleshopping",
+        "count": 11
+      },
+      {
+        "subcategory": "basketball_nba_videos",
+        "count": 10
+      },
+      {
+        "subcategory": "retirement",
+        "count": 10
+      },
+      {
+        "subcategory": "ads-latingrammys",
+        "count": 9
+      },
+      {
+        "subcategory": "mentalhealth",
+        "count": 9
+      },
+      {
+        "subcategory": "tunedin",
+        "count": 9
+      },
+      {
+        "subcategory": "boxing-mma",
+        "count": 8
+      },
+      {
+        "subcategory": "causes-animals",
+        "count": 8
+      },
+      {
+        "subcategory": "causes-green-living",
+        "count": 8
+      },
+      {
+        "subcategory": "newselection2020",
+        "count": 8
+      },
+      {
+        "subcategory": "autosvideonew",
+        "count": 7
+      },
+      {
+        "subcategory": "ustravel",
+        "count": 7
+      },
+      {
+        "subcategory": "autoshybrids",
+        "count": 6
+      },
+      {
+        "subcategory": "autostokyo",
+        "count": 6
+      },
+      {
+        "subcategory": "basketball_wnba",
+        "count": 6
+      },
+      {
+        "subcategory": "internationaltravel",
+        "count": 6
+      },
+      {
+        "subcategory": "people-places",
+        "count": 6
+      },
+      {
+        "subcategory": "travel-adventure-travel",
+        "count": 6
+      },
+      {
+        "subcategory": "weight-loss",
+        "count": 6
+      },
+      {
+        "subcategory": "autospassenger",
+        "count": 5
+      },
+      {
+        "subcategory": "causes-food-insecurity",
+        "count": 5
+      },
+      {
+        "subcategory": "finance-mutual-funds",
+        "count": 5
+      },
+      {
+        "subcategory": "movies-oscars",
+        "count": 5
+      },
+      {
+        "subcategory": "newsworldpolitics",
+        "count": 5
+      },
+      {
+        "subcategory": "reviews",
+        "count": 5
+      },
+      {
+        "subcategory": "wonder",
+        "count": 5
+      },
+      {
+        "subcategory": "autosvideos",
+        "count": 4
+      },
+      {
+        "subcategory": "downtime",
+        "count": 4
+      },
+      {
+        "subcategory": "fun",
+        "count": 4
+      },
+      {
+        "subcategory": "holidays",
+        "count": 4
+      },
+      {
+        "subcategory": "music-grammys",
+        "count": 4
+      },
+      {
+        "subcategory": "music-reviews",
+        "count": 4
+      },
+      {
+        "subcategory": "sports_news",
+        "count": 4
+      },
+      {
+        "subcategory": "tv-golden-globes",
+        "count": 4
+      },
+      {
+        "subcategory": "autosreview",
+        "count": 3
+      },
+      {
+        "subcategory": "career-news",
+        "count": 3
+      },
+      {
+        "subcategory": "causes-disaster-relief",
+        "count": 3
+      },
+      {
+        "subcategory": "cocktails",
+        "count": 3
+      },
+      {
+        "subcategory": "cooking",
+        "count": 3
+      },
+      {
+        "subcategory": "foodrecipes",
+        "count": 3
+      },
+      {
+        "subcategory": "lifestylemarriage",
+        "count": 3
+      },
+      {
+        "subcategory": "photos",
+        "count": 3
+      },
+      {
+        "subcategory": "shop-home-goods",
+        "count": 3
+      },
+      {
+        "subcategory": "sports",
+        "count": 3
+      },
+      {
+        "subcategory": "technologyinvesting",
+        "count": 3
+      },
+      {
+        "subcategory": "autoscartech",
+        "count": 2
+      },
+      {
+        "subcategory": "causes-environment",
+        "count": 2
+      },
+      {
+        "subcategory": "celebritynews",
+        "count": 2
+      },
+      {
+        "subcategory": "comedy",
+        "count": 2
+      },
+      {
+        "subcategory": "empowering-the-planet",
+        "count": 2
+      },
+      {
+        "subcategory": "healthagingwell",
+        "count": 2
+      },
+      {
+        "subcategory": "indepth",
+        "count": 2
+      },
+      {
+        "subcategory": "lifestylewhatshot",
+        "count": 2
+      },
+      {
+        "subcategory": "middleeast-top-stories",
+        "count": 2
+      },
+      {
+        "subcategory": "newsvideo",
+        "count": 2
+      },
+      {
+        "subcategory": "relationships",
+        "count": 2
+      },
+      {
+        "subcategory": "seasonal",
+        "count": 2
+      },
+      {
+        "subcategory": "shop-books-movies-tv",
+        "count": 2
+      },
+      {
+        "subcategory": "topnews",
+        "count": 2
+      },
+      {
+        "subcategory": "travel-videos",
+        "count": 2
+      },
+      {
+        "subcategory": "tv-reviews",
+        "count": 2
+      },
+      {
+        "subcategory": "yearinoffbeatgoodnews",
+        "count": 2
+      },
+      {
+        "subcategory": "autoscompact",
+        "count": 1
+      },
+      {
+        "subcategory": "autoslosangeles",
+        "count": 1
+      },
+      {
+        "subcategory": "autosmidsize",
+        "count": 1
+      },
+      {
+        "subcategory": "autosvans",
+        "count": 1
+      },
+      {
+        "subcategory": "baseball",
+        "count": 1
+      },
+      {
+        "subcategory": "cardio",
+        "count": 1
+      },
+      {
+        "subcategory": "causes-military-appreciation",
+        "count": 1
+      },
+      {
+        "subcategory": "causes-poverty",
+        "count": 1
+      },
+      {
+        "subcategory": "celebhub",
+        "count": 1
+      },
+      {
+        "subcategory": "company-news",
+        "count": 1
+      },
+      {
+        "subcategory": "cookingschool",
+        "count": 1
+      },
+      {
+        "subcategory": "entertainmentmusic",
+        "count": 1
+      },
+      {
+        "subcategory": "entertainmenttv",
+        "count": 1
+      },
+      {
+        "subcategory": "finance-auto-insurance",
+        "count": 1
+      },
+      {
+        "subcategory": "finance-home-loans",
+        "count": 1
+      },
+      {
+        "subcategory": "finance-homesandpropertysection",
+        "count": 1
+      },
+      {
+        "subcategory": "finance-insidetheticker",
+        "count": 1
+      },
+      {
+        "subcategory": "finance-startinvesting",
+        "count": 1
+      },
+      {
+        "subcategory": "foodanddrink",
+        "count": 1
+      },
+      {
+        "subcategory": "foodtips",
+        "count": 1
+      },
+      {
+        "subcategory": "games",
+        "count": 1
+      },
+      {
+        "subcategory": "games-news",
+        "count": 1
+      },
+      {
+        "subcategory": "golfvideos",
+        "count": 1
+      },
+      {
+        "subcategory": "halloween",
+        "count": 1
+      },
+      {
+        "subcategory": "health-cancer",
+        "count": 1
+      },
+      {
+        "subcategory": "healthyliving",
+        "count": 1
+      },
+      {
+        "subcategory": "hollywood",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestyle-wedding",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestyleanimals",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestylehoroscopefish",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestyleshoppinghomegarden",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestylestyle",
+        "count": 1
+      },
+      {
+        "subcategory": "lifestyletravel",
+        "count": 1
+      },
+      {
+        "subcategory": "mmaufc",
+        "count": 1
+      },
+      {
+        "subcategory": "narendramodi_opinion",
+        "count": 1
+      },
+      {
+        "subcategory": "newsnational",
+        "count": 1
+      },
+      {
+        "subcategory": "newsother",
+        "count": 1
+      },
+      {
+        "subcategory": "newsrealestate",
+        "count": 1
+      },
+      {
+        "subcategory": "newstechnology",
+        "count": 1
+      },
+      {
+        "subcategory": "newstvmedia",
+        "count": 1
+      },
+      {
+        "subcategory": "newsvideos",
+        "count": 1
+      },
+      {
+        "subcategory": "northamerica-video",
+        "count": 1
+      },
+      {
+        "subcategory": "olympics-videos",
+        "count": 1
+      },
+      {
+        "subcategory": "othersports",
+        "count": 1
+      },
+      {
+        "subcategory": "shop-computers-electronics",
+        "count": 1
+      },
+      {
+        "subcategory": "soccer_bund",
+        "count": 1
+      },
+      {
+        "subcategory": "spendingandborrowing",
+        "count": 1
+      },
+      {
+        "subcategory": "strength",
+        "count": 1
+      },
+      {
+        "subcategory": "tennis_intl",
+        "count": 1
+      },
+      {
+        "subcategory": "travel",
+        "count": 1
+      },
+      {
+        "subcategory": "traveltrivia",
+        "count": 1
+      },
+      {
+        "subcategory": "tv",
+        "count": 1
+      },
+      {
+        "subcategory": "tv-golden-globes-video",
+        "count": 1
+      },
+      {
+        "subcategory": "watch",
+        "count": 1
+      },
+      {
+        "subcategory": "weatherfullscreenmaps",
+        "count": 1
+      }
+    ],
+    "news_subcategory_top": [
+      {
+        "subcategory": "newsus",
+        "count": 8840
+      },
+      {
+        "subcategory": "football_nfl",
+        "count": 7464
+      },
+      {
+        "subcategory": "newspolitics",
+        "count": 3478
+      },
+      {
+        "subcategory": "newscrime",
+        "count": 2665
+      },
+      {
+        "subcategory": "weathertopstories",
+        "count": 2599
+      },
+      {
+        "subcategory": "baseball_mlb",
+        "count": 2166
+      },
+      {
+        "subcategory": "football_ncaa",
+        "count": 2107
+      },
+      {
+        "subcategory": "newsworld",
+        "count": 2022
+      },
+      {
+        "subcategory": "basketball_nba",
+        "count": 1997
+      },
+      {
+        "subcategory": "news",
+        "count": 1711
+      },
+      {
+        "subcategory": "newstrends",
+        "count": 1616
+      },
+      {
+        "subcategory": "newsscienceandtechnology",
+        "count": 1599
+      },
+      {
+        "subcategory": "more_sports",
+        "count": 1498
+      },
+      {
+        "subcategory": "travelarticle",
+        "count": 1428
+      },
+      {
+        "subcategory": "travelnews",
+        "count": 1141
+      },
+      {
+        "subcategory": "autosnews",
+        "count": 1133
+      },
+      {
+        "subcategory": "lifestylebuzz",
+        "count": 1132
+      },
+      {
+        "subcategory": "basketball_ncaa",
+        "count": 1012
+      },
+      {
+        "subcategory": "financenews",
+        "count": 956
+      },
+      {
+        "subcategory": "finance-real-estate",
+        "count": 765
+      }
+    ],
+    "history_length_train": [
+      {
+        "length": 0,
+        "count": 3238
+      },
+      {
+        "length": 1,
+        "count": 2162
+      },
+      {
+        "length": 2,
+        "count": 3695
+      },
+      {
+        "length": 3,
+        "count": 5442
+      },
+      {
+        "length": 4,
+        "count": 6308
+      },
+      {
+        "length": 5,
+        "count": 6101
+      },
+      {
+        "length": 6,
+        "count": 5591
+      },
+      {
+        "length": 7,
+        "count": 5341
+      },
+      {
+        "length": 8,
+        "count": 4636
+      },
+      {
+        "length": 9,
+        "count": 4270
+      },
+      {
+        "length": 10,
+        "count": 4233
+      },
+      {
+        "length": 11,
+        "count": 4073
+      },
+      {
+        "length": 12,
+        "count": 3665
+      },
+      {
+        "length": 13,
+        "count": 3519
+      },
+      {
+        "length": 14,
+        "count": 3365
+      },
+      {
+        "length": 15,
+        "count": 3176
+      },
+      {
+        "length": 16,
+        "count": 2942
+      },
+      {
+        "length": 17,
+        "count": 2828
+      },
+      {
+        "length": 18,
+        "count": 2694
+      },
+      {
+        "length": 19,
+        "count": 2710
+      },
+      {
+        "length": 20,
+        "count": 2428
+      },
+      {
+        "length": 21,
+        "count": 2236
+      },
+      {
+        "length": 22,
+        "count": 2335
+      },
+      {
+        "length": 23,
+        "count": 2228
+      },
+      {
+        "length": 24,
+        "count": 2101
+      },
+      {
+        "length": 25,
+        "count": 2230
+      },
+      {
+        "length": 26,
+        "count": 1957
+      },
+      {
+        "length": 27,
+        "count": 1862
+      },
+      {
+        "length": 28,
+        "count": 1630
+      },
+      {
+        "length": 29,
+        "count": 1596
+      },
+      {
+        "length": 30,
+        "count": 1832
+      },
+      {
+        "length": 31,
+        "count": 1563
+      },
+      {
+        "length": 32,
+        "count": 1563
+      },
+      {
+        "length": 33,
+        "count": 1534
+      },
+      {
+        "length": 34,
+        "count": 1497
+      },
+      {
+        "length": 35,
+        "count": 1237
+      },
+      {
+        "length": 36,
+        "count": 1312
+      },
+      {
+        "length": 37,
+        "count": 1390
+      },
+      {
+        "length": 38,
+        "count": 1153
+      },
+      {
+        "length": 39,
+        "count": 1274
+      },
+      {
+        "length": 40,
+        "count": 1183
+      },
+      {
+        "length": 41,
+        "count": 1306
+      },
+      {
+        "length": 42,
+        "count": 1065
+      },
+      {
+        "length": 43,
+        "count": 1094
+      },
+      {
+        "length": 44,
+        "count": 904
+      },
+      {
+        "length": 45,
+        "count": 1381
+      },
+      {
+        "length": 46,
+        "count": 1085
+      },
+      {
+        "length": 47,
+        "count": 886
+      },
+      {
+        "length": 48,
+        "count": 828
+      },
+      {
+        "length": 49,
+        "count": 772
+      },
+      {
+        "length": 50,
+        "count": 766
+      },
+      {
+        "length": 51,
+        "count": 858
+      },
+      {
+        "length": 52,
+        "count": 870
+      },
+      {
+        "length": 53,
+        "count": 658
+      },
+      {
+        "length": 54,
+        "count": 743
+      },
+      {
+        "length": 55,
+        "count": 733
+      },
+      {
+        "length": 56,
+        "count": 713
+      },
+      {
+        "length": 57,
+        "count": 777
+      },
+      {
+        "length": 58,
+        "count": 801
+      },
+      {
+        "length": 59,
+        "count": 507
+      },
+      {
+        "length": 60,
+        "count": 659
+      },
+      {
+        "length": 61,
+        "count": 541
+      },
+      {
+        "length": 62,
+        "count": 594
+      },
+      {
+        "length": 63,
+        "count": 649
+      },
+      {
+        "length": 64,
+        "count": 517
+      },
+      {
+        "length": 65,
+        "count": 538
+      },
+      {
+        "length": 66,
+        "count": 386
+      },
+      {
+        "length": 67,
+        "count": 442
+      },
+      {
+        "length": 68,
+        "count": 430
+      },
+      {
+        "length": 69,
+        "count": 408
+      },
+      {
+        "length": 70,
+        "count": 512
+      },
+      {
+        "length": 71,
+        "count": 488
+      },
+      {
+        "length": 72,
+        "count": 320
+      },
+      {
+        "length": 73,
+        "count": 355
+      },
+      {
+        "length": 74,
+        "count": 283
+      },
+      {
+        "length": 75,
+        "count": 369
+      },
+      {
+        "length": 76,
+        "count": 468
+      },
+      {
+        "length": 77,
+        "count": 417
+      },
+      {
+        "length": 78,
+        "count": 302
+      },
+      {
+        "length": 79,
+        "count": 351
+      },
+      {
+        "length": 80,
+        "count": 257
+      },
+      {
+        "length": 81,
+        "count": 445
+      },
+      {
+        "length": 82,
+        "count": 396
+      },
+      {
+        "length": 83,
+        "count": 356
+      },
+      {
+        "length": 84,
+        "count": 208
+      },
+      {
+        "length": 85,
+        "count": 282
+      },
+      {
+        "length": 86,
+        "count": 268
+      },
+      {
+        "length": 87,
+        "count": 264
+      },
+      {
+        "length": 88,
+        "count": 272
+      },
+      {
+        "length": 89,
+        "count": 258
+      },
+      {
+        "length": 90,
+        "count": 208
+      },
+      {
+        "length": 91,
+        "count": 336
+      },
+      {
+        "length": 92,
+        "count": 252
+      },
+      {
+        "length": 93,
+        "count": 232
+      },
+      {
+        "length": 94,
+        "count": 234
+      },
+      {
+        "length": 95,
+        "count": 262
+      },
+      {
+        "length": 96,
+        "count": 182
+      },
+      {
+        "length": 97,
+        "count": 227
+      },
+      {
+        "length": 98,
+        "count": 217
+      },
+      {
+        "length": 99,
+        "count": 265
+      },
+      {
+        "length": 100,
+        "count": 164
+      },
+      {
+        "length": 101,
+        "count": 378
+      },
+      {
+        "length": 102,
+        "count": 198
+      },
+      {
+        "length": 103,
+        "count": 154
+      },
+      {
+        "length": 104,
+        "count": 233
+      },
+      {
+        "length": 105,
+        "count": 189
+      },
+      {
+        "length": 106,
+        "count": 137
+      },
+      {
+        "length": 107,
+        "count": 131
+      },
+      {
+        "length": 108,
+        "count": 192
+      },
+      {
+        "length": 109,
+        "count": 182
+      },
+      {
+        "length": 110,
+        "count": 101
+      },
+      {
+        "length": 111,
+        "count": 183
+      },
+      {
+        "length": 112,
+        "count": 154
+      },
+      {
+        "length": 113,
+        "count": 173
+      },
+      {
+        "length": 114,
+        "count": 125
+      },
+      {
+        "length": 115,
+        "count": 165
+      },
+      {
+        "length": 116,
+        "count": 186
+      },
+      {
+        "length": 117,
+        "count": 203
+      },
+      {
+        "length": 118,
+        "count": 174
+      },
+      {
+        "length": 119,
+        "count": 110
+      },
+      {
+        "length": 120,
+        "count": 131
+      },
+      {
+        "length": 121,
+        "count": 65
+      },
+      {
+        "length": 122,
+        "count": 113
+      },
+      {
+        "length": 123,
+        "count": 74
+      },
+      {
+        "length": 124,
+        "count": 58
+      },
+      {
+        "length": 125,
+        "count": 141
+      },
+      {
+        "length": 126,
+        "count": 193
+      },
+      {
+        "length": 127,
+        "count": 135
+      },
+      {
+        "length": 128,
+        "count": 67
+      },
+      {
+        "length": 129,
+        "count": 107
+      },
+      {
+        "length": 130,
+        "count": 60
+      },
+      {
+        "length": 131,
+        "count": 148
+      },
+      {
+        "length": 132,
+        "count": 15
+      },
+      {
+        "length": 133,
+        "count": 85
+      },
+      {
+        "length": 134,
+        "count": 33
+      },
+      {
+        "length": 135,
+        "count": 81
+      },
+      {
+        "length": 136,
+        "count": 66
+      },
+      {
+        "length": 137,
+        "count": 37
+      },
+      {
+        "length": 138,
+        "count": 137
+      },
+      {
+        "length": 139,
+        "count": 143
+      },
+      {
+        "length": 140,
+        "count": 78
+      },
+      {
+        "length": 141,
+        "count": 173
+      },
+      {
+        "length": 142,
+        "count": 74
+      },
+      {
+        "length": 143,
+        "count": 54
+      },
+      {
+        "length": 144,
+        "count": 49
+      },
+      {
+        "length": 145,
+        "count": 100
+      },
+      {
+        "length": 146,
+        "count": 89
+      },
+      {
+        "length": 147,
+        "count": 82
+      },
+      {
+        "length": 148,
+        "count": 52
+      },
+      {
+        "length": 149,
+        "count": 34
+      },
+      {
+        "length": 150,
+        "count": 24
+      },
+      {
+        "length": 151,
+        "count": 9
+      },
+      {
+        "length": 152,
+        "count": 124
+      },
+      {
+        "length": 153,
+        "count": 61
+      },
+      {
+        "length": 154,
+        "count": 54
+      },
+      {
+        "length": 155,
+        "count": 12
+      },
+      {
+        "length": 156,
+        "count": 63
+      },
+      {
+        "length": 157,
+        "count": 36
+      },
+      {
+        "length": 158,
+        "count": 56
+      },
+      {
+        "length": 159,
+        "count": 16
+      },
+      {
+        "length": 160,
+        "count": 49
+      },
+      {
+        "length": 161,
+        "count": 39
+      },
+      {
+        "length": 162,
+        "count": 80
+      },
+      {
+        "length": 163,
+        "count": 10
+      },
+      {
+        "length": 164,
+        "count": 41
+      },
+      {
+        "length": 165,
+        "count": 38
+      },
+      {
+        "length": 166,
+        "count": 28
+      },
+      {
+        "length": 167,
+        "count": 60
+      },
+      {
+        "length": 168,
+        "count": 78
+      },
+      {
+        "length": 169,
+        "count": 36
+      },
+      {
+        "length": 170,
+        "count": 38
+      },
+      {
+        "length": 171,
+        "count": 40
+      },
+      {
+        "length": 172,
+        "count": 35
+      },
+      {
+        "length": 173,
+        "count": 10
+      },
+      {
+        "length": 174,
+        "count": 84
+      },
+      {
+        "length": 175,
+        "count": 79
+      },
+      {
+        "length": 176,
+        "count": 30
+      },
+      {
+        "length": 177,
+        "count": 28
+      },
+      {
+        "length": 178,
+        "count": 39
+      },
+      {
+        "length": 179,
+        "count": 46
+      },
+      {
+        "length": 180,
+        "count": 7
+      },
+      {
+        "length": 181,
+        "count": 126
+      },
+      {
+        "length": 183,
+        "count": 18
+      },
+      {
+        "length": 184,
+        "count": 87
+      },
+      {
+        "length": 185,
+        "count": 48
+      },
+      {
+        "length": 186,
+        "count": 47
+      },
+      {
+        "length": 187,
+        "count": 21
+      },
+      {
+        "length": 188,
+        "count": 49
+      },
+      {
+        "length": 189,
+        "count": 60
+      },
+      {
+        "length": 190,
+        "count": 91
+      },
+      {
+        "length": 191,
+        "count": 14
+      },
+      {
+        "length": 192,
+        "count": 21
+      },
+      {
+        "length": 193,
+        "count": 1
+      },
+      {
+        "length": 194,
+        "count": 22
+      },
+      {
+        "length": 195,
+        "count": 66
+      },
+      {
+        "length": 197,
+        "count": 19
+      },
+      {
+        "length": 198,
+        "count": 5
+      },
+      {
+        "length": 199,
+        "count": 16
+      },
+      {
+        "length": 200,
+        "count": 43
+      },
+      {
+        "length": 201,
+        "count": 31
+      },
+      {
+        "length": 202,
+        "count": 20
+      },
+      {
+        "length": 203,
+        "count": 28
+      },
+      {
+        "length": 204,
+        "count": 17
+      },
+      {
+        "length": 205,
+        "count": 27
+      },
+      {
+        "length": 206,
+        "count": 7
+      },
+      {
+        "length": 209,
+        "count": 61
+      },
+      {
+        "length": 210,
+        "count": 14
+      },
+      {
+        "length": 211,
+        "count": 31
+      },
+      {
+        "length": 213,
+        "count": 64
+      },
+      {
+        "length": 214,
+        "count": 7
+      },
+      {
+        "length": 215,
+        "count": 42
+      },
+      {
+        "length": 216,
+        "count": 19
+      },
+      {
+        "length": 218,
+        "count": 21
+      },
+      {
+        "length": 219,
+        "count": 21
+      },
+      {
+        "length": 220,
+        "count": 73
+      },
+      {
+        "length": 221,
+        "count": 7
+      },
+      {
+        "length": 222,
+        "count": 26
+      },
+      {
+        "length": 225,
+        "count": 6
+      },
+      {
+        "length": 226,
+        "count": 39
+      },
+      {
+        "length": 227,
+        "count": 16
+      },
+      {
+        "length": 229,
+        "count": 31
+      },
+      {
+        "length": 232,
+        "count": 17
+      },
+      {
+        "length": 236,
+        "count": 25
+      },
+      {
+        "length": 240,
+        "count": 47
+      },
+      {
+        "length": 243,
+        "count": 10
+      },
+      {
+        "length": 244,
+        "count": 15
+      },
+      {
+        "length": 245,
+        "count": 22
+      },
+      {
+        "length": 246,
+        "count": 19
+      },
+      {
+        "length": 247,
+        "count": 10
+      },
+      {
+        "length": 248,
+        "count": 17
+      },
+      {
+        "length": 249,
+        "count": 5
+      },
+      {
+        "length": 250,
+        "count": 25
+      },
+      {
+        "length": 255,
+        "count": 18
+      },
+      {
+        "length": 257,
+        "count": 16
+      },
+      {
+        "length": 260,
+        "count": 10
+      },
+      {
+        "length": 262,
+        "count": 20
+      },
+      {
+        "length": 267,
+        "count": 32
+      },
+      {
+        "length": 268,
+        "count": 20
+      },
+      {
+        "length": 275,
+        "count": 12
+      },
+      {
+        "length": 278,
+        "count": 32
+      },
+      {
+        "length": 281,
+        "count": 15
+      },
+      {
+        "length": 282,
+        "count": 26
+      },
+      {
+        "length": 283,
+        "count": 2
+      },
+      {
+        "length": 289,
+        "count": 17
+      },
+      {
+        "length": 293,
+        "count": 4
+      },
+      {
+        "length": 301,
+        "count": 1
+      },
+      {
+        "length": 322,
+        "count": 24
+      },
+      {
+        "length": 349,
+        "count": 23
+      },
+      {
+        "length": 351,
+        "count": 72
+      },
+      {
+        "length": 372,
+        "count": 41
+      },
+      {
+        "length": 386,
+        "count": 21
+      },
+      {
+        "length": 396,
+        "count": 24
+      },
+      {
+        "length": 409,
+        "count": 7
+      },
+      {
+        "length": 425,
+        "count": 23
+      },
+      {
+        "length": 436,
+        "count": 14
+      },
+      {
+        "length": 558,
+        "count": 34
+      }
+    ],
+    "history_length_dev": [
+      {
+        "length": 0,
+        "count": 2214
+      },
+      {
+        "length": 1,
+        "count": 1077
+      },
+      {
+        "length": 2,
+        "count": 1747
+      },
+      {
+        "length": 3,
+        "count": 2491
+      },
+      {
+        "length": 4,
+        "count": 2777
+      },
+      {
+        "length": 5,
+        "count": 2676
+      },
+      {
+        "length": 6,
+        "count": 2600
+      },
+      {
+        "length": 7,
+        "count": 2344
+      },
+      {
+        "length": 8,
+        "count": 2262
+      },
+      {
+        "length": 9,
+        "count": 2120
+      },
+      {
+        "length": 10,
+        "count": 1813
+      },
+      {
+        "length": 11,
+        "count": 1890
+      },
+      {
+        "length": 12,
+        "count": 1668
+      },
+      {
+        "length": 13,
+        "count": 1649
+      },
+      {
+        "length": 14,
+        "count": 1529
+      },
+      {
+        "length": 15,
+        "count": 1424
+      },
+      {
+        "length": 16,
+        "count": 1419
+      },
+      {
+        "length": 17,
+        "count": 1318
+      },
+      {
+        "length": 18,
+        "count": 1232
+      },
+      {
+        "length": 19,
+        "count": 1116
+      },
+      {
+        "length": 20,
+        "count": 1051
+      },
+      {
+        "length": 21,
+        "count": 1134
+      },
+      {
+        "length": 22,
+        "count": 1024
+      },
+      {
+        "length": 23,
+        "count": 1060
+      },
+      {
+        "length": 24,
+        "count": 1011
+      },
+      {
+        "length": 25,
+        "count": 966
+      },
+      {
+        "length": 26,
+        "count": 909
+      },
+      {
+        "length": 27,
+        "count": 866
+      },
+      {
+        "length": 28,
+        "count": 889
+      },
+      {
+        "length": 29,
+        "count": 805
+      },
+      {
+        "length": 30,
+        "count": 794
+      },
+      {
+        "length": 31,
+        "count": 729
+      },
+      {
+        "length": 32,
+        "count": 663
+      },
+      {
+        "length": 33,
+        "count": 650
+      },
+      {
+        "length": 34,
+        "count": 590
+      },
+      {
+        "length": 35,
+        "count": 686
+      },
+      {
+        "length": 36,
+        "count": 610
+      },
+      {
+        "length": 37,
+        "count": 568
+      },
+      {
+        "length": 38,
+        "count": 568
+      },
+      {
+        "length": 39,
+        "count": 629
+      },
+      {
+        "length": 40,
+        "count": 515
+      },
+      {
+        "length": 41,
+        "count": 592
+      },
+      {
+        "length": 42,
+        "count": 547
+      },
+      {
+        "length": 43,
+        "count": 536
+      },
+      {
+        "length": 44,
+        "count": 447
+      },
+      {
+        "length": 45,
+        "count": 458
+      },
+      {
+        "length": 46,
+        "count": 462
+      },
+      {
+        "length": 47,
+        "count": 423
+      },
+      {
+        "length": 48,
+        "count": 362
+      },
+      {
+        "length": 49,
+        "count": 426
+      },
+      {
+        "length": 50,
+        "count": 453
+      },
+      {
+        "length": 51,
+        "count": 367
+      },
+      {
+        "length": 52,
+        "count": 374
+      },
+      {
+        "length": 53,
+        "count": 351
+      },
+      {
+        "length": 54,
+        "count": 330
+      },
+      {
+        "length": 55,
+        "count": 310
+      },
+      {
+        "length": 56,
+        "count": 279
+      },
+      {
+        "length": 57,
+        "count": 289
+      },
+      {
+        "length": 58,
+        "count": 300
+      },
+      {
+        "length": 59,
+        "count": 293
+      },
+      {
+        "length": 60,
+        "count": 315
+      },
+      {
+        "length": 61,
+        "count": 253
+      },
+      {
+        "length": 62,
+        "count": 287
+      },
+      {
+        "length": 63,
+        "count": 232
+      },
+      {
+        "length": 64,
+        "count": 245
+      },
+      {
+        "length": 65,
+        "count": 251
+      },
+      {
+        "length": 66,
+        "count": 214
+      },
+      {
+        "length": 67,
+        "count": 199
+      },
+      {
+        "length": 68,
+        "count": 227
+      },
+      {
+        "length": 69,
+        "count": 230
+      },
+      {
+        "length": 70,
+        "count": 237
+      },
+      {
+        "length": 71,
+        "count": 177
+      },
+      {
+        "length": 72,
+        "count": 201
+      },
+      {
+        "length": 73,
+        "count": 185
+      },
+      {
+        "length": 74,
+        "count": 191
+      },
+      {
+        "length": 75,
+        "count": 180
+      },
+      {
+        "length": 76,
+        "count": 228
+      },
+      {
+        "length": 77,
+        "count": 212
+      },
+      {
+        "length": 78,
+        "count": 162
+      },
+      {
+        "length": 79,
+        "count": 133
+      },
+      {
+        "length": 80,
+        "count": 178
+      },
+      {
+        "length": 81,
+        "count": 211
+      },
+      {
+        "length": 82,
+        "count": 200
+      },
+      {
+        "length": 83,
+        "count": 163
+      },
+      {
+        "length": 84,
+        "count": 143
+      },
+      {
+        "length": 85,
+        "count": 133
+      },
+      {
+        "length": 86,
+        "count": 142
+      },
+      {
+        "length": 87,
+        "count": 128
+      },
+      {
+        "length": 88,
+        "count": 112
+      },
+      {
+        "length": 89,
+        "count": 122
+      },
+      {
+        "length": 90,
+        "count": 130
+      },
+      {
+        "length": 91,
+        "count": 121
+      },
+      {
+        "length": 92,
+        "count": 103
+      },
+      {
+        "length": 93,
+        "count": 113
+      },
+      {
+        "length": 94,
+        "count": 113
+      },
+      {
+        "length": 95,
+        "count": 100
+      },
+      {
+        "length": 96,
+        "count": 143
+      },
+      {
+        "length": 97,
+        "count": 143
+      },
+      {
+        "length": 98,
+        "count": 118
+      },
+      {
+        "length": 99,
+        "count": 90
+      },
+      {
+        "length": 100,
+        "count": 94
+      },
+      {
+        "length": 101,
+        "count": 83
+      },
+      {
+        "length": 102,
+        "count": 101
+      },
+      {
+        "length": 103,
+        "count": 85
+      },
+      {
+        "length": 104,
+        "count": 73
+      },
+      {
+        "length": 105,
+        "count": 86
+      },
+      {
+        "length": 106,
+        "count": 111
+      },
+      {
+        "length": 107,
+        "count": 65
+      },
+      {
+        "length": 108,
+        "count": 85
+      },
+      {
+        "length": 109,
+        "count": 65
+      },
+      {
+        "length": 110,
+        "count": 73
+      },
+      {
+        "length": 111,
+        "count": 87
+      },
+      {
+        "length": 112,
+        "count": 56
+      },
+      {
+        "length": 113,
+        "count": 93
+      },
+      {
+        "length": 114,
+        "count": 58
+      },
+      {
+        "length": 115,
+        "count": 45
+      },
+      {
+        "length": 116,
+        "count": 45
+      },
+      {
+        "length": 117,
+        "count": 41
+      },
+      {
+        "length": 118,
+        "count": 53
+      },
+      {
+        "length": 119,
+        "count": 82
+      },
+      {
+        "length": 120,
+        "count": 48
+      },
+      {
+        "length": 121,
+        "count": 36
+      },
+      {
+        "length": 122,
+        "count": 51
+      },
+      {
+        "length": 123,
+        "count": 65
+      },
+      {
+        "length": 124,
+        "count": 49
+      },
+      {
+        "length": 125,
+        "count": 40
+      },
+      {
+        "length": 126,
+        "count": 80
+      },
+      {
+        "length": 127,
+        "count": 56
+      },
+      {
+        "length": 128,
+        "count": 56
+      },
+      {
+        "length": 129,
+        "count": 87
+      },
+      {
+        "length": 130,
+        "count": 42
+      },
+      {
+        "length": 131,
+        "count": 41
+      },
+      {
+        "length": 132,
+        "count": 41
+      },
+      {
+        "length": 133,
+        "count": 37
+      },
+      {
+        "length": 134,
+        "count": 38
+      },
+      {
+        "length": 135,
+        "count": 54
+      },
+      {
+        "length": 136,
+        "count": 34
+      },
+      {
+        "length": 137,
+        "count": 40
+      },
+      {
+        "length": 138,
+        "count": 55
+      },
+      {
+        "length": 139,
+        "count": 34
+      },
+      {
+        "length": 140,
+        "count": 32
+      },
+      {
+        "length": 141,
+        "count": 42
+      },
+      {
+        "length": 142,
+        "count": 54
+      },
+      {
+        "length": 143,
+        "count": 56
+      },
+      {
+        "length": 144,
+        "count": 24
+      },
+      {
+        "length": 145,
+        "count": 38
+      },
+      {
+        "length": 146,
+        "count": 29
+      },
+      {
+        "length": 147,
+        "count": 53
+      },
+      {
+        "length": 148,
+        "count": 26
+      },
+      {
+        "length": 149,
+        "count": 31
+      },
+      {
+        "length": 150,
+        "count": 36
+      },
+      {
+        "length": 151,
+        "count": 27
+      },
+      {
+        "length": 152,
+        "count": 43
+      },
+      {
+        "length": 153,
+        "count": 27
+      },
+      {
+        "length": 154,
+        "count": 29
+      },
+      {
+        "length": 155,
+        "count": 16
+      },
+      {
+        "length": 156,
+        "count": 29
+      },
+      {
+        "length": 157,
+        "count": 13
+      },
+      {
+        "length": 158,
+        "count": 37
+      },
+      {
+        "length": 159,
+        "count": 21
+      },
+      {
+        "length": 160,
+        "count": 41
+      },
+      {
+        "length": 161,
+        "count": 25
+      },
+      {
+        "length": 162,
+        "count": 35
+      },
+      {
+        "length": 163,
+        "count": 15
+      },
+      {
+        "length": 164,
+        "count": 15
+      },
+      {
+        "length": 165,
+        "count": 22
+      },
+      {
+        "length": 166,
+        "count": 25
+      },
+      {
+        "length": 167,
+        "count": 17
+      },
+      {
+        "length": 168,
+        "count": 25
+      },
+      {
+        "length": 169,
+        "count": 35
+      },
+      {
+        "length": 170,
+        "count": 10
+      },
+      {
+        "length": 171,
+        "count": 10
+      },
+      {
+        "length": 172,
+        "count": 27
+      },
+      {
+        "length": 173,
+        "count": 16
+      },
+      {
+        "length": 174,
+        "count": 46
+      },
+      {
+        "length": 175,
+        "count": 15
+      },
+      {
+        "length": 176,
+        "count": 20
+      },
+      {
+        "length": 177,
+        "count": 15
+      },
+      {
+        "length": 178,
+        "count": 23
+      },
+      {
+        "length": 179,
+        "count": 17
+      },
+      {
+        "length": 180,
+        "count": 14
+      },
+      {
+        "length": 181,
+        "count": 17
+      },
+      {
+        "length": 182,
+        "count": 11
+      },
+      {
+        "length": 183,
+        "count": 13
+      },
+      {
+        "length": 184,
+        "count": 7
+      },
+      {
+        "length": 185,
+        "count": 13
+      },
+      {
+        "length": 186,
+        "count": 14
+      },
+      {
+        "length": 187,
+        "count": 9
+      },
+      {
+        "length": 188,
+        "count": 9
+      },
+      {
+        "length": 189,
+        "count": 17
+      },
+      {
+        "length": 190,
+        "count": 22
+      },
+      {
+        "length": 191,
+        "count": 7
+      },
+      {
+        "length": 192,
+        "count": 13
+      },
+      {
+        "length": 193,
+        "count": 15
+      },
+      {
+        "length": 194,
+        "count": 10
+      },
+      {
+        "length": 195,
+        "count": 9
+      },
+      {
+        "length": 196,
+        "count": 9
+      },
+      {
+        "length": 197,
+        "count": 13
+      },
+      {
+        "length": 198,
+        "count": 13
+      },
+      {
+        "length": 199,
+        "count": 17
+      },
+      {
+        "length": 200,
+        "count": 3
+      },
+      {
+        "length": 201,
+        "count": 15
+      },
+      {
+        "length": 202,
+        "count": 10
+      },
+      {
+        "length": 203,
+        "count": 12
+      },
+      {
+        "length": 204,
+        "count": 18
+      },
+      {
+        "length": 205,
+        "count": 9
+      },
+      {
+        "length": 206,
+        "count": 2
+      },
+      {
+        "length": 207,
+        "count": 3
+      },
+      {
+        "length": 208,
+        "count": 16
+      },
+      {
+        "length": 209,
+        "count": 3
+      },
+      {
+        "length": 210,
+        "count": 9
+      },
+      {
+        "length": 211,
+        "count": 16
+      },
+      {
+        "length": 212,
+        "count": 14
+      },
+      {
+        "length": 214,
+        "count": 6
+      },
+      {
+        "length": 215,
+        "count": 7
+      },
+      {
+        "length": 216,
+        "count": 8
+      },
+      {
+        "length": 217,
+        "count": 3
+      },
+      {
+        "length": 218,
+        "count": 2
+      },
+      {
+        "length": 219,
+        "count": 4
+      },
+      {
+        "length": 220,
+        "count": 8
+      },
+      {
+        "length": 221,
+        "count": 7
+      },
+      {
+        "length": 223,
+        "count": 9
+      },
+      {
+        "length": 224,
+        "count": 14
+      },
+      {
+        "length": 225,
+        "count": 22
+      },
+      {
+        "length": 226,
+        "count": 6
+      },
+      {
+        "length": 227,
+        "count": 2
+      },
+      {
+        "length": 228,
+        "count": 13
+      },
+      {
+        "length": 229,
+        "count": 1
+      },
+      {
+        "length": 232,
+        "count": 11
+      },
+      {
+        "length": 234,
+        "count": 3
+      },
+      {
+        "length": 237,
+        "count": 4
+      },
+      {
+        "length": 238,
+        "count": 8
+      },
+      {
+        "length": 239,
+        "count": 5
+      },
+      {
+        "length": 240,
+        "count": 4
+      },
+      {
+        "length": 241,
+        "count": 11
+      },
+      {
+        "length": 242,
+        "count": 4
+      },
+      {
+        "length": 243,
+        "count": 2
+      },
+      {
+        "length": 244,
+        "count": 10
+      },
+      {
+        "length": 245,
+        "count": 8
+      },
+      {
+        "length": 247,
+        "count": 4
+      },
+      {
+        "length": 249,
+        "count": 1
+      },
+      {
+        "length": 250,
+        "count": 6
+      },
+      {
+        "length": 251,
+        "count": 4
+      },
+      {
+        "length": 252,
+        "count": 8
+      },
+      {
+        "length": 253,
+        "count": 14
+      },
+      {
+        "length": 254,
+        "count": 9
+      },
+      {
+        "length": 255,
+        "count": 7
+      },
+      {
+        "length": 256,
+        "count": 21
+      },
+      {
+        "length": 257,
+        "count": 4
+      },
+      {
+        "length": 259,
+        "count": 3
+      },
+      {
+        "length": 260,
+        "count": 2
+      },
+      {
+        "length": 261,
+        "count": 4
+      },
+      {
+        "length": 264,
+        "count": 2
+      },
+      {
+        "length": 267,
+        "count": 5
+      },
+      {
+        "length": 268,
+        "count": 1
+      },
+      {
+        "length": 272,
+        "count": 4
+      },
+      {
+        "length": 273,
+        "count": 2
+      },
+      {
+        "length": 274,
+        "count": 5
+      },
+      {
+        "length": 275,
+        "count": 3
+      },
+      {
+        "length": 277,
+        "count": 3
+      },
+      {
+        "length": 279,
+        "count": 1
+      },
+      {
+        "length": 281,
+        "count": 6
+      },
+      {
+        "length": 282,
+        "count": 4
+      },
+      {
+        "length": 285,
+        "count": 3
+      },
+      {
+        "length": 286,
+        "count": 1
+      },
+      {
+        "length": 287,
+        "count": 6
+      },
+      {
+        "length": 289,
+        "count": 1
+      },
+      {
+        "length": 291,
+        "count": 2
+      },
+      {
+        "length": 294,
+        "count": 1
+      },
+      {
+        "length": 300,
+        "count": 4
+      },
+      {
+        "length": 308,
+        "count": 4
+      },
+      {
+        "length": 310,
+        "count": 1
+      },
+      {
+        "length": 313,
+        "count": 3
+      },
+      {
+        "length": 314,
+        "count": 4
+      },
+      {
+        "length": 319,
+        "count": 8
+      },
+      {
+        "length": 322,
+        "count": 11
+      },
+      {
+        "length": 325,
+        "count": 3
+      },
+      {
+        "length": 327,
+        "count": 3
+      },
+      {
+        "length": 331,
+        "count": 5
+      },
+      {
+        "length": 333,
+        "count": 4
+      },
+      {
+        "length": 339,
+        "count": 5
+      },
+      {
+        "length": 341,
+        "count": 3
+      },
+      {
+        "length": 344,
+        "count": 6
+      },
+      {
+        "length": 347,
+        "count": 4
+      },
+      {
+        "length": 351,
+        "count": 8
+      },
+      {
+        "length": 359,
+        "count": 6
+      },
+      {
+        "length": 362,
+        "count": 15
+      },
+      {
+        "length": 363,
+        "count": 1
+      },
+      {
+        "length": 365,
+        "count": 2
+      },
+      {
+        "length": 368,
+        "count": 2
+      },
+      {
+        "length": 372,
+        "count": 1
+      },
+      {
+        "length": 383,
+        "count": 5
+      },
+      {
+        "length": 385,
+        "count": 1
+      },
+      {
+        "length": 388,
+        "count": 3
+      },
+      {
+        "length": 389,
+        "count": 3
+      },
+      {
+        "length": 394,
+        "count": 2
+      },
+      {
+        "length": 434,
+        "count": 4
+      },
+      {
+        "length": 444,
+        "count": 1
+      }
+    ],
+    "impression_length_train": [
+      {
+        "length": 2,
+        "count": 10509
+      },
+      {
+        "length": 3,
+        "count": 3504
+      },
+      {
+        "length": 4,
+        "count": 6809
+      },
+      {
+        "length": 5,
+        "count": 2889
+      },
+      {
+        "length": 6,
+        "count": 3053
+      },
+      {
+        "length": 7,
+        "count": 6365
+      },
+      {
+        "length": 8,
+        "count": 2314
+      },
+      {
+        "length": 9,
+        "count": 2878
+      },
+      {
+        "length": 10,
+        "count": 4279
+      },
+      {
+        "length": 11,
+        "count": 3201
+      },
+      {
+        "length": 12,
+        "count": 3876
+      },
+      {
+        "length": 13,
+        "count": 2575
+      },
+      {
+        "length": 14,
+        "count": 2412
+      },
+      {
+        "length": 15,
+        "count": 2184
+      },
+      {
+        "length": 16,
+        "count": 2471
+      },
+      {
+        "length": 17,
+        "count": 3178
+      },
+      {
+        "length": 18,
+        "count": 2114
+      },
+      {
+        "length": 19,
+        "count": 2069
+      },
+      {
+        "length": 20,
+        "count": 2187
+      },
+      {
+        "length": 21,
+        "count": 2322
+      },
+      {
+        "length": 22,
+        "count": 3096
+      },
+      {
+        "length": 23,
+        "count": 2337
+      },
+      {
+        "length": 24,
+        "count": 2060
+      },
+      {
+        "length": 25,
+        "count": 1982
+      },
+      {
+        "length": 26,
+        "count": 2304
+      },
+      {
+        "length": 27,
+        "count": 2686
+      },
+      {
+        "length": 28,
+        "count": 2030
+      },
+      {
+        "length": 29,
+        "count": 1800
+      },
+      {
+        "length": 30,
+        "count": 2412
+      },
+      {
+        "length": 31,
+        "count": 1501
+      },
+      {
+        "length": 32,
+        "count": 1624
+      },
+      {
+        "length": 33,
+        "count": 1439
+      },
+      {
+        "length": 34,
+        "count": 1389
+      },
+      {
+        "length": 35,
+        "count": 1291
+      },
+      {
+        "length": 36,
+        "count": 1328
+      },
+      {
+        "length": 37,
+        "count": 1738
+      },
+      {
+        "length": 38,
+        "count": 1310
+      },
+      {
+        "length": 39,
+        "count": 1152
+      },
+      {
+        "length": 40,
+        "count": 1133
+      },
+      {
+        "length": 41,
+        "count": 1225
+      },
+      {
+        "length": 42,
+        "count": 1304
+      },
+      {
+        "length": 43,
+        "count": 1420
+      },
+      {
+        "length": 44,
+        "count": 1119
+      },
+      {
+        "length": 45,
+        "count": 1049
+      },
+      {
+        "length": 46,
+        "count": 1028
+      },
+      {
+        "length": 47,
+        "count": 986
+      },
+      {
+        "length": 48,
+        "count": 1152
+      },
+      {
+        "length": 49,
+        "count": 1249
+      },
+      {
+        "length": 50,
+        "count": 1108
+      },
+      {
+        "length": 51,
+        "count": 821
+      },
+      {
+        "length": 52,
+        "count": 754
+      },
+      {
+        "length": 53,
+        "count": 779
+      },
+      {
+        "length": 54,
+        "count": 821
+      },
+      {
+        "length": 55,
+        "count": 898
+      },
+      {
+        "length": 56,
+        "count": 750
+      },
+      {
+        "length": 57,
+        "count": 747
+      },
+      {
+        "length": 58,
+        "count": 678
+      },
+      {
+        "length": 59,
+        "count": 692
+      },
+      {
+        "length": 60,
+        "count": 821
+      },
+      {
+        "length": 61,
+        "count": 718
+      },
+      {
+        "length": 62,
+        "count": 642
+      },
+      {
+        "length": 63,
+        "count": 593
+      },
+      {
+        "length": 64,
+        "count": 603
+      },
+      {
+        "length": 65,
+        "count": 609
+      },
+      {
+        "length": 66,
+        "count": 688
+      },
+      {
+        "length": 67,
+        "count": 729
+      },
+      {
+        "length": 68,
+        "count": 624
+      },
+      {
+        "length": 69,
+        "count": 641
+      },
+      {
+        "length": 70,
+        "count": 620
+      },
+      {
+        "length": 71,
+        "count": 479
+      },
+      {
+        "length": 72,
+        "count": 556
+      },
+      {
+        "length": 73,
+        "count": 630
+      },
+      {
+        "length": 74,
+        "count": 482
+      },
+      {
+        "length": 75,
+        "count": 497
+      },
+      {
+        "length": 76,
+        "count": 506
+      },
+      {
+        "length": 77,
+        "count": 450
+      },
+      {
+        "length": 78,
+        "count": 454
+      },
+      {
+        "length": 79,
+        "count": 482
+      },
+      {
+        "length": 80,
+        "count": 460
+      },
+      {
+        "length": 81,
+        "count": 420
+      },
+      {
+        "length": 82,
+        "count": 423
+      },
+      {
+        "length": 83,
+        "count": 451
+      },
+      {
+        "length": 84,
+        "count": 417
+      },
+      {
+        "length": 85,
+        "count": 474
+      },
+      {
+        "length": 86,
+        "count": 432
+      },
+      {
+        "length": 87,
+        "count": 449
+      },
+      {
+        "length": 88,
+        "count": 402
+      },
+      {
+        "length": 89,
+        "count": 418
+      },
+      {
+        "length": 90,
+        "count": 389
+      },
+      {
+        "length": 91,
+        "count": 370
+      },
+      {
+        "length": 92,
+        "count": 348
+      },
+      {
+        "length": 93,
+        "count": 321
+      },
+      {
+        "length": 94,
+        "count": 325
+      },
+      {
+        "length": 95,
+        "count": 333
+      },
+      {
+        "length": 96,
+        "count": 336
+      },
+      {
+        "length": 97,
+        "count": 335
+      },
+      {
+        "length": 98,
+        "count": 335
+      },
+      {
+        "length": 99,
+        "count": 326
+      },
+      {
+        "length": 100,
+        "count": 327
+      },
+      {
+        "length": 101,
+        "count": 312
+      },
+      {
+        "length": 102,
+        "count": 310
+      },
+      {
+        "length": 103,
+        "count": 293
+      },
+      {
+        "length": 104,
+        "count": 312
+      },
+      {
+        "length": 105,
+        "count": 337
+      },
+      {
+        "length": 106,
+        "count": 308
+      },
+      {
+        "length": 107,
+        "count": 277
+      },
+      {
+        "length": 108,
+        "count": 306
+      },
+      {
+        "length": 109,
+        "count": 282
+      },
+      {
+        "length": 110,
+        "count": 299
+      },
+      {
+        "length": 111,
+        "count": 274
+      },
+      {
+        "length": 112,
+        "count": 242
+      },
+      {
+        "length": 113,
+        "count": 260
+      },
+      {
+        "length": 114,
+        "count": 209
+      },
+      {
+        "length": 115,
+        "count": 237
+      },
+      {
+        "length": 116,
+        "count": 219
+      },
+      {
+        "length": 117,
+        "count": 235
+      },
+      {
+        "length": 118,
+        "count": 228
+      },
+      {
+        "length": 119,
+        "count": 207
+      },
+      {
+        "length": 120,
+        "count": 228
+      },
+      {
+        "length": 121,
+        "count": 209
+      },
+      {
+        "length": 122,
+        "count": 224
+      },
+      {
+        "length": 123,
+        "count": 182
+      },
+      {
+        "length": 124,
+        "count": 202
+      },
+      {
+        "length": 125,
+        "count": 230
+      },
+      {
+        "length": 126,
+        "count": 209
+      },
+      {
+        "length": 127,
+        "count": 233
+      },
+      {
+        "length": 128,
+        "count": 176
+      },
+      {
+        "length": 129,
+        "count": 185
+      },
+      {
+        "length": 130,
+        "count": 176
+      },
+      {
+        "length": 131,
+        "count": 165
+      },
+      {
+        "length": 132,
+        "count": 187
+      },
+      {
+        "length": 133,
+        "count": 175
+      },
+      {
+        "length": 134,
+        "count": 175
+      },
+      {
+        "length": 135,
+        "count": 162
+      },
+      {
+        "length": 136,
+        "count": 159
+      },
+      {
+        "length": 137,
+        "count": 147
+      },
+      {
+        "length": 138,
+        "count": 149
+      },
+      {
+        "length": 139,
+        "count": 167
+      },
+      {
+        "length": 140,
+        "count": 161
+      },
+      {
+        "length": 141,
+        "count": 156
+      },
+      {
+        "length": 142,
+        "count": 144
+      },
+      {
+        "length": 143,
+        "count": 133
+      },
+      {
+        "length": 144,
+        "count": 117
+      },
+      {
+        "length": 145,
+        "count": 127
+      },
+      {
+        "length": 146,
+        "count": 147
+      },
+      {
+        "length": 147,
+        "count": 134
+      },
+      {
+        "length": 148,
+        "count": 117
+      },
+      {
+        "length": 149,
+        "count": 97
+      },
+      {
+        "length": 150,
+        "count": 106
+      },
+      {
+        "length": 151,
+        "count": 109
+      },
+      {
+        "length": 152,
+        "count": 91
+      },
+      {
+        "length": 153,
+        "count": 77
+      },
+      {
+        "length": 154,
+        "count": 63
+      },
+      {
+        "length": 155,
+        "count": 56
+      },
+      {
+        "length": 156,
+        "count": 50
+      },
+      {
+        "length": 157,
+        "count": 48
+      },
+      {
+        "length": 158,
+        "count": 36
+      },
+      {
+        "length": 159,
+        "count": 35
+      },
+      {
+        "length": 160,
+        "count": 36
+      },
+      {
+        "length": 161,
+        "count": 35
+      },
+      {
+        "length": 162,
+        "count": 36
+      },
+      {
+        "length": 163,
+        "count": 34
+      },
+      {
+        "length": 164,
+        "count": 27
+      },
+      {
+        "length": 165,
+        "count": 34
+      },
+      {
+        "length": 166,
+        "count": 31
+      },
+      {
+        "length": 167,
+        "count": 31
+      },
+      {
+        "length": 168,
+        "count": 21
+      },
+      {
+        "length": 169,
+        "count": 23
+      },
+      {
+        "length": 170,
+        "count": 32
+      },
+      {
+        "length": 171,
+        "count": 22
+      },
+      {
+        "length": 172,
+        "count": 24
+      },
+      {
+        "length": 173,
+        "count": 25
+      },
+      {
+        "length": 174,
+        "count": 20
+      },
+      {
+        "length": 175,
+        "count": 14
+      },
+      {
+        "length": 176,
+        "count": 26
+      },
+      {
+        "length": 177,
+        "count": 22
+      },
+      {
+        "length": 178,
+        "count": 15
+      },
+      {
+        "length": 179,
+        "count": 20
+      },
+      {
+        "length": 180,
+        "count": 21
+      },
+      {
+        "length": 181,
+        "count": 19
+      },
+      {
+        "length": 182,
+        "count": 23
+      },
+      {
+        "length": 183,
+        "count": 20
+      },
+      {
+        "length": 184,
+        "count": 17
+      },
+      {
+        "length": 185,
+        "count": 25
+      },
+      {
+        "length": 186,
+        "count": 14
+      },
+      {
+        "length": 187,
+        "count": 19
+      },
+      {
+        "length": 188,
+        "count": 29
+      },
+      {
+        "length": 189,
+        "count": 22
+      },
+      {
+        "length": 190,
+        "count": 28
+      },
+      {
+        "length": 191,
+        "count": 16
+      },
+      {
+        "length": 192,
+        "count": 22
+      },
+      {
+        "length": 193,
+        "count": 11
+      },
+      {
+        "length": 194,
+        "count": 12
+      },
+      {
+        "length": 195,
+        "count": 14
+      },
+      {
+        "length": 196,
+        "count": 12
+      },
+      {
+        "length": 197,
+        "count": 15
+      },
+      {
+        "length": 198,
+        "count": 16
+      },
+      {
+        "length": 199,
+        "count": 13
+      },
+      {
+        "length": 200,
+        "count": 17
+      },
+      {
+        "length": 201,
+        "count": 17
+      },
+      {
+        "length": 202,
+        "count": 12
+      },
+      {
+        "length": 203,
+        "count": 14
+      },
+      {
+        "length": 204,
+        "count": 18
+      },
+      {
+        "length": 205,
+        "count": 14
+      },
+      {
+        "length": 206,
+        "count": 17
+      },
+      {
+        "length": 207,
+        "count": 15
+      },
+      {
+        "length": 208,
+        "count": 9
+      },
+      {
+        "length": 209,
+        "count": 8
+      },
+      {
+        "length": 210,
+        "count": 15
+      },
+      {
+        "length": 211,
+        "count": 11
+      },
+      {
+        "length": 212,
+        "count": 12
+      },
+      {
+        "length": 213,
+        "count": 14
+      },
+      {
+        "length": 214,
+        "count": 11
+      },
+      {
+        "length": 215,
+        "count": 16
+      },
+      {
+        "length": 216,
+        "count": 11
+      },
+      {
+        "length": 217,
+        "count": 14
+      },
+      {
+        "length": 218,
+        "count": 16
+      },
+      {
+        "length": 219,
+        "count": 15
+      },
+      {
+        "length": 220,
+        "count": 19
+      },
+      {
+        "length": 221,
+        "count": 15
+      },
+      {
+        "length": 222,
+        "count": 8
+      },
+      {
+        "length": 223,
+        "count": 12
+      },
+      {
+        "length": 224,
+        "count": 15
+      },
+      {
+        "length": 225,
+        "count": 9
+      },
+      {
+        "length": 226,
+        "count": 13
+      },
+      {
+        "length": 227,
+        "count": 13
+      },
+      {
+        "length": 228,
+        "count": 10
+      },
+      {
+        "length": 229,
+        "count": 13
+      },
+      {
+        "length": 230,
+        "count": 10
+      },
+      {
+        "length": 231,
+        "count": 13
+      },
+      {
+        "length": 232,
+        "count": 14
+      },
+      {
+        "length": 233,
+        "count": 9
+      },
+      {
+        "length": 234,
+        "count": 9
+      },
+      {
+        "length": 235,
+        "count": 13
+      },
+      {
+        "length": 236,
+        "count": 7
+      },
+      {
+        "length": 237,
+        "count": 7
+      },
+      {
+        "length": 238,
+        "count": 7
+      },
+      {
+        "length": 239,
+        "count": 18
+      },
+      {
+        "length": 240,
+        "count": 6
+      },
+      {
+        "length": 241,
+        "count": 7
+      },
+      {
+        "length": 242,
+        "count": 9
+      },
+      {
+        "length": 243,
+        "count": 16
+      },
+      {
+        "length": 244,
+        "count": 9
+      },
+      {
+        "length": 245,
+        "count": 17
+      },
+      {
+        "length": 246,
+        "count": 6
+      },
+      {
+        "length": 247,
+        "count": 5
+      },
+      {
+        "length": 248,
+        "count": 12
+      },
+      {
+        "length": 249,
+        "count": 3
+      },
+      {
+        "length": 250,
+        "count": 9
+      },
+      {
+        "length": 251,
+        "count": 13
+      },
+      {
+        "length": 252,
+        "count": 8
+      },
+      {
+        "length": 253,
+        "count": 10
+      },
+      {
+        "length": 254,
+        "count": 11
+      },
+      {
+        "length": 255,
+        "count": 9
+      },
+      {
+        "length": 256,
+        "count": 16
+      },
+      {
+        "length": 257,
+        "count": 5
+      },
+      {
+        "length": 258,
+        "count": 14
+      },
+      {
+        "length": 259,
+        "count": 11
+      },
+      {
+        "length": 260,
+        "count": 6
+      },
+      {
+        "length": 261,
+        "count": 5
+      },
+      {
+        "length": 262,
+        "count": 8
+      },
+      {
+        "length": 263,
+        "count": 11
+      },
+      {
+        "length": 264,
+        "count": 7
+      },
+      {
+        "length": 265,
+        "count": 8
+      },
+      {
+        "length": 266,
+        "count": 9
+      },
+      {
+        "length": 267,
+        "count": 5
+      },
+      {
+        "length": 268,
+        "count": 4
+      },
+      {
+        "length": 269,
+        "count": 6
+      },
+      {
+        "length": 270,
+        "count": 6
+      },
+      {
+        "length": 271,
+        "count": 8
+      },
+      {
+        "length": 272,
+        "count": 4
+      },
+      {
+        "length": 273,
+        "count": 2
+      },
+      {
+        "length": 274,
+        "count": 4
+      },
+      {
+        "length": 275,
+        "count": 6
+      },
+      {
+        "length": 276,
+        "count": 5
+      },
+      {
+        "length": 277,
+        "count": 8
+      },
+      {
+        "length": 278,
+        "count": 6
+      },
+      {
+        "length": 279,
+        "count": 4
+      },
+      {
+        "length": 280,
+        "count": 5
+      },
+      {
+        "length": 281,
+        "count": 3
+      },
+      {
+        "length": 282,
+        "count": 1
+      },
+      {
+        "length": 283,
+        "count": 6
+      },
+      {
+        "length": 284,
+        "count": 4
+      },
+      {
+        "length": 285,
+        "count": 3
+      },
+      {
+        "length": 286,
+        "count": 3
+      },
+      {
+        "length": 287,
+        "count": 4
+      },
+      {
+        "length": 288,
+        "count": 4
+      },
+      {
+        "length": 289,
+        "count": 2
+      },
+      {
+        "length": 290,
+        "count": 6
+      },
+      {
+        "length": 291,
+        "count": 1
+      },
+      {
+        "length": 292,
+        "count": 3
+      },
+      {
+        "length": 293,
+        "count": 1
+      },
+      {
+        "length": 294,
+        "count": 4
+      },
+      {
+        "length": 295,
+        "count": 2
+      },
+      {
+        "length": 297,
+        "count": 1
+      },
+      {
+        "length": 299,
+        "count": 1
+      }
+    ],
+    "impression_length_dev": [
+      {
+        "length": 2,
+        "count": 3925
+      },
+      {
+        "length": 3,
+        "count": 485
+      },
+      {
+        "length": 4,
+        "count": 2089
+      },
+      {
+        "length": 5,
+        "count": 2191
+      },
+      {
+        "length": 6,
+        "count": 983
+      },
+      {
+        "length": 7,
+        "count": 4103
+      },
+      {
+        "length": 8,
+        "count": 1175
+      },
+      {
+        "length": 9,
+        "count": 973
+      },
+      {
+        "length": 10,
+        "count": 2457
+      },
+      {
+        "length": 11,
+        "count": 2548
+      },
+      {
+        "length": 12,
+        "count": 2128
+      },
+      {
+        "length": 13,
+        "count": 1532
+      },
+      {
+        "length": 14,
+        "count": 1992
+      },
+      {
+        "length": 15,
+        "count": 744
+      },
+      {
+        "length": 16,
+        "count": 945
+      },
+      {
+        "length": 17,
+        "count": 2166
+      },
+      {
+        "length": 18,
+        "count": 716
+      },
+      {
+        "length": 19,
+        "count": 1213
+      },
+      {
+        "length": 20,
+        "count": 1484
+      },
+      {
+        "length": 21,
+        "count": 771
+      },
+      {
+        "length": 22,
+        "count": 1641
+      },
+      {
+        "length": 23,
+        "count": 925
+      },
+      {
+        "length": 24,
+        "count": 587
+      },
+      {
+        "length": 25,
+        "count": 865
+      },
+      {
+        "length": 26,
+        "count": 1280
+      },
+      {
+        "length": 27,
+        "count": 975
+      },
+      {
+        "length": 28,
+        "count": 1094
+      },
+      {
+        "length": 29,
+        "count": 613
+      },
+      {
+        "length": 30,
+        "count": 727
+      },
+      {
+        "length": 31,
+        "count": 577
+      },
+      {
+        "length": 32,
+        "count": 1016
+      },
+      {
+        "length": 33,
+        "count": 603
+      },
+      {
+        "length": 34,
+        "count": 619
+      },
+      {
+        "length": 35,
+        "count": 741
+      },
+      {
+        "length": 36,
+        "count": 510
+      },
+      {
+        "length": 37,
+        "count": 637
+      },
+      {
+        "length": 38,
+        "count": 663
+      },
+      {
+        "length": 39,
+        "count": 456
+      },
+      {
+        "length": 40,
+        "count": 484
+      },
+      {
+        "length": 41,
+        "count": 568
+      },
+      {
+        "length": 42,
+        "count": 603
+      },
+      {
+        "length": 43,
+        "count": 600
+      },
+      {
+        "length": 44,
+        "count": 550
+      },
+      {
+        "length": 45,
+        "count": 352
+      },
+      {
+        "length": 46,
+        "count": 387
+      },
+      {
+        "length": 47,
+        "count": 477
+      },
+      {
+        "length": 48,
+        "count": 522
+      },
+      {
+        "length": 49,
+        "count": 493
+      },
+      {
+        "length": 50,
+        "count": 459
+      },
+      {
+        "length": 51,
+        "count": 404
+      },
+      {
+        "length": 52,
+        "count": 318
+      },
+      {
+        "length": 53,
+        "count": 369
+      },
+      {
+        "length": 54,
+        "count": 416
+      },
+      {
+        "length": 55,
+        "count": 417
+      },
+      {
+        "length": 56,
+        "count": 366
+      },
+      {
+        "length": 57,
+        "count": 334
+      },
+      {
+        "length": 58,
+        "count": 283
+      },
+      {
+        "length": 59,
+        "count": 297
+      },
+      {
+        "length": 60,
+        "count": 342
+      },
+      {
+        "length": 61,
+        "count": 385
+      },
+      {
+        "length": 62,
+        "count": 296
+      },
+      {
+        "length": 63,
+        "count": 279
+      },
+      {
+        "length": 64,
+        "count": 292
+      },
+      {
+        "length": 65,
+        "count": 278
+      },
+      {
+        "length": 66,
+        "count": 303
+      },
+      {
+        "length": 67,
+        "count": 353
+      },
+      {
+        "length": 68,
+        "count": 273
+      },
+      {
+        "length": 69,
+        "count": 264
+      },
+      {
+        "length": 70,
+        "count": 254
+      },
+      {
+        "length": 71,
+        "count": 243
+      },
+      {
+        "length": 72,
+        "count": 273
+      },
+      {
+        "length": 73,
+        "count": 287
+      },
+      {
+        "length": 74,
+        "count": 222
+      },
+      {
+        "length": 75,
+        "count": 243
+      },
+      {
+        "length": 76,
+        "count": 282
+      },
+      {
+        "length": 77,
+        "count": 224
+      },
+      {
+        "length": 78,
+        "count": 239
+      },
+      {
+        "length": 79,
+        "count": 238
+      },
+      {
+        "length": 80,
+        "count": 186
+      },
+      {
+        "length": 81,
+        "count": 211
+      },
+      {
+        "length": 82,
+        "count": 225
+      },
+      {
+        "length": 83,
+        "count": 209
+      },
+      {
+        "length": 84,
+        "count": 213
+      },
+      {
+        "length": 85,
+        "count": 186
+      },
+      {
+        "length": 86,
+        "count": 183
+      },
+      {
+        "length": 87,
+        "count": 190
+      },
+      {
+        "length": 88,
+        "count": 200
+      },
+      {
+        "length": 89,
+        "count": 164
+      },
+      {
+        "length": 90,
+        "count": 185
+      },
+      {
+        "length": 91,
+        "count": 181
+      },
+      {
+        "length": 92,
+        "count": 185
+      },
+      {
+        "length": 93,
+        "count": 157
+      },
+      {
+        "length": 94,
+        "count": 151
+      },
+      {
+        "length": 95,
+        "count": 161
+      },
+      {
+        "length": 96,
+        "count": 136
+      },
+      {
+        "length": 97,
+        "count": 156
+      },
+      {
+        "length": 98,
+        "count": 171
+      },
+      {
+        "length": 99,
+        "count": 183
+      },
+      {
+        "length": 100,
+        "count": 134
+      },
+      {
+        "length": 101,
+        "count": 152
+      },
+      {
+        "length": 102,
+        "count": 158
+      },
+      {
+        "length": 103,
+        "count": 146
+      },
+      {
+        "length": 104,
+        "count": 132
+      },
+      {
+        "length": 105,
+        "count": 132
+      },
+      {
+        "length": 106,
+        "count": 118
+      },
+      {
+        "length": 107,
+        "count": 116
+      },
+      {
+        "length": 108,
+        "count": 133
+      },
+      {
+        "length": 109,
+        "count": 111
+      },
+      {
+        "length": 110,
+        "count": 99
+      },
+      {
+        "length": 111,
+        "count": 130
+      },
+      {
+        "length": 112,
+        "count": 126
+      },
+      {
+        "length": 113,
+        "count": 137
+      },
+      {
+        "length": 114,
+        "count": 114
+      },
+      {
+        "length": 115,
+        "count": 106
+      },
+      {
+        "length": 116,
+        "count": 108
+      },
+      {
+        "length": 117,
+        "count": 114
+      },
+      {
+        "length": 118,
+        "count": 108
+      },
+      {
+        "length": 119,
+        "count": 95
+      },
+      {
+        "length": 120,
+        "count": 114
+      },
+      {
+        "length": 121,
+        "count": 114
+      },
+      {
+        "length": 122,
+        "count": 111
+      },
+      {
+        "length": 123,
+        "count": 100
+      },
+      {
+        "length": 124,
+        "count": 98
+      },
+      {
+        "length": 125,
+        "count": 96
+      },
+      {
+        "length": 126,
+        "count": 108
+      },
+      {
+        "length": 127,
+        "count": 98
+      },
+      {
+        "length": 128,
+        "count": 119
+      },
+      {
+        "length": 129,
+        "count": 98
+      },
+      {
+        "length": 130,
+        "count": 97
+      },
+      {
+        "length": 131,
+        "count": 76
+      },
+      {
+        "length": 132,
+        "count": 86
+      },
+      {
+        "length": 133,
+        "count": 72
+      },
+      {
+        "length": 134,
+        "count": 87
+      },
+      {
+        "length": 135,
+        "count": 73
+      },
+      {
+        "length": 136,
+        "count": 65
+      },
+      {
+        "length": 137,
+        "count": 60
+      },
+      {
+        "length": 138,
+        "count": 70
+      },
+      {
+        "length": 139,
+        "count": 65
+      },
+      {
+        "length": 140,
+        "count": 59
+      },
+      {
+        "length": 141,
+        "count": 47
+      },
+      {
+        "length": 142,
+        "count": 54
+      },
+      {
+        "length": 143,
+        "count": 59
+      },
+      {
+        "length": 144,
+        "count": 53
+      },
+      {
+        "length": 145,
+        "count": 40
+      },
+      {
+        "length": 146,
+        "count": 49
+      },
+      {
+        "length": 147,
+        "count": 49
+      },
+      {
+        "length": 148,
+        "count": 38
+      },
+      {
+        "length": 149,
+        "count": 45
+      },
+      {
+        "length": 150,
+        "count": 25
+      },
+      {
+        "length": 151,
+        "count": 40
+      },
+      {
+        "length": 152,
+        "count": 35
+      },
+      {
+        "length": 153,
+        "count": 30
+      },
+      {
+        "length": 154,
+        "count": 24
+      },
+      {
+        "length": 155,
+        "count": 25
+      },
+      {
+        "length": 156,
+        "count": 19
+      },
+      {
+        "length": 157,
+        "count": 21
+      },
+      {
+        "length": 158,
+        "count": 22
+      },
+      {
+        "length": 159,
+        "count": 23
+      },
+      {
+        "length": 160,
+        "count": 14
+      },
+      {
+        "length": 161,
+        "count": 15
+      },
+      {
+        "length": 162,
+        "count": 19
+      },
+      {
+        "length": 163,
+        "count": 20
+      },
+      {
+        "length": 164,
+        "count": 20
+      },
+      {
+        "length": 165,
+        "count": 17
+      },
+      {
+        "length": 166,
+        "count": 13
+      },
+      {
+        "length": 167,
+        "count": 15
+      },
+      {
+        "length": 168,
+        "count": 14
+      },
+      {
+        "length": 169,
+        "count": 18
+      },
+      {
+        "length": 170,
+        "count": 9
+      },
+      {
+        "length": 171,
+        "count": 14
+      },
+      {
+        "length": 172,
+        "count": 17
+      },
+      {
+        "length": 173,
+        "count": 15
+      },
+      {
+        "length": 174,
+        "count": 14
+      },
+      {
+        "length": 175,
+        "count": 12
+      },
+      {
+        "length": 176,
+        "count": 11
+      },
+      {
+        "length": 177,
+        "count": 14
+      },
+      {
+        "length": 178,
+        "count": 22
+      },
+      {
+        "length": 179,
+        "count": 13
+      },
+      {
+        "length": 180,
+        "count": 12
+      },
+      {
+        "length": 181,
+        "count": 9
+      },
+      {
+        "length": 182,
+        "count": 9
+      },
+      {
+        "length": 183,
+        "count": 13
+      },
+      {
+        "length": 184,
+        "count": 10
+      },
+      {
+        "length": 185,
+        "count": 6
+      },
+      {
+        "length": 186,
+        "count": 12
+      },
+      {
+        "length": 187,
+        "count": 11
+      },
+      {
+        "length": 188,
+        "count": 10
+      },
+      {
+        "length": 189,
+        "count": 21
+      },
+      {
+        "length": 190,
+        "count": 14
+      },
+      {
+        "length": 191,
+        "count": 14
+      },
+      {
+        "length": 192,
+        "count": 8
+      },
+      {
+        "length": 193,
+        "count": 8
+      },
+      {
+        "length": 194,
+        "count": 4
+      },
+      {
+        "length": 195,
+        "count": 14
+      },
+      {
+        "length": 196,
+        "count": 6
+      },
+      {
+        "length": 197,
+        "count": 21
+      },
+      {
+        "length": 198,
+        "count": 3
+      },
+      {
+        "length": 199,
+        "count": 6
+      },
+      {
+        "length": 200,
+        "count": 9
+      },
+      {
+        "length": 201,
+        "count": 7
+      },
+      {
+        "length": 202,
+        "count": 6
+      },
+      {
+        "length": 203,
+        "count": 4
+      },
+      {
+        "length": 204,
+        "count": 18
+      },
+      {
+        "length": 205,
+        "count": 7
+      },
+      {
+        "length": 206,
+        "count": 7
+      },
+      {
+        "length": 207,
+        "count": 11
+      },
+      {
+        "length": 208,
+        "count": 6
+      },
+      {
+        "length": 209,
+        "count": 5
+      },
+      {
+        "length": 210,
+        "count": 19
+      },
+      {
+        "length": 211,
+        "count": 8
+      },
+      {
+        "length": 212,
+        "count": 7
+      },
+      {
+        "length": 213,
+        "count": 4
+      },
+      {
+        "length": 214,
+        "count": 5
+      },
+      {
+        "length": 215,
+        "count": 12
+      },
+      {
+        "length": 216,
+        "count": 6
+      },
+      {
+        "length": 217,
+        "count": 11
+      },
+      {
+        "length": 218,
+        "count": 11
+      },
+      {
+        "length": 219,
+        "count": 8
+      },
+      {
+        "length": 220,
+        "count": 4
+      },
+      {
+        "length": 221,
+        "count": 8
+      },
+      {
+        "length": 222,
+        "count": 3
+      },
+      {
+        "length": 223,
+        "count": 9
+      },
+      {
+        "length": 224,
+        "count": 10
+      },
+      {
+        "length": 225,
+        "count": 3
+      },
+      {
+        "length": 226,
+        "count": 4
+      },
+      {
+        "length": 227,
+        "count": 13
+      },
+      {
+        "length": 228,
+        "count": 9
+      },
+      {
+        "length": 229,
+        "count": 5
+      },
+      {
+        "length": 230,
+        "count": 12
+      },
+      {
+        "length": 231,
+        "count": 6
+      },
+      {
+        "length": 232,
+        "count": 7
+      },
+      {
+        "length": 233,
+        "count": 7
+      },
+      {
+        "length": 234,
+        "count": 8
+      },
+      {
+        "length": 235,
+        "count": 1
+      },
+      {
+        "length": 236,
+        "count": 12
+      },
+      {
+        "length": 237,
+        "count": 9
+      },
+      {
+        "length": 238,
+        "count": 10
+      },
+      {
+        "length": 239,
+        "count": 10
+      },
+      {
+        "length": 240,
+        "count": 7
+      },
+      {
+        "length": 241,
+        "count": 4
+      },
+      {
+        "length": 242,
+        "count": 7
+      },
+      {
+        "length": 243,
+        "count": 6
+      },
+      {
+        "length": 244,
+        "count": 10
+      },
+      {
+        "length": 245,
+        "count": 5
+      },
+      {
+        "length": 246,
+        "count": 3
+      },
+      {
+        "length": 247,
+        "count": 6
+      },
+      {
+        "length": 248,
+        "count": 6
+      },
+      {
+        "length": 249,
+        "count": 2
+      },
+      {
+        "length": 250,
+        "count": 7
+      },
+      {
+        "length": 251,
+        "count": 4
+      },
+      {
+        "length": 252,
+        "count": 5
+      },
+      {
+        "length": 253,
+        "count": 9
+      },
+      {
+        "length": 254,
+        "count": 5
+      },
+      {
+        "length": 255,
+        "count": 7
+      },
+      {
+        "length": 256,
+        "count": 5
+      },
+      {
+        "length": 257,
+        "count": 5
+      },
+      {
+        "length": 258,
+        "count": 5
+      },
+      {
+        "length": 259,
+        "count": 3
+      },
+      {
+        "length": 260,
+        "count": 5
+      },
+      {
+        "length": 261,
+        "count": 3
+      },
+      {
+        "length": 262,
+        "count": 6
+      },
+      {
+        "length": 263,
+        "count": 5
+      },
+      {
+        "length": 264,
+        "count": 2
+      },
+      {
+        "length": 265,
+        "count": 9
+      },
+      {
+        "length": 266,
+        "count": 4
+      },
+      {
+        "length": 267,
+        "count": 5
+      },
+      {
+        "length": 268,
+        "count": 3
+      },
+      {
+        "length": 269,
+        "count": 6
+      },
+      {
+        "length": 270,
+        "count": 2
+      },
+      {
+        "length": 271,
+        "count": 4
+      },
+      {
+        "length": 272,
+        "count": 1
+      },
+      {
+        "length": 273,
+        "count": 3
+      },
+      {
+        "length": 274,
+        "count": 2
+      },
+      {
+        "length": 275,
+        "count": 3
+      },
+      {
+        "length": 276,
+        "count": 7
+      },
+      {
+        "length": 277,
+        "count": 2
+      },
+      {
+        "length": 278,
+        "count": 5
+      },
+      {
+        "length": 279,
+        "count": 10
+      },
+      {
+        "length": 280,
+        "count": 5
+      },
+      {
+        "length": 281,
+        "count": 2
+      },
+      {
+        "length": 282,
+        "count": 2
+      },
+      {
+        "length": 283,
+        "count": 3
+      },
+      {
+        "length": 284,
+        "count": 3
+      },
+      {
+        "length": 285,
+        "count": 3
+      },
+      {
+        "length": 286,
+        "count": 3
+      },
+      {
+        "length": 287,
+        "count": 1
+      },
+      {
+        "length": 288,
+        "count": 1
+      },
+      {
+        "length": 289,
+        "count": 2
+      },
+      {
+        "length": 290,
+        "count": 1
+      },
+      {
+        "length": 292,
+        "count": 3
+      },
+      {
+        "length": 293,
+        "count": 1
+      },
+      {
+        "length": 295,
+        "count": 2
+      }
+    ],
+    "hourly_behavior_train": [
+      {
+        "hour": 0,
+        "count": 1017
+      },
+      {
+        "hour": 1,
+        "count": 1152
+      },
+      {
+        "hour": 2,
+        "count": 1816
+      },
+      {
+        "hour": 3,
+        "count": 3065
+      },
+      {
+        "hour": 4,
+        "count": 5320
+      },
+      {
+        "hour": 5,
+        "count": 8588
+      },
+      {
+        "hour": 6,
+        "count": 10750
+      },
+      {
+        "hour": 7,
+        "count": 11553
+      },
+      {
+        "hour": 8,
+        "count": 12495
+      },
+      {
+        "hour": 9,
+        "count": 10495
+      },
+      {
+        "hour": 10,
+        "count": 12186
+      },
+      {
+        "hour": 11,
+        "count": 12567
+      },
+      {
+        "hour": 12,
+        "count": 11309
+      },
+      {
+        "hour": 13,
+        "count": 10541
+      },
+      {
+        "hour": 14,
+        "count": 8759
+      },
+      {
+        "hour": 15,
+        "count": 6744
+      },
+      {
+        "hour": 16,
+        "count": 6338
+      },
+      {
+        "hour": 17,
+        "count": 5333
+      },
+      {
+        "hour": 18,
+        "count": 4500
+      },
+      {
+        "hour": 19,
+        "count": 3634
+      },
+      {
+        "hour": 20,
+        "count": 3047
+      },
+      {
+        "hour": 21,
+        "count": 2600
+      },
+      {
+        "hour": 22,
+        "count": 1836
+      },
+      {
+        "hour": 23,
+        "count": 1320
+      }
+    ],
+    "hourly_behavior_dev": [
+      {
+        "hour": 0,
+        "count": 529
+      },
+      {
+        "hour": 1,
+        "count": 575
+      },
+      {
+        "hour": 2,
+        "count": 980
+      },
+      {
+        "hour": 3,
+        "count": 1763
+      },
+      {
+        "hour": 4,
+        "count": 3094
+      },
+      {
+        "hour": 5,
+        "count": 4955
+      },
+      {
+        "hour": 6,
+        "count": 6112
+      },
+      {
+        "hour": 7,
+        "count": 6453
+      },
+      {
+        "hour": 8,
+        "count": 6903
+      },
+      {
+        "hour": 9,
+        "count": 6536
+      },
+      {
+        "hour": 10,
+        "count": 6199
+      },
+      {
+        "hour": 11,
+        "count": 6052
+      },
+      {
+        "hour": 12,
+        "count": 6048
+      },
+      {
+        "hour": 13,
+        "count": 5171
+      },
+      {
+        "hour": 14,
+        "count": 3796
+      },
+      {
+        "hour": 15,
+        "count": 3225
+      },
+      {
+        "hour": 16,
+        "count": 1559
+      },
+      {
+        "hour": 17,
+        "count": 827
+      },
+      {
+        "hour": 18,
+        "count": 627
+      },
+      {
+        "hour": 19,
+        "count": 540
+      },
+      {
+        "hour": 20,
+        "count": 453
+      },
+      {
+        "hour": 21,
+        "count": 312
+      },
+      {
+        "hour": 22,
+        "count": 260
+      },
+      {
+        "hour": 23,
+        "count": 183
+      }
+    ]
+  },
+  "engagement": {
+    "train": {
+      "behavior_count": 156965,
+      "unique_users": 50000,
+      "total_impressions": 5843444,
+      "total_clicks": 236344,
+      "ctr": 0.040446010948338,
+      "history_length": {
+        "count": 156965.0,
+        "min": 0.0,
+        "max": 558.0,
+        "avg": 32.53998662122129,
+        "p50": 19.0,
+        "p90": 78.0,
+        "p95": 109.0
+      },
+      "impression_length": {
+        "count": 156965.0,
+        "min": 2.0,
+        "max": 299.0,
+        "avg": 37.22768770107986,
+        "p50": 24.0,
+        "p90": 91.0,
+        "p95": 118.0
+      }
+    },
+    "dev": {
+      "behavior_count": 73152,
+      "unique_users": 50000,
+      "total_impressions": 2740998,
+      "total_clicks": 111383,
+      "ctr": 0.040635928957263014,
+      "history_length": {
+        "count": 73152.0,
+        "min": 0.0,
+        "max": 444.0,
+        "avg": 32.29595909886264,
+        "p50": 19.0,
+        "p90": 78.0,
+        "p95": 108.0
+      },
+      "impression_length": {
+        "count": 73152.0,
+        "min": 2.0,
+        "max": 295.0,
+        "avg": 37.469898293963254,
+        "p50": 23.0,
+        "p90": 92.0,
+        "p95": 119.0
+      }
+    },
+    "combined": {
+      "behavior_count": 230117,
+      "unique_users": 94057,
+      "total_impressions": 8584442,
+      "total_clicks": 347727,
+      "ctr": 0.04050665145154455,
+      "history_length": {
+        "count": 230117.0,
+        "min": 0.0,
+        "max": 558.0,
+        "avg": 32.462412598808434,
+        "p50": 19.0,
+        "p90": 78.0,
+        "p95": 108.0
+      },
+      "impression_length": {
+        "count": 230117.0,
+        "min": 2.0,
+        "max": 299.0,
+        "avg": 37.30468413893802,
+        "p50": 24.0,
+        "p90": 92.0,
+        "p95": 118.0
+      }
+    },
+    "category_ctr_train": [
+      {
+        "category": "news",
+        "impressions": 1591038,
+        "clicks": 69408,
+        "ctr": 0.043624350895453155
+      },
+      {
+        "category": "lifestyle",
+        "impressions": 655440,
+        "clicks": 26584,
+        "ctr": 0.040559013792261685
+      },
+      {
+        "category": "sports",
+        "impressions": 592226,
+        "clicks": 28181,
+        "ctr": 0.04758487469310702
+      },
+      {
+        "category": "finance",
+        "impressions": 564671,
+        "clicks": 20597,
+        "ctr": 0.03647610732621296
+      },
+      {
+        "category": "foodanddrink",
+        "impressions": 369382,
+        "clicks": 10883,
+        "ctr": 0.029462724225869156
+      },
+      {
+        "category": "entertainment",
+        "impressions": 349930,
+        "clicks": 10530,
+        "ctr": 0.030091732632240735
+      },
+      {
+        "category": "travel",
+        "impressions": 315101,
+        "clicks": 8304,
+        "ctr": 0.026353454923976758
+      },
+      {
+        "category": "health",
+        "impressions": 304088,
+        "clicks": 10863,
+        "ctr": 0.03572321170187577
+      },
+      {
+        "category": "autos",
+        "impressions": 271426,
+        "clicks": 7428,
+        "ctr": 0.02736657505176365
+      },
+      {
+        "category": "music",
+        "impressions": 269008,
+        "clicks": 15988,
+        "ctr": 0.059433176708499375
+      },
+      {
+        "category": "tv",
+        "impressions": 246462,
+        "clicks": 14544,
+        "ctr": 0.05901112544733062
+      },
+      {
+        "category": "movies",
+        "impressions": 132091,
+        "clicks": 4186,
+        "ctr": 0.03169027412919881
+      },
+      {
+        "category": "video",
+        "impressions": 93744,
+        "clicks": 4262,
+        "ctr": 0.045464243044888206
+      },
+      {
+        "category": "weather",
+        "impressions": 88646,
+        "clicks": 4582,
+        "ctr": 0.051688739480630824
+      },
+      {
+        "category": "kids",
+        "impressions": 162,
+        "clicks": 3,
+        "ctr": 0.018518518518518517
+      },
+      {
+        "category": "northamerica",
+        "impressions": 29,
+        "clicks": 1,
+        "ctr": 0.034482758620689655
+      }
+    ],
+    "category_ctr_dev": [
+      {
+        "category": "news",
+        "impressions": 641087,
+        "clicks": 25764,
+        "ctr": 0.04018799320529039
+      },
+      {
+        "category": "lifestyle",
+        "impressions": 360827,
+        "clicks": 18847,
+        "ctr": 0.05223278745770134
+      },
+      {
+        "category": "sports",
+        "impressions": 349961,
+        "clicks": 26039,
+        "ctr": 0.07440543374833196
+      },
+      {
+        "category": "finance",
+        "impressions": 224462,
+        "clicks": 4013,
+        "ctr": 0.017878304568256544
+      },
+      {
+        "category": "foodanddrink",
+        "impressions": 203172,
+        "clicks": 6696,
+        "ctr": 0.032957297265371215
+      },
+      {
+        "category": "health",
+        "impressions": 137585,
+        "clicks": 4468,
+        "ctr": 0.03247447032743395
+      },
+      {
+        "category": "travel",
+        "impressions": 131217,
+        "clicks": 2554,
+        "ctr": 0.019463941410030713
+      },
+      {
+        "category": "tv",
+        "impressions": 127767,
+        "clicks": 5632,
+        "ctr": 0.04408023981153193
+      },
+      {
+        "category": "entertainment",
+        "impressions": 114564,
+        "clicks": 2832,
+        "ctr": 0.024719807269299256
+      },
+      {
+        "category": "movies",
+        "impressions": 111011,
+        "clicks": 3418,
+        "ctr": 0.030789741557142987
+      },
+      {
+        "category": "autos",
+        "impressions": 110629,
+        "clicks": 2854,
+        "ctr": 0.025797937249726562
+      },
+      {
+        "category": "music",
+        "impressions": 89605,
+        "clicks": 3788,
+        "ctr": 0.042274426650298534
+      },
+      {
+        "category": "video",
+        "impressions": 87623,
+        "clicks": 2814,
+        "ctr": 0.03211485568857492
+      },
+      {
+        "category": "weather",
+        "impressions": 51484,
+        "clicks": 1664,
+        "ctr": 0.03232072100069924
+      },
+      {
+        "category": "kids",
+        "impressions": 4,
+        "clicks": 0,
+        "ctr": 0.0
+      }
+    ]
+  },
+  "examples": {
+    "news": [
+      {
+        "news_id": "N1",
+        "category": "video",
+        "subcategory": "news",
+        "title": "Lindsey Graham to Trump: \"I will hold you accountable\"",
+        "abstract": "Senator Lindsey Graham, one of the leading critics of President Trump's drawdown of U.S. troops from Syria, stood alongside senators from both parties Thursday and introduced a ..."
+      },
+      {
+        "news_id": "N10",
+        "category": "health",
+        "subcategory": "weight-loss",
+        "title": "7 Running Workouts for Weight Loss",
+        "abstract": "It's all about the fartleks."
+      },
+      {
+        "news_id": "N100",
+        "category": "sports",
+        "subcategory": "baseball_mlb",
+        "title": "Astros finally get timely hitting to get back into World Series",
+        "abstract": "WASHINGTON   Somewhere over the eastern skies, the Astros assembled again as one. On an airplane to the nation's capital, the team conferred about their conundrum. A players-onl..."
+      }
+    ],
+    "train_behaviors": [
+      {
+        "impression_id": "1",
+        "user_id": "U13740",
+        "time": "11/11/2019 9:05:58 AM",
+        "history_len": 9,
+        "history_preview": "N55189 N42782 N34694 N45794 N18445 N63302 N10414 N19347",
+        "impression_len": 2,
+        "clicked_preview": "N55689",
+        "unclicked_preview": "N35729"
+      },
+      {
+        "impression_id": "2",
+        "user_id": "U91836",
+        "time": "11/12/2019 6:11:30 PM",
+        "history_len": 82,
+        "history_preview": "N31739 N6072 N63045 N23979 N35656 N43353 N8129 N1569",
+        "impression_len": 11,
+        "clicked_preview": "N17059",
+        "unclicked_preview": "N20678 N39317 N58114 N20495 N42977 N22407 N14592 N33677"
+      },
+      {
+        "impression_id": "3",
+        "user_id": "U73700",
+        "time": "11/14/2019 7:01:48 AM",
+        "history_len": 16,
+        "history_preview": "N10732 N25792 N7563 N21087 N41087 N5445 N60384 N46616",
+        "impression_len": 36,
+        "clicked_preview": "N23814",
+        "unclicked_preview": "N50014 N23877 N35389 N49712 N16844 N59685 N23446 N64174"
+      }
+    ],
+    "dev_behaviors": [
+      {
+        "impression_id": "1",
+        "user_id": "U80234",
+        "time": "11/15/2019 12:37:50 PM",
+        "history_len": 15,
+        "history_preview": "N55189 N46039 N51741 N53234 N11276 N264 N40716 N28088",
+        "impression_len": 22,
+        "clicked_preview": "N31958",
+        "unclicked_preview": "N28682 N48740 N34130 N6916 N5472 N50775 N24802 N19990"
+      },
+      {
+        "impression_id": "2",
+        "user_id": "U60458",
+        "time": "11/15/2019 7:11:50 AM",
+        "history_len": 13,
+        "history_preview": "N58715 N32109 N51180 N33438 N54827 N28488 N61186 N34775",
+        "impression_len": 7,
+        "clicked_preview": "N23513",
+        "unclicked_preview": "N20036 N32536 N46976 N35216 N36779 N31958"
+      },
+      {
+        "impression_id": "3",
+        "user_id": "U44190",
+        "time": "11/15/2019 9:55:12 AM",
+        "history_len": 9,
+        "history_preview": "N56253 N1150 N55189 N16233 N61704 N51706 N53033 N15634",
+        "impression_len": 23,
+        "clicked_preview": "N5940",
+        "unclicked_preview": "N36779 N62365 N58098 N5472 N13408 N55036 N19990 N53283"
+      }
+    ]
+  }
+}

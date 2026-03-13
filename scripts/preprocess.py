@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
+from src.data.analytics import build_dataset_statistics
 from src.data.preprocess import build_category_maps, load_news_corpus, parse_behaviors_file, summarize_corpus
 from src.utils.config import ExperimentConfig
 
@@ -21,9 +22,11 @@ def main(argv: list[str] | None = None) -> None:
     train_behaviors = parse_behaviors_file(config.train_dir / "behaviors.tsv")
     dev_behaviors = parse_behaviors_file(config.dev_dir / "behaviors.tsv")
     cat2id, subcat2id = build_category_maps(news)
+    statistics = build_dataset_statistics(news, train_behaviors, dev_behaviors)
 
     payload = {
         "summary": summarize_corpus(news, train_behaviors, dev_behaviors),
+        "statistics": statistics,
         "cat2id": cat2id,
         "subcat2id": subcat2id,
     }

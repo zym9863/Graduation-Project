@@ -21,6 +21,7 @@ uv sync
 
 ```bash
 uv run python main.py preprocess
+uv run python main.py dataset-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
@@ -37,10 +38,26 @@ uv run python scripts/train.py --epochs 3
 
 - `MINDsmall_train/` 和 `MINDsmall_dev/` 为原始 MIND-small 数据
 - `newData/` 为与新闻 ID 对齐的图片目录，文件名格式为 `{NewsID}.jpg`
+- `data/processed/metadata.json` 包含基础统计与详细统计字段
+- `data/processed/analytics/` 包含自动生成的数据统计报告、图表和 CSV 表格
 - `data/news_siglip_features.pt` 为离线图文特征
 - `data/news_value_scores.json` 为新闻价值五要素打分
 
 如果离线特征文件不存在，训练与评估会使用零向量占位，只用于流程验证，不代表最终实验配置。
+
+## 数据集统计报告（规模、分布、示例）
+
+使用以下命令可自动生成完整数据报告（PNG + CSV + Markdown）：
+
+```bash
+uv run python main.py dataset-report
+```
+
+输出目录：
+
+- `data/processed/analytics/data_report.md`（报告）
+- `data/processed/analytics/figures/`（图表）
+- `data/processed/analytics/tables/`（统计表）
 
 ## 当前实现范围
 
