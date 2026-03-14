@@ -13,7 +13,7 @@ from src.utils.config import ExperimentConfig
 from src.utils.env import load_project_env
 
 
-VALUE_DIMENSIONS = ("timeliness", "importance", "prominence", "proximity", "interest")
+VALUE_DIMENSIONS = ("conflict", "importance", "prominence", "proximity", "interest")
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

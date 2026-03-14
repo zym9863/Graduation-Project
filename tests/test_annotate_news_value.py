@@ -38,9 +38,25 @@ def test_single_case_prints_named_vector(capsys: pytest.CaptureFixture[str]) -> 
 
     output = capsys.readouterr().out
     assert "Single News Value Case" in output
-    assert '"timeliness"' in output
+    assert '"conflict"' in output
     assert '"importance"' in output
     assert '"prominence"' in output
     assert '"proximity"' in output
     assert '"interest"' in output
     assert "vector:" in output
+
+
+def test_single_case_conflict_keyword_scores_high(capsys: pytest.CaptureFixture[str]) -> None:
+    main([
+        "--provider",
+        "heuristic",
+        "--single-title",
+        "War breaks out between two nations",
+        "--single-abstract",
+        "A major military conflict erupted today.",
+        "--single-category",
+        "news",
+    ])
+
+    output = capsys.readouterr().out
+    assert '"conflict": 4' in output
