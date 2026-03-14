@@ -22,6 +22,7 @@ uv sync
 ```bash
 uv run python main.py preprocess
 uv run python main.py dataset-report
+uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
@@ -84,6 +85,28 @@ uv run python main.py dataset-report
 - `data/processed/analytics/data_report.md`（报告）
 - `data/processed/analytics/figures/`（图表）
 - `data/processed/analytics/tables/`（统计表）
+
+## 多模态特征报告（文本+图像维度、t-SNE）
+
+使用以下命令可生成特征分析报告（JSON + CSV + PNG + Markdown）：
+
+```bash
+uv run python main.py feature-report
+```
+
+输出目录：
+
+- `data/processed/feature_analytics/feature_statistics.json`（统计汇总）
+- `data/processed/feature_analytics/data_report.md`（报告）
+- `data/processed/feature_analytics/figures/`（图表）
+- `data/processed/feature_analytics/tables/`（统计表）
+
+报告包含：
+
+- 文本特征与图像特征维度说明（默认 768 + 768，融合 1536）
+- 文本+图像特征样本展示（范数、余弦相似度、向量预览）
+- 新闻价值五维统计与相关性热力图
+- 文本/图像/融合特征的 t-SNE 可视化与聚类指标
 
 ## 当前实现范围
 

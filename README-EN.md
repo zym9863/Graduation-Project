@@ -22,6 +22,7 @@ Common commands:
 ```bash
 uv run python main.py preprocess
 uv run python main.py dataset-report
+uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
@@ -84,6 +85,28 @@ Output directory:
 - `data/processed/analytics/data_report.md` (report)
 - `data/processed/analytics/figures/` (charts)
 - `data/processed/analytics/tables/` (statistics tables)
+
+## Multimodal Feature Report (Text + Image Dimensions, t-SNE)
+
+Run the command below to generate a feature analysis report (JSON + CSV + PNG + Markdown):
+
+```bash
+uv run python main.py feature-report
+```
+
+Output directory:
+
+- `data/processed/feature_analytics/feature_statistics.json` (statistics summary)
+- `data/processed/feature_analytics/data_report.md` (report)
+- `data/processed/feature_analytics/figures/` (figures)
+- `data/processed/feature_analytics/tables/` (tables)
+
+The report includes:
+
+- Text and image feature dimension explanation (default 768 + 768, fused 1536)
+- Sample-level text+image feature preview (norm, cosine similarity, vector preview)
+- News value 5-dimension statistics and correlation heatmap
+- t-SNE visualizations for text/image/fused features and clustering metrics
 
 ## Current Implementation Scope
 

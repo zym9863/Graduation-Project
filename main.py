@@ -4,6 +4,7 @@ from scripts.annotate_news_value import main as annotate_news_value_main
 from scripts.dataset_report import main as dataset_report_main
 from scripts.evaluate import main as evaluate_main
 from scripts.extract_features import main as extract_features_main
+from scripts.feature_report import main as feature_report_main
 from scripts.preprocess import main as preprocess_main
 from scripts.train import main as train_main
 from src.utils.env import load_project_env
@@ -14,6 +15,7 @@ COMMANDS = {
     "dataset-report": dataset_report_main,
     "evaluate": evaluate_main,
     "extract-features": extract_features_main,
+    "feature-report": feature_report_main,
     "preprocess": preprocess_main,
     "train": train_main,
 }
