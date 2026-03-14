@@ -51,7 +51,7 @@ uv run python main.py annotate-news-value --provider openai-compatible --single-
 输出示例会包含：
 
 - 输入新闻内容
-- 五维价值打分（`timeliness`、`importance`、`prominence`、`proximity`、`interest`）
+- 五维价值打分（`conflict`、`importance`、`prominence`、`proximity`、`interest`）
 - 向量数组，例如 `[4, 4, 3, 3, 2]`
 
 也可以直接运行脚本：

@@ -51,7 +51,7 @@ uv run python main.py annotate-news-value --provider openai-compatible --single-
 The output includes:
 
 - Input article content
-- Five-dimensional value scores (`timeliness`, `importance`, `prominence`, `proximity`, `interest`)
+- Five-dimensional value scores (`conflict`, `importance`, `prominence`, `proximity`, `interest`)
 - Vector array, e.g. `[4, 4, 3, 3, 2]`
 
 You can also run scripts directly:
