@@ -46,4 +46,15 @@ class SigLIPFeatureExtractor:
 
         text_embeddings = self.model.get_text_features(**text_inputs)
         image_embeddings = self.model.get_image_features(**image_inputs)
+
+        if hasattr(text_embeddings, "pooler_output"):
+            text_embeddings = text_embeddings.pooler_output
+        elif isinstance(text_embeddings, tuple):
+            text_embeddings = text_embeddings[1]
+
+        if hasattr(image_embeddings, "pooler_output"):
+            image_embeddings = image_embeddings.pooler_output
+        elif isinstance(image_embeddings, tuple):
+            image_embeddings = image_embeddings[1]
+
         return text_embeddings.cpu(), image_embeddings.cpu()
