@@ -26,7 +26,8 @@ uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
-uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only_quick.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
 ```
@@ -60,7 +61,7 @@ uv run python main.py annotate-news-value --provider openai-compatible --single-
 也可以直接运行脚本：
 
 ```bash
-uv run python scripts/train.py --epochs 3
+uv run python -m scripts.train --epochs 8 --fusion text_only --eval-dev --scheduler plateau --patience 3
 ```
 
 ## 数据约定

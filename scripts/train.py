@@ -22,6 +22,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--learning-rate", type=float, default=None)
+    parser.add_argument("--scheduler", choices=["none", "plateau", "cosine"], default="none")
+    parser.add_argument("--scheduler-factor", type=float, default=0.5)
+    parser.add_argument("--scheduler-patience", type=int, default=1)
+    parser.add_argument("--patience", type=int, default=None)
+    parser.add_argument("--min-delta", type=float, default=0.0)
+    parser.add_argument("--grad-clip", type=float, default=0.0)
     parser.add_argument("--fusion", choices=["concat", "gate", "text_only"], default="concat")
     parser.add_argument("--checkpoint", type=str, default="data/processed/nrms_latest.pt")
     parser.add_argument("--eval-dev", action="store_true")
@@ -67,6 +73,28 @@ def evaluate_model(model: NRMSModel, dataset: NRMSImpressionDataset, device: str
             score_groups.append(scores.cpu().tolist())
 
     return compute_ranking_metrics(label_groups, score_groups)
+
+
+def build_scheduler(
+    scheduler_name: str,
+    optimizer: torch.optim.Optimizer,
+    *,
+    use_dev_metric: bool,
+    total_epochs: int,
+    factor: float,
+    patience: int,
+) -> torch.optim.lr_scheduler.LRScheduler | torch.optim.lr_scheduler.ReduceLROnPlateau | None:
+    if scheduler_name == "none":
+        return None
+    if scheduler_name == "plateau":
+        mode = "max" if use_dev_metric else "min"
+        return torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode=mode,
+            factor=factor,
+            patience=patience,
+        )
+    return torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(total_epochs, 1))
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -136,13 +164,24 @@ def main(argv: list[str] | None = None) -> None:
     ).to(config.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
+    scheduler = build_scheduler(
+        args.scheduler,
+        optimizer,
+        use_dev_metric=dev_dataset is not None,
+        total_epochs=config.epochs,
+        factor=args.scheduler_factor,
+        patience=args.scheduler_patience,
+    )
     checkpoint_path = config.project_root / args.checkpoint
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
-    best_auc = float("-inf")
+    best_score = float("-inf")
+    max_patience = args.patience if args.patience is not None and args.patience > 0 else None
+    epochs_without_improvement = 0
 
     for epoch in range(1, config.epochs + 1):
         model.train()
         running_loss = 0.0
+        seen_samples = 0
 
         for step, batch in enumerate(tqdm(train_loader, desc=f"Epoch {epoch}/{config.epochs}"), start=1):
             batch = move_batch_to_device(batch, config.device)
@@ -162,34 +201,57 @@ def main(argv: list[str] | None = None) -> None:
             loss = F.cross_entropy(scores, batch["label"])
             optimizer.zero_grad()
             loss.backward()
+            if args.grad_clip > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=args.grad_clip)
             optimizer.step()
             running_loss += loss.item() * scores.size(0)
+            seen_samples += scores.size(0)
             if args.max_steps is not None and step >= args.max_steps:
                 break
 
-        epoch_loss = running_loss / max(len(train_dataset), 1)
-        print(f"epoch={epoch} loss={epoch_loss:.4f}")
+        epoch_loss = running_loss / max(seen_samples, 1)
+        print(f"epoch={epoch} lr={optimizer.param_groups[0]['lr']:.6g} loss={epoch_loss:.4f}")
 
         metrics = None
         if dev_dataset is not None:
             metrics = evaluate_model(model, dev_dataset, config.device)
             print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
-        current_auc = metrics["auc"] if metrics is not None else -epoch_loss
-        if current_auc > best_auc:
-            best_auc = current_auc
+        monitor_score = metrics["auc"] if metrics is not None else -epoch_loss
+        scheduler_metric = metrics["auc"] if metrics is not None else epoch_loss
+        improved = monitor_score > best_score + args.min_delta
+        if improved:
+            best_score = monitor_score
+            epochs_without_improvement = 0
             torch.save(
                 {
                     "model_state": model.state_dict(),
                     "fusion": args.fusion,
+                    "epoch": epoch,
                     "cat2id": cat2id,
                     "subcat2id": subcat2id,
                     "config": config.to_dict(),
+                    "train_loss": epoch_loss,
                     "metrics": metrics,
                 },
                 checkpoint_path,
             )
             print(f"Saved checkpoint to {checkpoint_path}")
+        else:
+            epochs_without_improvement += 1
+
+        if scheduler is not None:
+            if args.scheduler == "plateau":
+                scheduler.step(scheduler_metric)
+            else:
+                scheduler.step()
+
+        if max_patience is not None and epochs_without_improvement >= max_patience:
+            print(
+                f"Early stopping triggered at epoch {epoch} after {epochs_without_improvement} non-improving epoch(s)."
+            )
+            print(f"Best monitored score={best_score:.6f}")
+            break
 
 
 if __name__ == "__main__":
