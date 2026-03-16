@@ -3,7 +3,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from src.models.news_encoder import ConcatNewsEncoder, GatedNewsEncoder
+from src.models.news_encoder import ConcatNewsEncoder, GatedNewsEncoder, TextOnlyNewsEncoder
 from src.models.user_encoder import NRMSUserEncoder
 
 
@@ -36,6 +36,15 @@ class NRMSModel(nn.Module):
             self.news_encoder = GatedNewsEncoder(
                 siglip_dim=siglip_dim,
                 news_value_dim=news_value_dim,
+                category_emb_dim=category_emb_dim,
+                news_repr_dim=news_repr_dim,
+                num_categories=num_categories,
+                num_subcategories=num_subcategories,
+                dropout=dropout,
+            )
+        elif fusion == "text_only":
+            self.news_encoder = TextOnlyNewsEncoder(
+                siglip_dim=siglip_dim,
                 category_emb_dim=category_emb_dim,
                 news_repr_dim=news_repr_dim,
                 num_categories=num_categories,

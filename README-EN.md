@@ -7,7 +7,7 @@ This repository implements a multimodal news recommendation experimental pipelin
 - SigLIP for offline extraction of news text and image features
 - Offline annotation of news value five elements
 - NRMS user encoder for click prediction
-- Supports both concatenation fusion and gated fusion news encoding schemes
+- Supports three news encoding schemes: concatenation fusion, gated fusion, and text-only standard NRMS
 
 ## Environment Setup
 
@@ -26,7 +26,9 @@ uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
+uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
+uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
 ```
 
 Single news value feature extraction (real API case):
@@ -46,7 +48,7 @@ set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
 set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
 set NEWS_VALUE_MODEL=ZhipuAI/GLM-5
 
-uv run python main.py annotate-news-value --provider openai-compatible --single-title "Breaking: major policy released" --single-abstract "Authorities released a new policy today with broad industry impact." --single-category news --single-subcategory policy
+uv run python main.py annotate-news-value --provider openai-compatible --single-title "突发：某地发布重大政策" --single-abstract "官方今天发布新规，影响多个行业。" --single-category news --single-subcategory policy
 ```
 
 The output includes:
@@ -115,3 +117,21 @@ The report includes:
 - News value scoring script, supporting heuristic mode and OpenAI-compatible interface
 - NRMS main model, gated fusion, training and evaluation scripts
 - Preprocessing and forward pass basic tests
+
+## Baseline: Text-Only Standard NRMS
+
+Definition criteria:
+
+- Use `text + category + subcategory`
+- Do NOT use `image` and `news_value`
+- Use `--fusion text_only`
+- Evaluate on full `MIND-small dev` and report `AUC/MRR/nDCG@5/nDCG@10`
+
+Reproduce experiment commands:
+
+```bash
+uv run python main.py train --fusion text_only --epochs 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
+```
+
+Detailed template and results archive: `docs/baselines/nrms_text_only_baseline.md`

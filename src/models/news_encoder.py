@@ -74,3 +74,38 @@ class GatedNewsEncoder(nn.Module):
         category_emb = self.category_embedding(category_ids)
         subcategory_emb = self.subcategory_embedding(subcategory_ids)
         return self.output_projection(torch.cat([fused, category_emb, subcategory_emb], dim=-1))
+
+
+class TextOnlyNewsEncoder(nn.Module):
+    def __init__(
+        self,
+        siglip_dim: int,
+        category_emb_dim: int,
+        news_repr_dim: int,
+        num_categories: int,
+        num_subcategories: int,
+        dropout: float,
+    ) -> None:
+        super().__init__()
+        self.category_embedding = nn.Embedding(num_categories, category_emb_dim, padding_idx=0)
+        self.subcategory_embedding = nn.Embedding(num_subcategories, category_emb_dim, padding_idx=0)
+        input_dim = siglip_dim + category_emb_dim * 2
+        self.projection = nn.Sequential(
+            nn.Linear(input_dim, news_repr_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+        )
+
+    def forward(
+        self,
+        text_emb: torch.Tensor,
+        image_emb: torch.Tensor,
+        news_value: torch.Tensor,
+        category_ids: torch.Tensor,
+        subcategory_ids: torch.Tensor,
+    ) -> torch.Tensor:
+        del image_emb, news_value
+        category_emb = self.category_embedding(category_ids)
+        subcategory_emb = self.subcategory_embedding(subcategory_ids)
+        combined = torch.cat([text_emb, category_emb, subcategory_emb], dim=-1)
+        return self.projection(combined)

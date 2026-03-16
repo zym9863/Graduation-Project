@@ -7,7 +7,7 @@
 - SigLIP 离线提取新闻文本和图片特征
 - 新闻价值五要素离线标注
 - NRMS 用户编码器进行点击预测
-- 支持拼接融合和门控融合两种新闻编码方案
+- 支持拼接融合、门控融合和纯文本标准 NRMS（text_only）三种新闻编码方案
 
 ## 环境准备
 
@@ -26,7 +26,9 @@ uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
+uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
+uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
 ```
 
 单条新闻价值特征提取（真实 API case）：
@@ -115,3 +117,21 @@ uv run python main.py feature-report
 - 新闻价值打分脚本，支持启发式模式和 OpenAI 兼容接口
 - NRMS 主模型、门控融合、训练与评估脚本
 - 预处理和前向过程基础测试
+
+## 绝对底线：纯文本标准 NRMS
+
+定义口径：
+
+- 使用 `text + category + subcategory`
+- 不使用 `image` 和 `news_value`
+- 使用 `--fusion text_only`
+- 在 `MIND-small dev` 全量评估并报告 `AUC/MRR/nDCG@5/nDCG@10`
+
+复现实验命令：
+
+```bash
+uv run python main.py train --fusion text_only --epochs 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
+```
+
+详细记录模板与结果归档见：`docs/baselines/nrms_text_only_baseline.md`

@@ -1,9 +1,11 @@
 import torch
+import pytest
 
 from src.models.nrms import NRMSModel
 
 
-def test_nrms_forward_shape() -> None:
+@pytest.mark.parametrize("fusion", ["concat", "gate", "text_only"])
+def test_nrms_forward_shape(fusion: str) -> None:
     model = NRMSModel(
         num_categories=8,
         num_subcategories=16,
@@ -13,7 +15,7 @@ def test_nrms_forward_shape() -> None:
         news_repr_dim=16,
         num_attention_heads=4,
         dropout=0.1,
-        fusion="concat",
+        fusion=fusion,
     )
 
     batch_size = 2

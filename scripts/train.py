@@ -22,7 +22,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--learning-rate", type=float, default=None)
-    parser.add_argument("--fusion", choices=["concat", "gate"], default="concat")
+    parser.add_argument("--fusion", choices=["concat", "gate", "text_only"], default="concat")
     parser.add_argument("--checkpoint", type=str, default="data/processed/nrms_latest.pt")
     parser.add_argument("--eval-dev", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
