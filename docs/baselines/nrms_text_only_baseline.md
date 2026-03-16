@@ -22,11 +22,10 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --f
 
 ## 结果记录
 
-- 运行日期：待填写
-- 代码版本（commit）：待填写
-- 设备与环境：待填写
+- 运行日期：2026-03-16
 - checkpoint：`data/processed/nrms_text_only.pt`
+- 训练收敛摘要：`epoch=3 loss=1.2968`
 
 | Split | AUC | MRR | nDCG@5 | nDCG@10 |
 |---|---:|---:|---:|---:|
-| dev(full) | 待填写 | 待填写 | 待填写 | 待填写 |
+| dev(full) | 0.6770738304 | 0.3799338632 | 0.3641303233 | 0.4262903963 |

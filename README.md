@@ -120,18 +120,4 @@ uv run python main.py feature-report
 
 ## 绝对底线：纯文本标准 NRMS
 
-定义口径：
-
-- 使用 `text + category + subcategory`
-- 不使用 `image` 和 `news_value`
-- 使用 `--fusion text_only`
-- 在 `MIND-small dev` 全量评估并报告 `AUC/MRR/nDCG@5/nDCG@10`
-
-复现实验命令：
-
-```bash
-uv run python main.py train --fusion text_only --epochs 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
-uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
-```
-
 详细记录模板与结果归档见：`docs/baselines/nrms_text_only_baseline.md`

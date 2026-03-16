@@ -120,18 +120,4 @@ The report includes:
 
 ## Baseline: Text-Only Standard NRMS
 
-Definition criteria:
-
-- Use `text + category + subcategory`
-- Do NOT use `image` and `news_value`
-- Use `--fusion text_only`
-- Evaluate on full `MIND-small dev` and report `AUC/MRR/nDCG@5/nDCG@10`
-
-Reproduce experiment commands:
-
-```bash
-uv run python main.py train --fusion text_only --epochs 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
-uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
-```
-
 Detailed template and results archive: `docs/baselines/nrms_text_only_baseline.md`
