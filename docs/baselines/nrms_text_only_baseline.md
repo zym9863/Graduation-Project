@@ -16,7 +16,7 @@
 
 ```bash
 uv sync
-uv run python main.py train --fusion text_only --epochs 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py train --fusion text_only --epochs 8 --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
 ```
 
@@ -24,8 +24,28 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --f
 
 - 运行日期：2026-03-16
 - checkpoint：`data/processed/nrms_text_only.pt`
-- 训练收敛摘要：`epoch=3 loss=1.2968`
+- 训练收敛摘要：`epoch=8 loss=1.2199`（最佳 checkpoint 出现在 epoch=7）
+
+### 逐轮 dev 指标
+
+| Epoch | lr | AUC | MRR | nDCG@5 | nDCG@10 |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 1e-4 | 0.6637350985 | 0.3632419007 | 0.3496333758 | 0.4118524042 |
+| 2 | 1e-4 | 0.6751819374 | 0.3738846469 | 0.3599745021 | 0.4220721961 |
+| 3 | 1e-4 | 0.6770738304 | 0.3799338632 | 0.3641303233 | 0.4262903963 |
+| 4 | 1e-4 | 0.6765872821 | 0.3779491785 | 0.3638737151 | 0.4254085278 |
+| 5 | 1e-4 | 0.6746895786 | 0.3775257148 | 0.3623340665 | 0.4238793450 |
+| 6 | 5e-5 | 0.6811739701 | 0.3825446665 | 0.3670083836 | 0.4283117134 |
+| 7 | 5e-5 | 0.6842163325 | 0.3839797641 | 0.3690912593 | 0.4308831524 |
+| 8 | 5e-5 | 0.6814480365 | 0.3807260080 | 0.3653827170 | 0.4269270909 |
 
 | Split | AUC | MRR | nDCG@5 | nDCG@10 |
 |---|---:|---:|---:|---:|
-| dev(full) | 0.6770738304 | 0.3799338632 | 0.3641303233 | 0.4262903963 |
+| dev(full, best@epoch7) | 0.6842163325 | 0.3839797641 | 0.3690912593 | 0.4308831524 |
+
+### 相比 3 轮 baseline 提升
+
+- AUC: +0.0071425021（0.6770738304 -> 0.6842163325）
+- MRR: +0.0040459009（0.3799338632 -> 0.3839797641）
+- nDCG@5: +0.0049609360（0.3641303233 -> 0.3690912593）
+- nDCG@10: +0.0045927561（0.4262903963 -> 0.4308831524）
