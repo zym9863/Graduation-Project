@@ -24,7 +24,7 @@ uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider heuristic
+uv run python main.py annotate-news-value --provider openai-compatible
 uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
@@ -120,7 +120,7 @@ The report includes:
 
 - Original MIND data parsing and category mapping
 - SigLIP feature extraction script
-- News value scoring script, supporting heuristic mode and OpenAI-compatible interface
+- News value scoring script, supporting OpenAI-compatible interface
 - NRMS main model, concat/gate/cross-modal fusion, modality ablation training and evaluation scripts
 - Preprocessing and forward pass basic tests
 

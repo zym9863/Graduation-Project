@@ -1,5 +1,6 @@
 import pytest
 
+import scripts.annotate_news_value as annotate_module
 from scripts.annotate_news_value import main, parse_args
 
 
@@ -24,10 +25,24 @@ def test_parse_args_single_mode_conflict_with_limit() -> None:
         ])
 
 
-def test_single_case_prints_named_vector(capsys: pytest.CaptureFixture[str]) -> None:
+def test_parse_args_rejects_heuristic_provider() -> None:
+    with pytest.raises(SystemExit):
+        parse_args([
+            "--provider",
+            "heuristic",
+            "--single-title",
+            "政策发布",
+            "--single-abstract",
+            "影响多个行业",
+        ])
+
+
+def test_single_case_prints_named_vector(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    monkeypatch.setattr(annotate_module.NewsValueAnnotator, "annotate", lambda self, article: [3, 4, 2, 5, 1])
+
     main([
         "--provider",
-        "heuristic",
+        "openai-compatible",
         "--single-title",
         "Breaking: New regulation released",
         "--single-abstract",
@@ -46,10 +61,12 @@ def test_single_case_prints_named_vector(capsys: pytest.CaptureFixture[str]) -> 
     assert "vector:" in output
 
 
-def test_single_case_conflict_keyword_scores_high(capsys: pytest.CaptureFixture[str]) -> None:
+def test_single_case_conflict_keyword_scores_high(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    monkeypatch.setattr(annotate_module.NewsValueAnnotator, "annotate", lambda self, article: [4, 3, 2, 1, 5])
+
     main([
         "--provider",
-        "heuristic",
+        "openai-compatible",
         "--single-title",
         "War breaks out between two nations",
         "--single-abstract",

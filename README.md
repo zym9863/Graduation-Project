@@ -24,7 +24,7 @@ uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider heuristic
+uv run python main.py annotate-news-value --provider openai-compatible
 uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
@@ -120,7 +120,7 @@ uv run python main.py feature-report
 
 - 原始 MIND 数据解析与类别映射
 - SigLIP 特征提取脚本
-- 新闻价值打分脚本，支持启发式模式和 OpenAI 兼容接口
+- 新闻价值打分脚本，支持 OpenAI 兼容接口
 - NRMS 主模型、拼接/门控/Cross-Modal 融合、模态级消融训练与评估脚本
 - 预处理和前向过程基础测试
 

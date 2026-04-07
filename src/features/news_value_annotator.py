@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass
 
 from openai import OpenAI
@@ -43,29 +42,6 @@ SYSTEM_PROMPT = """\
 {"conflict": <int>, "importance": <int>, "prominence": <int>, "proximity": <int>, "interest": <int>}"""
 
 
-_CONFLICT_KEYWORDS = frozenset((
-    "war", "conflict", "dispute", "protest", "lawsuit", "attack", "oppose",
-    "fight", "debate", "crisis", "strike", "clash", "battle", "sue",
-    "accuse", "condemn", "threat", "sanction", "ban", "arrest",
-))
-
-_PROXIMITY_KEYWORDS = frozenset((
-    "price", "tax", "job", "employment", "wage", "salary", "health",
-    "hospital", "school", "education", "housing", "rent", "food",
-    "inflation", "insurance", "retirement", "pension", "traffic", "commute",
-))
-
-
-def heuristic_news_value_scores(article: dict[str, str]) -> list[int]:
-    text = f"{article.get('title', '')} {article.get('abstract', '')}".lower()
-    conflict = 4 if any(word in text for word in _CONFLICT_KEYWORDS) else 2
-    importance = 4 if article.get("category") in {"news", "finance", "health"} else 3
-    prominence = 4 if re.search(r"[A-Z][a-z]+ [A-Z][a-z]+", article.get("title", "")) else 3
-    proximity = 4 if any(word in text for word in _PROXIMITY_KEYWORDS) else 3
-    interest = 4 if article.get("category") in {"sports", "entertainment", "lifestyle"} else 3
-    return [conflict, importance, prominence, proximity, interest]
-
-
 def parse_news_value_response(raw_content: str) -> list[int]:
     parsed = json.loads(raw_content)
 
@@ -95,15 +71,12 @@ def parse_news_value_response(raw_content: str) -> list[int]:
 @dataclass(slots=True)
 class NewsValueAnnotator:
     model: str
-    provider: str = "heuristic"
+    provider: str = "openai-compatible"
     base_url: str | None = None
     api_key: str | None = None
     timeout: float = 60.0
 
     def annotate(self, article: dict[str, str]) -> list[int]:
-        if self.provider == "heuristic":
-            return heuristic_news_value_scores(article)
-
         if self.provider != "openai-compatible":
             raise ValueError(f"Unsupported provider: {self.provider}")
 

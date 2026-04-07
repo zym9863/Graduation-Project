@@ -20,7 +20,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     load_project_env()
 
     parser = argparse.ArgumentParser(description="离线标注新闻价值五要素。")
-    parser.add_argument("--provider", choices=["heuristic", "openai-compatible"], default="heuristic")
+    parser.add_argument("--provider", choices=["openai-compatible"], default="openai-compatible")
     parser.add_argument("--model", type=str, default=os.getenv("NEWS_VALUE_MODEL", "ZhipuAI/GLM-5"))
     parser.add_argument("--base-url", type=str, default=os.getenv("NEWS_VALUE_API_BASE", "https://api-inference.modelscope.cn/v1"))
     parser.add_argument("--api-key", type=str, default=os.getenv("NEWS_VALUE_API_KEY") or os.getenv("MODELSCOPE_TOKEN"))
