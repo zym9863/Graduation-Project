@@ -16,7 +16,11 @@ from src.utils.metrics import compute_ranking_metrics
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="在开发集上评估模型。")
     parser.add_argument("--checkpoint", type=str, default="data/processed/nrms_latest.pt")
-    parser.add_argument("--fusion", choices=["concat", "gate", "text_only"], default=None)
+    parser.add_argument(
+        "--fusion",
+        choices=["concat", "gate", "cross_modal", "text_only", "text_image", "text_value", "text_image_value"],
+        default=None,
+    )
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--behavior-limit", type=int, default=None)
     return parser.parse_args(argv)

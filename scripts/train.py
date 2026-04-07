@@ -28,7 +28,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--patience", type=int, default=None)
     parser.add_argument("--min-delta", type=float, default=0.0)
     parser.add_argument("--grad-clip", type=float, default=0.0)
-    parser.add_argument("--fusion", choices=["concat", "gate", "text_only"], default="concat")
+    parser.add_argument(
+        "--fusion",
+        choices=["concat", "gate", "cross_modal", "text_only", "text_image", "text_value", "text_image_value"],
+        default="concat",
+    )
+    parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--checkpoint", type=str, default="data/processed/nrms_latest.pt")
     parser.add_argument("--eval-dev", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
@@ -101,6 +106,8 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     config = ExperimentConfig()
     config.ensure_directories()
+    if args.seed is not None:
+        config.seed = args.seed
     set_seed(config.seed)
 
     if args.epochs is not None:

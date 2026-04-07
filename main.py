@@ -3,6 +3,7 @@ import argparse
 from scripts.annotate_news_value import main as annotate_news_value_main
 from scripts.dataset_report import main as dataset_report_main
 from scripts.evaluate import main as evaluate_main
+from scripts.experiment_summary import main as experiment_summary_main
 from scripts.extract_features import main as extract_features_main
 from scripts.feature_report import main as feature_report_main
 from scripts.preprocess import main as preprocess_main
@@ -14,6 +15,7 @@ COMMANDS = {
     "annotate-news-value": annotate_news_value_main,
     "dataset-report": dataset_report_main,
     "evaluate": evaluate_main,
+    "experiment-summary": experiment_summary_main,
     "extract-features": extract_features_main,
     "feature-report": feature_report_main,
     "preprocess": preprocess_main,

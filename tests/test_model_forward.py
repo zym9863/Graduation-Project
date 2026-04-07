@@ -4,7 +4,10 @@ import pytest
 from src.models.nrms import NRMSModel
 
 
-@pytest.mark.parametrize("fusion", ["concat", "gate", "text_only"])
+@pytest.mark.parametrize(
+    "fusion",
+    ["concat", "gate", "cross_modal", "text_only", "text_image", "text_value", "text_image_value"],
+)
 def test_nrms_forward_shape(fusion: str) -> None:
     model = NRMSModel(
         num_categories=8,

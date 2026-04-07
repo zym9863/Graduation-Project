@@ -7,7 +7,7 @@
 - SigLIP 离线提取新闻文本和图片特征
 - 新闻价值五要素离线标注
 - NRMS 用户编码器进行点击预测
-- 支持拼接融合、门控融合和纯文本标准 NRMS（text_only）三种新闻编码方案
+- 支持拼接融合、门控融合、Cross-Modal Cross-Attention 融合，以及模态级消融新闻编码方案
 
 ## 环境准备
 
@@ -26,10 +26,15 @@ uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
+uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py train --epochs 8 --fusion text_image --checkpoint data/processed/nrms_text_image.pt --eval-dev --seed 42
+uv run python main.py train --epochs 8 --fusion text_value --checkpoint data/processed/nrms_text_value.pt --eval-dev --seed 42
+uv run python main.py train --epochs 8 --fusion text_image_value --checkpoint data/processed/nrms_text_image_value.pt --eval-dev --seed 42
 uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only_quick.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
+uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
 ```
 
 单条新闻价值特征提取（真实 API case）：
@@ -116,8 +121,36 @@ uv run python main.py feature-report
 - 原始 MIND 数据解析与类别映射
 - SigLIP 特征提取脚本
 - 新闻价值打分脚本，支持启发式模式和 OpenAI 兼容接口
-- NRMS 主模型、门控融合、训练与评估脚本
+- NRMS 主模型、拼接/门控/Cross-Modal 融合、模态级消融训练与评估脚本
 - 预处理和前向过程基础测试
+
+## 对比实验与消融实验
+
+建议先固定训练口径（epoch、batch-size、scheduler、seed）后再进行对比：
+
+- 融合策略对比：`concat`、`gate`、`cross_modal`
+- 模态级消融：`text_only`、`text_image`、`text_value`、`text_image_value`
+
+示例（每组双 seed）：
+
+```bash
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/concat_s42.pt
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/concat_s2026.pt
+
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/gate_s42.pt
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/gate_s2026.pt
+
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/cross_modal_s42.pt
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/cross_modal_s2026.pt
+```
+
+实验完成后可自动汇总：
+
+```bash
+uv run python main.py experiment-summary --glob-pattern "data/processed/*_s*.pt" --output-dir data/processed/experiment_reports
+```
+
+模板与记录建议见：`docs/baselines/fusion_ablation_experiments.md`
 
 ## 绝对底线：纯文本标准 NRMS
 

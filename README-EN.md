@@ -7,7 +7,7 @@ This repository implements a multimodal news recommendation experimental pipelin
 - SigLIP for offline extraction of news text and image features
 - Offline annotation of news value five elements
 - NRMS user encoder for click prediction
-- Supports three news encoding schemes: concatenation fusion, gated fusion, and text-only standard NRMS
+- Supports concatenation fusion, gated fusion, Cross-Modal Cross-Attention fusion, and modality-level ablation encoders
 
 ## Environment Setup
 
@@ -26,10 +26,15 @@ uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
 uv run python main.py annotate-news-value --provider heuristic
 uv run python main.py train --epochs 3 --fusion concat
+uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
+uv run python main.py train --epochs 8 --fusion text_image --checkpoint data/processed/nrms_text_image.pt --eval-dev --seed 42
+uv run python main.py train --epochs 8 --fusion text_value --checkpoint data/processed/nrms_text_value.pt --eval-dev --seed 42
+uv run python main.py train --epochs 8 --fusion text_image_value --checkpoint data/processed/nrms_text_image_value.pt --eval-dev --seed 42
 uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only_quick.pt --eval-dev
 uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
 uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
+uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
 ```
 
 Single news value feature extraction (real API case):
@@ -116,8 +121,36 @@ The report includes:
 - Original MIND data parsing and category mapping
 - SigLIP feature extraction script
 - News value scoring script, supporting heuristic mode and OpenAI-compatible interface
-- NRMS main model, gated fusion, training and evaluation scripts
+- NRMS main model, concat/gate/cross-modal fusion, modality ablation training and evaluation scripts
 - Preprocessing and forward pass basic tests
+
+## Comparison And Ablation Experiments
+
+Recommended controlled setup:
+
+- Fusion comparison: `concat`, `gate`, `cross_modal`
+- Modality ablation: `text_only`, `text_image`, `text_value`, `text_image_value`
+
+Example matrix (two seeds per setting):
+
+```bash
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/concat_s42.pt
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/concat_s2026.pt
+
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/gate_s42.pt
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/gate_s2026.pt
+
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/cross_modal_s42.pt
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/cross_modal_s2026.pt
+```
+
+Aggregate results:
+
+```bash
+uv run python main.py experiment-summary --glob-pattern "data/processed/*_s*.pt" --output-dir data/processed/experiment_reports
+```
+
+Template and tracking notes: `docs/baselines/fusion_ablation_experiments.md`
 
 ## Baseline: Text-Only Standard NRMS
 
