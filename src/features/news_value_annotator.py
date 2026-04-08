@@ -6,40 +6,14 @@ from dataclasses import dataclass
 from openai import OpenAI
 
 
-SYSTEM_PROMPT = """\
-你是新闻价值标注器。请基于给定新闻的标题、摘要和类别信息，对以下五个维度分别打 1-5 分整数。
-
-## 评分维度
-
-1. conflict（冲突性）：新闻是否涉及对抗、争端、分歧或紧张关系。
-   - 1 分：无任何冲突元素
-   - 3 分：存在温和分歧或潜在矛盾
-   - 5 分：涉及激烈对抗、战争、诉讼等严重冲突
-
-2. importance（重要性）：事件对社会、经济或公众生活的影响程度。
-   - 1 分：影响极小，仅涉及个别人
-   - 3 分：影响一定范围的群体或行业
-   - 5 分：影响国家或全球范围的重大事件
-
-3. prominence（显著性）：涉及人物、机构或地点的知名度。
-   - 1 分：涉及普通个人或无名机构
-   - 3 分：涉及地区知名人物或机构
-   - 5 分：涉及国际级知名人物、领导人或机构
-
-4. proximity（接近性）：事件与普通大众日常生活的心理关联程度。
-   - 1 分：与大多数人生活无关
-   - 3 分：与部分人群的日常生活相关
-   - 5 分：直接关系到每个人的切身利益
-
-5. interest（趣味性）：内容的吸引力和可读性。
-   - 1 分：枯燥乏味，无吸引力
-   - 3 分：有一定趣味或话题性
-   - 5 分：极具吸引力，引人入胜
-
-## 输出格式
-
-只返回 JSON 对象，格式如下：
-{"conflict": <int>, "importance": <int>, "prominence": <int>, "proximity": <int>, "interest": <int>}"""
+SYSTEM_PROMPT = """Score the given news with 1-5 integers using title, abstract, category, subcategory.
+1=low, 3=medium, 5=high.
+conflict: disagreement/confrontation severity.
+importance: impact scope on society/economy/public life.
+prominence: fame of involved people/orgs/places.
+proximity: relevance to ordinary people's daily life.
+interest: attractiveness/readability.
+Return JSON only with keys: conflict, importance, prominence, proximity, interest."""
 
 
 def parse_news_value_response(raw_content: str) -> list[int]:
