@@ -6,6 +6,8 @@ from scripts.annotate_news_value import main, parse_args
 
 def test_parse_args_single_mode_enabled() -> None:
     args = parse_args([
+        "--provider",
+        "openai-compatible",
         "--single-title",
         "政策发布",
         "--single-abstract",
@@ -18,6 +20,8 @@ def test_parse_args_single_mode_enabled() -> None:
 def test_parse_args_single_mode_conflict_with_limit() -> None:
     with pytest.raises(SystemExit):
         parse_args([
+            "--provider",
+            "openai-compatible",
             "--single-title",
             "政策发布",
             "--limit",
@@ -30,6 +34,24 @@ def test_parse_args_rejects_heuristic_provider() -> None:
         parse_args([
             "--provider",
             "heuristic",
+            "--single-title",
+            "政策发布",
+            "--single-abstract",
+            "影响多个行业",
+        ])
+
+
+def test_parse_args_defaults_to_aliyun_batch() -> None:
+    args = parse_args([])
+
+    assert args.provider == "aliyun-batch"
+
+
+def test_parse_args_rejects_single_mode_for_aliyun_batch() -> None:
+    with pytest.raises(SystemExit):
+        parse_args([
+            "--provider",
+            "aliyun-batch",
             "--single-title",
             "政策发布",
             "--single-abstract",

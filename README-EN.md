@@ -24,7 +24,7 @@ uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider openai-compatible
+uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
 uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
@@ -37,22 +37,31 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --f
 uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
 ```
 
-Single news value feature extraction (real API case):
+Offline news value annotation (default: Aliyun Batch File):
 
 Recommended: create a `.env` file in the project root:
 
 ```bash
-NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
-NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
-NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+ALIYUN_BATCH_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+ALIYUN_BATCH_API_KEY=<DASHSCOPE_API_KEY>
+NEWS_VALUE_MODEL=qwen-plus
+ALIYUN_BATCH_ENDPOINT=/v1/chat/completions
+ALIYUN_BATCH_COMPLETION_WINDOW=24h
+ALIYUN_BATCH_POLL_INTERVAL=60
 ```
 
-You can also set environment variables temporarily (Windows CMD):
+Batch command (waits synchronously until the job completes):
 
 ```bash
-set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
-set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
-set NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
+```
+
+Single-case extraction (only supported with `openai-compatible`):
+
+```bash
+set NEWS_VALUE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+set NEWS_VALUE_API_KEY=<DASHSCOPE_API_KEY>
+set NEWS_VALUE_MODEL=qwen-plus
 
 uv run python main.py annotate-news-value --provider openai-compatible --single-title "突发：某地发布重大政策" --single-abstract "官方今天发布新规，影响多个行业。" --single-category news --single-subcategory policy
 ```
@@ -62,6 +71,11 @@ The output includes:
 - Input article content
 - Five-dimensional value scores (`conflict`, `importance`, `prominence`, `proximity`, `interest`)
 - Vector array, e.g. `[4, 4, 3, 3, 2]`
+
+Batch mode additionally writes:
+
+- `data/news_value_scores.meta.json` (batch metadata)
+- `data/news_value_scores.failures.json` (failed items and reasons)
 
 You can also run scripts directly:
 
@@ -120,7 +134,7 @@ The report includes:
 
 - Original MIND data parsing and category mapping
 - SigLIP feature extraction script
-- News value scoring script, supporting OpenAI-compatible interface
+- News value scoring script, supporting `aliyun-batch` (default) and `openai-compatible`
 - NRMS main model, concat/gate/cross-modal fusion, modality ablation training and evaluation scripts
 - Preprocessing and forward pass basic tests
 

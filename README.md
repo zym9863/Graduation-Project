@@ -24,7 +24,7 @@ uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
 uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider openai-compatible
+uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
 uv run python main.py train --epochs 3 --fusion concat
 uv run python main.py train --epochs 3 --fusion cross_modal
 uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
@@ -37,22 +37,31 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --f
 uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
 ```
 
-单条新闻价值特征提取（真实 API case）：
+新闻价值五要素离线标注（默认阿里云 Batch File）：
 
 推荐在项目根目录创建 `.env`：
 
 ```bash
-NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
-NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
-NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+ALIYUN_BATCH_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+ALIYUN_BATCH_API_KEY=<DASHSCOPE_API_KEY>
+NEWS_VALUE_MODEL=qwen-plus
+ALIYUN_BATCH_ENDPOINT=/v1/chat/completions
+ALIYUN_BATCH_COMPLETION_WINDOW=24h
+ALIYUN_BATCH_POLL_INTERVAL=60
 ```
 
-也支持临时设置环境变量（Windows CMD）：
+批量标注命令（会同步等待任务完成）：
 
 ```bash
-set NEWS_VALUE_API_BASE=https://api-inference.modelscope.cn/v1
-set NEWS_VALUE_API_KEY=<MODELSCOPE_TOKEN>
-set NEWS_VALUE_MODEL=ZhipuAI/GLM-5
+uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
+```
+
+单条新闻价值特征提取（仅支持 `openai-compatible`）：
+
+```bash
+set NEWS_VALUE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+set NEWS_VALUE_API_KEY=<DASHSCOPE_API_KEY>
+set NEWS_VALUE_MODEL=qwen-plus
 
 uv run python main.py annotate-news-value --provider openai-compatible --single-title "突发：某地发布重大政策" --single-abstract "官方今天发布新规，影响多个行业。" --single-category news --single-subcategory policy
 ```
@@ -62,6 +71,11 @@ uv run python main.py annotate-news-value --provider openai-compatible --single-
 - 输入新闻内容
 - 五维价值打分（`conflict`、`importance`、`prominence`、`proximity`、`interest`）
 - 向量数组，例如 `[4, 4, 3, 3, 2]`
+
+批处理模式会额外产出：
+
+- `data/news_value_scores.meta.json`（批任务元信息）
+- `data/news_value_scores.failures.json`（失败条目与原因）
 
 也可以直接运行脚本：
 
@@ -120,7 +134,7 @@ uv run python main.py feature-report
 
 - 原始 MIND 数据解析与类别映射
 - SigLIP 特征提取脚本
-- 新闻价值打分脚本，支持 OpenAI 兼容接口
+- 新闻价值打分脚本，支持 `aliyun-batch`（默认）与 `openai-compatible`
 - NRMS 主模型、拼接/门控/Cross-Modal 融合、模态级消融训练与评估脚本
 - 预处理和前向过程基础测试
 
