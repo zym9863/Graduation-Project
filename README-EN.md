@@ -42,11 +42,11 @@ Recommended primary runs:
 - `text_image`: text + image
 
 ```bash
-uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_only_s42.pt
-uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_only_s2026.pt
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --scheduler plateau --scheduler-patience 1 --patience 2 --min-delta 0.0005 --seed 42 --checkpoint data/processed/text_only_s42.pt
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --scheduler plateau --scheduler-patience 1 --patience 2 --min-delta 0.0005 --seed 2026 --checkpoint data/processed/text_only_s2026.pt
 
-uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_image_s42.pt
-uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_image_s2026.pt
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --scheduler plateau --scheduler-patience 1 --patience 2 --min-delta 0.0005 --seed 42 --checkpoint data/processed/text_image_s42.pt
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --scheduler plateau --scheduler-patience 1 --patience 2 --min-delta 0.0005 --seed 2026 --checkpoint data/processed/text_image_s2026.pt
 ```
 
 ### 3) Runnable But Pipeline-Validation Only (Value Channel Is Zero Vectors)
