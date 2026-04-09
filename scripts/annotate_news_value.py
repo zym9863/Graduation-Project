@@ -139,8 +139,6 @@ def main(argv: list[str] | None = None) -> None:
 
     news = load_news_corpus(config.train_dir / "news.tsv", config.dev_dir / "news.tsv")
     items = list(news.items())
-    if args.limit is not None:
-        items = items[: args.limit]
 
     existing_scores: dict[str, list[int]] = {}
     if config.news_value_file.exists() and not args.overwrite:
@@ -151,6 +149,8 @@ def main(argv: list[str] | None = None) -> None:
         for news_id, article in items
         if args.overwrite or news_id not in existing_scores
     ]
+    if args.limit is not None:
+        pending_items = pending_items[: args.limit]
 
     if not pending_items:
         print("No pending news items to annotate.")

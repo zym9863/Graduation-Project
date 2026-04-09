@@ -1,0 +1,18 @@
+{
+  "provider": "aliyun-batch",
+  "model": "batch-test-model",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "batch_endpoint": "/v1/chat/ds-test",
+  "completion_window": "24h",
+  "batch_job_id": "batch_48a2cd47-f52e-4368-90b8-948d8a166b82",
+  "batch_status": "completed",
+  "input_file_id": "file-batch-0e6d217df6a7499bb0728d2b",
+  "output_file_id": "file-batch_output-2c481f0adf764538be288a5d",
+  "error_file_id": null,
+  "run_started_at": "2026-04-09T10:04:09.821796+00:00",
+  "run_finished_at": "2026-04-09T10:05:13.236943+00:00",
+  "requested": 5,
+  "succeeded": 0,
+  "failed": 5,
+  "saved_total": 0
+}
