@@ -17,24 +17,72 @@
 uv sync
 ```
 
-常用命令：
+## 当前阶段实验清单（你现在可直接跑）
+
+你当前状态是：
+
+- 已有 `data/news_siglip_features.pt`
+- 新闻价值五要素离线标注尚未完成（`data/news_value_scores.json` 不完整或不存在）
+
+在这个状态下，代码会对缺失的新闻价值向量自动补零，因此训练与评估可以正常运行。
+
+### 1) 可直接做的数据与特征分析
 
 ```bash
 uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
-uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
-uv run python main.py train --epochs 3 --fusion concat
-uv run python main.py train --epochs 3 --fusion cross_modal
-uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
-uv run python main.py train --epochs 8 --fusion text_image --checkpoint data/processed/nrms_text_image.pt --eval-dev --seed 42
-uv run python main.py train --epochs 8 --fusion text_value --checkpoint data/processed/nrms_text_value.pt --eval-dev --seed 42
-uv run python main.py train --epochs 8 --fusion text_image_value --checkpoint data/processed/nrms_text_image_value.pt --eval-dev --seed 42
-uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only_quick.pt --eval-dev
-uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
-uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
-uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
+```
+
+### 2) 当前最有意义的对比实验（不依赖五要素）
+
+推荐先做这两组主实验：
+
+- `text_only`：文本基线
+- `text_image`：文本+图像
+
+```bash
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_only_s42.pt
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_only_s2026.pt
+
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_image_s42.pt
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_image_s2026.pt
+```
+
+### 3) 可运行但仅用于流程验证的实验（价值通道当前为零向量）
+
+以下融合策略现在都能跑，但因为新闻价值输入是零向量，暂时不建议用于得出“新闻价值贡献”的结论：
+
+```bash
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/concat_s42.pt
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/concat_s2026.pt
+
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/gate_s42.pt
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/gate_s2026.pt
+
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/cross_modal_s42.pt
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/cross_modal_s2026.pt
+
+uv run python main.py train --fusion text_value --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_value_s42.pt
+uv run python main.py train --fusion text_value --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_value_s2026.pt
+
+uv run python main.py train --fusion text_image_value --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_image_value_s42.pt
+uv run python main.py train --fusion text_image_value --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_image_value_s2026.pt
+```
+
+### 4) 评估与汇总
+
+```bash
+uv run python main.py evaluate --checkpoint data/processed/text_only_s42.pt --fusion text_only
+uv run python main.py evaluate --checkpoint data/processed/text_image_s42.pt --fusion text_image
+
+uv run python main.py experiment-summary --glob-pattern "data/processed/*_s*.pt" --output-dir data/processed/experiment_reports
+```
+
+### 5) 快速冒烟（可选）
+
+```bash
+uv run python main.py train --fusion text_only --epochs 1 --behavior-limit 200 --max-steps 50 --eval-dev --checkpoint data/processed/text_only_smoke.pt
 ```
 
 新闻价值五要素离线标注（默认阿里云 Batch File）：
@@ -140,7 +188,16 @@ uv run python main.py feature-report
 
 ## 对比实验与消融实验
 
+### 当前阶段（仅 SigLIP）建议口径
+
 建议先固定训练口径（epoch、batch-size、scheduler、seed）后再进行对比：
+
+- 主结论实验：`text_only` vs `text_image`
+- 其余融合（`concat`、`gate`、`cross_modal`、`text_value`、`text_image_value`）可先做流程验证
+
+### 五要素完成后再做完整版对比
+
+当 `data/news_value_scores.json` 覆盖率足够后，重点进行以下完整实验：
 
 - 融合策略对比：`concat`、`gate`、`cross_modal`
 - 模态级消融：`text_only`、`text_image`、`text_value`、`text_image_value`

@@ -17,24 +17,72 @@ The project uses `uv` for dependency management.
 uv sync
 ```
 
-Common commands:
+## Current Stage Experiment Checklist (Runnable Now)
+
+Current state:
+
+- `data/news_siglip_features.pt` is available
+- News value five-element annotation is not finished yet (`data/news_value_scores.json` is incomplete or missing)
+
+In this state, the code auto-fills missing news value vectors with zeros, so training and evaluation can still run.
+
+### 1) Data and Feature Analysis (Directly Runnable)
 
 ```bash
 uv run python main.py preprocess
 uv run python main.py dataset-report
 uv run python main.py feature-report
-uv run python main.py extract-features --batch-size 16
-uv run python main.py annotate-news-value --provider aliyun-batch --limit 500
-uv run python main.py train --epochs 3 --fusion concat
-uv run python main.py train --epochs 3 --fusion cross_modal
-uv run python main.py train --epochs 8 --fusion text_only --scheduler plateau --patience 3 --checkpoint data/processed/nrms_text_only.pt --eval-dev
-uv run python main.py train --epochs 8 --fusion text_image --checkpoint data/processed/nrms_text_image.pt --eval-dev --seed 42
-uv run python main.py train --epochs 8 --fusion text_value --checkpoint data/processed/nrms_text_value.pt --eval-dev --seed 42
-uv run python main.py train --epochs 8 --fusion text_image_value --checkpoint data/processed/nrms_text_image_value.pt --eval-dev --seed 42
-uv run python main.py train --epochs 3 --fusion text_only --checkpoint data/processed/nrms_text_only_quick.pt --eval-dev
-uv run python main.py evaluate --checkpoint data/processed/nrms_latest.pt
-uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --fusion text_only
-uv run python main.py experiment-summary --glob-pattern "data/processed/*.pt"
+```
+
+### 2) Most Meaningful Comparisons Right Now (No News-Value Dependency)
+
+Recommended primary runs:
+
+- `text_only`: text baseline
+- `text_image`: text + image
+
+```bash
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_only_s42.pt
+uv run python main.py train --fusion text_only --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_only_s2026.pt
+
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_image_s42.pt
+uv run python main.py train --fusion text_image --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_image_s2026.pt
+```
+
+### 3) Runnable But Pipeline-Validation Only (Value Channel Is Zero Vectors)
+
+The following runs are executable now, but with zeroed value inputs they are not suitable for concluding the contribution of news-value features:
+
+```bash
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/concat_s42.pt
+uv run python main.py train --fusion concat --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/concat_s2026.pt
+
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/gate_s42.pt
+uv run python main.py train --fusion gate --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/gate_s2026.pt
+
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/cross_modal_s42.pt
+uv run python main.py train --fusion cross_modal --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/cross_modal_s2026.pt
+
+uv run python main.py train --fusion text_value --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_value_s42.pt
+uv run python main.py train --fusion text_value --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_value_s2026.pt
+
+uv run python main.py train --fusion text_image_value --epochs 8 --eval-dev --seed 42 --checkpoint data/processed/text_image_value_s42.pt
+uv run python main.py train --fusion text_image_value --epochs 8 --eval-dev --seed 2026 --checkpoint data/processed/text_image_value_s2026.pt
+```
+
+### 4) Evaluation and Aggregation
+
+```bash
+uv run python main.py evaluate --checkpoint data/processed/text_only_s42.pt --fusion text_only
+uv run python main.py evaluate --checkpoint data/processed/text_image_s42.pt --fusion text_image
+
+uv run python main.py experiment-summary --glob-pattern "data/processed/*_s*.pt" --output-dir data/processed/experiment_reports
+```
+
+### 5) Quick Smoke Run (Optional)
+
+```bash
+uv run python main.py train --fusion text_only --epochs 1 --behavior-limit 200 --max-steps 50 --eval-dev --checkpoint data/processed/text_only_smoke.pt
 ```
 
 Offline news value annotation (default: Aliyun Batch File):
@@ -140,7 +188,16 @@ The report includes:
 
 ## Comparison And Ablation Experiments
 
-Recommended controlled setup:
+### Recommended Setup In The Current SigLIP-Only Stage
+
+Keep the training protocol fixed first (epochs, batch size, scheduler, seed):
+
+- Main conclusion experiments: `text_only` vs `text_image`
+- Other fusion settings (`concat`, `gate`, `cross_modal`, `text_value`, `text_image_value`) are currently for pipeline validation
+
+### Full Comparison Matrix After News-Value Annotation Is Ready
+
+When `data/news_value_scores.json` reaches sufficient coverage, run the full matrix below:
 
 - Fusion comparison: `concat`, `gate`, `cross_modal`
 - Modality ablation: `text_only`, `text_image`, `text_value`, `text_image_value`
