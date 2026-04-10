@@ -86,7 +86,14 @@ uv run python main.py experiment-summary --glob-pattern "data/processed/*_s*.pt"
 
 | Fusion | AUC | MRR | nDCG@5 | nDCG@10 |
 |---|---:|---:|---:|---:|
-| text_only | - | - | - | - |
+| text_only | 0.6806967062 ± 0.0049775044 | 0.3786821911 ± 0.0074919024 | 0.3643353261 ± 0.0067258647 | 0.4263792708 ± 0.0063694794 |
 | text_image | - | - | - | - |
 | text_value | - | - | - | - |
 | text_image_value | - | - | - | - |
+
+### 6.3 text_only 双种子明细
+
+| Seed | Best Epoch | lr | loss | AUC | MRR | nDCG@5 | nDCG@10 | Checkpoint |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 42 | 7 | 5e-5 | 1.2279 | 0.6842163325 | 0.3839797641 | 0.3690912593 | 0.4308831524 | `data/processed/text_only_s42.pt` |
+| 2026 | 6 | 1e-4 | 1.2520 | 0.6771770799 | 0.3733846181 | 0.3595793929 | 0.4218753891 | `data/processed/text_only_s2026.pt` |

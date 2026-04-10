@@ -22,11 +22,26 @@ uv run python main.py evaluate --checkpoint data/processed/nrms_text_only.pt --f
 
 ## 结果记录
 
-- 运行日期：2026-03-16
-- checkpoint：`data/processed/nrms_text_only.pt`
-- 训练收敛摘要：`epoch=8 loss=1.2199`（最佳 checkpoint 出现在 epoch=7）
+- 运行日期：2026-04-10
+- checkpoint：`data/processed/text_only_s42.pt`、`data/processed/text_only_s2026.pt`
 
-### 逐轮 dev 指标
+### 双种子最佳结果（dev）
+
+| Seed | Best Epoch | lr | loss | AUC | MRR | nDCG@5 | nDCG@10 | Checkpoint |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 42 | 7 | 5e-5 | 1.2279 | 0.6842163325 | 0.3839797641 | 0.3690912593 | 0.4308831524 | `data/processed/text_only_s42.pt` |
+| 2026 | 6 | 1e-4 | 1.2520 | 0.6771770799 | 0.3733846181 | 0.3595793929 | 0.4218753891 | `data/processed/text_only_s2026.pt` |
+
+### 双种子统计（mean ± std）
+
+| Metric | Value |
+|---|---:|
+| AUC | 0.6806967062 ± 0.0049775044 |
+| MRR | 0.3786821911 ± 0.0074919024 |
+| nDCG@5 | 0.3643353261 ± 0.0067258647 |
+| nDCG@10 | 0.4263792708 ± 0.0063694794 |
+
+### 逐轮 dev 指标（seed=42）
 
 | Epoch | lr | AUC | MRR | nDCG@5 | nDCG@10 |
 |---:|---:|---:|---:|---:|---:|
