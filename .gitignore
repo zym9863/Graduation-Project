@@ -50,6 +50,9 @@ newData/
 *.pt
 *.ckpt
 
+# Generated experiment artifacts
+artifacts/
+
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb

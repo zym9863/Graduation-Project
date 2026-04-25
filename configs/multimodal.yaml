@@ -1,0 +1,19 @@
+experiment:
+  name: multimodal
+  mode: multimodal
+  seed: 2026
+
+paths:
+  data_dir: artifacts/data
+  feature_dir: artifacts/features/siglip
+  value_labels: artifacts/labels/news_value_labels.jsonl
+  output_dir: artifacts/models/multimodal
+
+training:
+  epochs: 3
+  batch_size: 384
+  learning_rate: 0.001
+  hidden_dim: 256
+  dropout: 0.1
+  max_history: 50
+  device: auto
