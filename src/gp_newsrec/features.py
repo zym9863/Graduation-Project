@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Iterable
 
 import numpy as np
@@ -47,6 +47,36 @@ def _feature_tensor(output: Any, embedding_attr: str) -> Any:
         return output[1]
 
     raise TypeError(f"Could not extract {embedding_attr} tensor from {type(output).__name__}")
+
+
+def _resolve_image_path(record: dict[str, Any], image_dir: Path) -> Path:
+    candidates: list[Path] = []
+    image_path = record.get("image_path")
+    if image_path:
+        raw_path = str(image_path)
+        candidates.append(Path(raw_path))
+        candidates.append(Path(raw_path.replace("\\", "/")))
+
+        filename = PureWindowsPath(raw_path).name
+        if filename:
+            candidates.append(image_dir / filename)
+
+    candidates.append(image_dir / f"{record['news_id']}.jpg")
+
+    seen: set[str] = set()
+    unique_candidates = []
+    for candidate in candidates:
+        key = str(candidate)
+        if key not in seen:
+            unique_candidates.append(candidate)
+            seen.add(key)
+
+    for candidate in unique_candidates:
+        if candidate.exists():
+            return candidate
+
+    tried = ", ".join(str(candidate) for candidate in unique_candidates)
+    raise FileNotFoundError(f"Image for news {record['news_id']} was not found; tried: {tried}")
 
 
 def extract_siglip_features(
@@ -95,7 +125,7 @@ def extract_siglip_features(
 
             images = []
             for record in batch:
-                image_path = Path(record.get("image_path") or image_dir / f"{record['news_id']}.jpg")
+                image_path = _resolve_image_path(record, image_dir)
                 with Image.open(image_path) as image:
                     images.append(image.convert("RGB"))
             image_inputs = processor(images=images, return_tensors="pt")

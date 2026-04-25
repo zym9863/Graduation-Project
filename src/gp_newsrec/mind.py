@@ -47,7 +47,7 @@ def parse_news_line(line: str, image_dir: str | Path | None = None) -> NewsRecor
     if image_dir is not None:
         candidate = Path(image_dir) / f"{news_id}.jpg"
         if candidate.exists():
-            image_path = str(candidate)
+            image_path = candidate.as_posix()
     return NewsRecord(
         news_id=news_id,
         category=category,

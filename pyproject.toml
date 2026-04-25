@@ -12,6 +12,8 @@ dependencies = [
     "torch>=2.2.0",
     "tqdm>=4.66.0",
     "transformers>=4.44.0",
+    "sentencepiece>=0.1.97",
+    "protobuf>=6.28.0",
 ]
 
 [project.scripts]
