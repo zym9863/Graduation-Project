@@ -34,13 +34,30 @@ uv run gpnews train --config configs/value.yaml
 uv run gpnews evaluate
 ```
 
-`label-values` 需要环境变量：
+`label-values` 默认使用实时 OpenAI-compatible API，需要环境变量：
 
 ```powershell
 $env:LLM_API_KEY="..."
 $env:LLM_BASE_URL="https://api.openai.com/v1"
 $env:LLM_MODEL="..."
 ```
+
+也可以使用阿里云百炼 Batch File 批量标注。批处理默认使用中国内地兼容端点和 `qwen3.5-flash`，并在请求体中设置 `enable_thinking=false`，以保证 JSON Mode 输出更稳定。
+
+提交批任务：
+
+```powershell
+$env:DASHSCOPE_API_KEY="..."
+uv run gpnews label-values --backend aliyun-batch --max-news 3000 --submit-only
+```
+
+命令会在 `artifacts/labels/batches/news-value-YYYYMMDD-HHMMSS/` 下生成 `input.jsonl` 和 `manifest.json`。任务完成后，可用 manifest 中的 `batch_id` 恢复、下载并合并结果：
+
+```powershell
+uv run gpnews label-values --backend aliyun-batch --batch-id "batch_xxx" --batch-run-dir "artifacts/labels/batches/news-value-YYYYMMDD-HHMMSS"
+```
+
+如果不加 `--submit-only`，命令会按 `--poll-interval` 轮询直到任务结束。成功结果会追加到 `artifacts/labels/news_value_labels.jsonl`，行级失败写入 `error.jsonl`，JSON 或分数校验失败写入 `invalid_results.jsonl`。
 
 项目不会读取或打印 `.env` 文件内容。
 

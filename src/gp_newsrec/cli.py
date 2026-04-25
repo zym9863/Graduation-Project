@@ -43,6 +43,14 @@ def build_parser() -> argparse.ArgumentParser:
     value.add_argument("--output-path", default="artifacts/labels/news_value_labels.jsonl")
     value.add_argument("--max-news", type=int, default=3000)
     value.add_argument("--sleep-seconds", type=float, default=0.0)
+    value.add_argument("--backend", choices=["realtime", "aliyun-batch"], default="realtime")
+    value.add_argument("--batch-model", default="qwen3.5-flash")
+    value.add_argument("--batch-base-url", default="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    value.add_argument("--completion-window", default="24h")
+    value.add_argument("--poll-interval", type=float, default=60.0)
+    value.add_argument("--submit-only", action="store_true")
+    value.add_argument("--batch-id")
+    value.add_argument("--batch-run-dir")
 
     train_parser = subparsers.add_parser("train", help="Train one recommender experiment from a YAML config.")
     train_parser.add_argument("--config", required=True)
@@ -92,6 +100,14 @@ def main(argv: list[str] | None = None) -> None:
                 output_path=args.output_path,
                 max_news=args.max_news,
                 sleep_seconds=args.sleep_seconds,
+                backend=args.backend,
+                batch_model=args.batch_model,
+                batch_base_url=args.batch_base_url,
+                completion_window=args.completion_window,
+                poll_interval=args.poll_interval,
+                submit_only=args.submit_only,
+                batch_id=args.batch_id,
+                batch_run_dir=args.batch_run_dir,
             )
         )
     elif args.command == "train":
