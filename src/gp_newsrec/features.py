@@ -28,6 +28,27 @@ def _news_text(news: dict[str, Any]) -> str:
     return " [SEP] ".join(part for part in parts if part)
 
 
+def _feature_tensor(output: Any, embedding_attr: str) -> Any:
+    if hasattr(output, "norm"):
+        return output
+
+    if isinstance(output, dict):
+        for key in (embedding_attr, "pooler_output"):
+            value = output.get(key)
+            if value is not None:
+                return value
+
+    for attr in (embedding_attr, "pooler_output"):
+        value = getattr(output, attr, None)
+        if value is not None:
+            return value
+
+    if isinstance(output, (list, tuple)) and len(output) > 1:
+        return output[1]
+
+    raise TypeError(f"Could not extract {embedding_attr} tensor from {type(output).__name__}")
+
+
 def extract_siglip_features(
     data_dir: str | Path = "artifacts/data",
     image_dir: str | Path = "newData",
@@ -66,9 +87,10 @@ def extract_siglip_features(
             text_inputs = processor(text=texts, padding=True, truncation=True, return_tensors="pt")
             text_inputs = {key: value.to(selected_device) for key, value in text_inputs.items()}
             if hasattr(model, "get_text_features"):
-                text_emb = model.get_text_features(**text_inputs)
+                text_output = model.get_text_features(**text_inputs)
             else:
-                text_emb = model(**text_inputs).text_embeds
+                text_output = model(**text_inputs)
+            text_emb = _feature_tensor(text_output, "text_embeds")
             text_emb = torch.nn.functional.normalize(text_emb, dim=-1)
 
             images = []
@@ -79,9 +101,10 @@ def extract_siglip_features(
             image_inputs = processor(images=images, return_tensors="pt")
             image_inputs = {key: value.to(selected_device) for key, value in image_inputs.items()}
             if hasattr(model, "get_image_features"):
-                image_emb = model.get_image_features(**image_inputs)
+                image_output = model.get_image_features(**image_inputs)
             else:
-                image_emb = model(**image_inputs).image_embeds
+                image_output = model(**image_inputs)
+            image_emb = _feature_tensor(image_output, "image_embeds")
             image_emb = torch.nn.functional.normalize(image_emb, dim=-1)
 
             text_features.append(text_emb.cpu().numpy().astype("float32"))
