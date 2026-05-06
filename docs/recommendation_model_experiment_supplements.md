@@ -262,7 +262,7 @@ CSV 文件：`../artifacts/thesis/tables/metric_improvements.csv`
 
 **建议图题：** 图 4-4 多模态与新闻价值特征相对文本基线的指标提升
 
-**正文衔接句：** 图 4-4 展示了 Text+Image 和 Text+Image+Value 相对于 Text 基线的指标变化。颜色越深表示相对提升越明显，负值则表示该指标相对文本基线有所下降。
+**正文衔接句：** 图 4-4 展示了 Text+Image 和 Text+Image+Value 相对于 Text 基线的指标变化。单元格深浅表示增益幅度，正负号用于区分相对文本基线的提升或下降。
 
 ### 结果分析正文
 

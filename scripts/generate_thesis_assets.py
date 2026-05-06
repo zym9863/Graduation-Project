@@ -28,18 +28,37 @@ VALUE_DIMENSIONS = [
     ("human_interest", "人情味"),
 ]
 
+EXPERIMENTS = [
+    ("Text", "text"),
+    ("Text+Image", "multimodal"),
+    ("Text+Image+Value", "value"),
+]
+
+METRICS = [
+    ("auc", "AUC"),
+    ("mrr", "MRR"),
+    ("ndcg5", "nDCG@5"),
+    ("ndcg10", "nDCG@10"),
+]
+
 PALETTE = {
-    "ink": "#1f2937",
-    "muted": "#64748b",
-    "line": "#cbd5e1",
+    "ink": "#222222",
+    "muted": "#5f6875",
+    "line": "#b8c0cc",
+    "grid": "#e4e7eb",
     "paper": "#ffffff",
-    "soft": "#f8fafc",
-    "blue": "#2563eb",
-    "green": "#059669",
-    "amber": "#d97706",
-    "red": "#dc2626",
-    "violet": "#7c3aed",
-    "cyan": "#0891b2",
+    "soft": "#ffffff",
+    "blue": "#6f8fbe",
+    "green": "#79a88d",
+    "amber": "#d1a05f",
+    "red": "#c98b8b",
+    "violet": "#9887b5",
+    "cyan": "#75a7b5",
+    "gray": "#8a93a0",
+    "light_blue": "#e9eef7",
+    "light_green": "#eaf3ee",
+    "light_amber": "#f5eee2",
+    "light_red": "#f5eaea",
 }
 
 
@@ -76,9 +95,8 @@ def write_csv(path: Path, fieldnames: Sequence[str], rows: Sequence[dict]) -> No
 
 def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     candidates = [
+        "C:/Windows/Fonts/simhei.ttf" if bold else "C:/Windows/Fonts/simsun.ttc",
         "C:/Windows/Fonts/msyhbd.ttc" if bold else "C:/Windows/Fonts/msyh.ttc",
-        "C:/Windows/Fonts/simhei.ttf",
-        "C:/Windows/Fonts/simsun.ttc",
         "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
         "/System/Library/Fonts/PingFang.ttc",
     ]
@@ -146,14 +164,14 @@ def draw_box(
     accent: str = PALETTE["blue"],
 ) -> None:
     x0, y0, x1, y1 = box
-    draw.rounded_rectangle(box, radius=18, fill=fill, outline=outline, width=2)
-    draw.rectangle((x0, y0, x1, y0 + 8), fill=accent)
-    title_font = load_font(26, bold=True)
-    body_font = load_font(20)
+    draw.rounded_rectangle(box, radius=4, fill=fill, outline=outline, width=2)
+    draw.line((x0, y0, x0, y1), fill=accent, width=5)
+    title_font = load_font(24, bold=True)
+    body_font = load_font(19)
     if subtitle:
-        draw.text((x0 + 24, y0 + 26), title, font=title_font, fill=PALETTE["ink"])
-        lines = wrap_by_width(draw, subtitle, body_font, x1 - x0 - 48)
-        y = y0 + 68
+        draw.text((x0 + 26, y0 + 24), title, font=title_font, fill=PALETTE["ink"])
+        lines = wrap_by_width(draw, subtitle, body_font, x1 - x0 - 54)
+        y = y0 + 66
         for line in lines[:3]:
             draw.text((x0 + 24, y), line, font=body_font, fill=PALETTE["muted"])
             y += 30
@@ -165,13 +183,13 @@ def draw_arrow(
     draw: ImageDraw.ImageDraw,
     start: tuple[int, int],
     end: tuple[int, int],
-    color: str = PALETTE["muted"],
-    width: int = 4,
+    color: str = PALETTE["gray"],
+    width: int = 3,
 ) -> None:
     draw.line((start, end), fill=color, width=width)
     angle = math.atan2(end[1] - start[1], end[0] - start[0])
-    arrow_len = 18
-    arrow_angle = math.pi / 7
+    arrow_len = 14
+    arrow_angle = math.pi / 8
     points = [
         end,
         (
@@ -189,10 +207,7 @@ def draw_arrow(
 def make_canvas(width: int, height: int, title: str) -> tuple[Image.Image, ImageDraw.ImageDraw]:
     image = Image.new("RGB", (width, height), PALETTE["paper"])
     draw = ImageDraw.Draw(image)
-    draw.rectangle((0, 0, width, height), fill=PALETTE["soft"])
-    title_font = load_font(34, bold=True)
-    draw.text((50, 38), title, font=title_font, fill=PALETTE["ink"])
-    draw.line((50, 92, width - 50, 92), fill=PALETTE["line"], width=2)
+    draw.rectangle((0, 0, width, height), fill=PALETTE["paper"])
     return image, draw
 
 
@@ -412,11 +427,11 @@ def draw_category_distribution(stats: dict) -> Path:
     for idx, (category, count) in enumerate(rows):
         y = top_y + idx * row_height
         draw.text((70, y + 12), category, font=label_font, fill=PALETTE["ink"])
-        draw.rounded_rectangle((left, y + 10, left + bar_width, y + 46), radius=16, fill="#e5e7eb")
+        draw.rounded_rectangle((left, y + 10, left + bar_width, y + 46), radius=3, fill=PALETTE["grid"])
         fill_width = int(bar_width * count / max_count)
         draw.rounded_rectangle(
             (left, y + 10, left + fill_width, y + 46),
-            radius=16,
+            radius=3,
             fill=colors[idx % len(colors)],
         )
         pct = count / news_count * 100
@@ -433,7 +448,7 @@ def draw_category_distribution(stats: dict) -> Path:
 
 
 def draw_feature_extraction_flow(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 1020, "多模态特征提取结构")
+    image, draw = make_canvas(1800, 740, "多模态特征提取结构")
     meta = stats["feature_meta"]
     boxes = [
         ((70, 160, 480, 330), "文本字段拼接", "category [SEP] subcategory\n[SEP] title [SEP] abstract", PALETTE["blue"]),
@@ -452,15 +467,6 @@ def draw_feature_extraction_flow(stats: dict) -> Path:
     draw_arrow(draw, (1010, 545), (1130, 545))
     draw_arrow(draw, (1450, 245), (1540, 380))
     draw_arrow(draw, (1450, 545), (1540, 430))
-    formula_font = load_font(24)
-    formula_box = (150, 790, 1650, 930)
-    draw.rounded_rectangle(formula_box, radius=18, fill="#ffffff", outline=PALETTE["line"], width=2)
-    draw.text(
-        (190, 820),
-        "核心公式：x_n = [c_n; sc_n; t_n; a_n]，e_t = normalize(f_t(x_n))，e_i = normalize(f_i(I_n))，z_n^{TI} = [e_t; e_i]",
-        font=formula_font,
-        fill=PALETTE["ink"],
-    )
     path = FIGURE_DIR / "feature_extraction_flow.png"
     image.save(path, quality=95)
     return path
@@ -518,7 +524,7 @@ def draw_value_dimension_distribution(stats: dict) -> Path:
     for step in range(0, 5):
         value = max_count * step / 4
         y = y1 - int((y1 - y0 - 80) * step / 4) - 40
-        draw.line((x0 + 70, y, x1 - 30, y), fill="#e5e7eb", width=1)
+        draw.line((x0 + 70, y, x1 - 30, y), fill=PALETTE["grid"], width=1)
         draw.text((x0 + 15, y - 12), f"{int(value)}", font=grid_font, fill=PALETTE["muted"])
     colors = [PALETTE["blue"], PALETTE["green"], PALETTE["amber"], PALETTE["red"]]
     group_width = (x1 - x0 - 150) / len(VALUE_DIMENSIONS)
@@ -532,13 +538,13 @@ def draw_value_dimension_distribution(stats: dict) -> Path:
             bx0 = int(group_x + score * (bar_width + 12))
             bx1 = bx0 + bar_width
             by0 = axis_bottom - bar_h
-            draw.rounded_rectangle((bx0, by0, bx1, axis_bottom), radius=8, fill=colors[score])
+            draw.rounded_rectangle((bx0, by0, bx1, axis_bottom), radius=2, fill=colors[score])
             draw.text((bx0 - 5, by0 - 26), str(count), font=grid_font, fill=PALETTE["muted"])
         draw.text((int(group_x), axis_bottom + 24), cn, font=load_font(22, bold=True), fill=PALETTE["ink"])
     legend_x = 1220
     for score, color in enumerate(colors):
         y = 900 + score * 34
-        draw.rounded_rectangle((legend_x, y, legend_x + 28, y + 20), radius=5, fill=color)
+        draw.rounded_rectangle((legend_x, y, legend_x + 28, y + 20), radius=2, fill=color)
         draw.text((legend_x + 42, y - 3), f"{score} 分", font=load_font(20), fill=PALETTE["ink"])
     draw.text((160, 912), f"样本量：{label_count:,} 条成功标注新闻。", font=load_font(22), fill=PALETTE["muted"])
     path = FIGURE_DIR / "value_dimension_distribution.png"
@@ -573,7 +579,7 @@ def draw_model_input_comparison(stats: dict) -> Path:
         cursor = bar_x
         for part_name, dim, color in parts:
             part_width = max(8, int(bar_width * dim / max_total))
-            draw.rounded_rectangle((cursor, y + 28, cursor + part_width, y + 88), radius=16, fill=color)
+            draw.rounded_rectangle((cursor, y + 28, cursor + part_width, y + 88), radius=3, fill=color)
             if part_width > 110:
                 draw_centered_text(
                     draw,
@@ -598,6 +604,252 @@ def draw_model_input_comparison(stats: dict) -> Path:
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8-sig", newline="") as file:
         return list(csv.DictReader(file))
+
+
+def as_float(value: str) -> float:
+    return float(str(value).replace("%", "").strip())
+
+
+def blend_hex(light: str, dark: str, ratio: float) -> str:
+    ratio = max(0.0, min(1.0, ratio))
+    light_rgb = tuple(int(light.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))
+    dark_rgb = tuple(int(dark.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))
+    rgb = tuple(round(l + (d - l) * ratio) for l, d in zip(light_rgb, dark_rgb, strict=True))
+    return "#{:02x}{:02x}{:02x}".format(*rgb)
+
+
+def load_experiment_results() -> list[dict[str, str]]:
+    path = TABLE_DIR / "experiment_results.csv"
+    if path.exists():
+        return read_csv_rows(path)
+
+    fallback = ROOT / "artifacts" / "reports" / "ablation.csv"
+    rows = []
+    name_map = {mode: experiment for experiment, mode in EXPERIMENTS}
+    for row in read_csv_rows(fallback):
+        mode = row["mode"]
+        rows.append(
+            {
+                "experiment": name_map.get(mode, row["experiment"]),
+                "mode": mode,
+                "auc": f"{as_float(row['auc']):.6f}",
+                "mrr": f"{as_float(row['mrr']):.6f}",
+                "ndcg5": f"{as_float(row['ndcg5']):.6f}",
+                "ndcg10": f"{as_float(row['ndcg10']):.6f}",
+            }
+        )
+    return rows
+
+
+def load_metric_improvements() -> list[dict[str, str]]:
+    path = TABLE_DIR / "metric_improvements.csv"
+    if path.exists():
+        return read_csv_rows(path)
+
+    rows = load_experiment_results()
+    by_experiment = {row["experiment"]: row for row in rows}
+    baseline = by_experiment["Text"]
+    improvements = []
+    for experiment in ["Text+Image", "Text+Image+Value"]:
+        row = by_experiment[experiment]
+        for key, label in METRICS:
+            base_value = as_float(baseline[key])
+            value = as_float(row[key])
+            gain = value - base_value
+            rel_gain = gain / base_value * 100 if base_value else 0.0
+            improvements.append(
+                {
+                    "experiment": experiment,
+                    "metric": label.replace("nDCG", "NDCG"),
+                    "baseline": f"{base_value:.6f}",
+                    "value": f"{value:.6f}",
+                    "absolute_gain": f"{gain:.6f}",
+                    "relative_gain_percent": f"{rel_gain:.2f}%",
+                }
+            )
+    return improvements
+
+
+def draw_polyline_arrow(draw: ImageDraw.ImageDraw, points: Sequence[tuple[int, int]]) -> None:
+    if len(points) < 2:
+        return
+    for start, end in zip(points[:-2], points[1:-1], strict=False):
+        draw.line((start, end), fill=PALETTE["gray"], width=3)
+    draw_arrow(draw, points[-2], points[-1])
+
+
+def draw_recommendation_model_architecture(stats: dict) -> Path:
+    image, draw = make_canvas(1800, 760, "个性化新闻推荐模型结构")
+    boxes = [
+        ((70, 90, 390, 230), "候选新闻输入", "z_c：文本/图像/价值特征", PALETTE["blue"]),
+        ((70, 430, 390, 570), "历史点击序列", "H_u = {n_1,...,n_L}", PALETTE["green"]),
+        ((560, 245, 890, 415), "共享 MLP 新闻编码器", "候选新闻与历史新闻共用参数\n输出 256 维隐藏表示", PALETTE["gray"]),
+        ((1060, 90, 1380, 230), "候选新闻表示", "h_c", PALETTE["blue"]),
+        ((1060, 430, 1380, 570), "用户兴趣表示", "历史新闻表示平均池化\n得到 p_u", PALETTE["green"]),
+        ((1510, 250, 1730, 410), "点积打分", "r(u,c)", PALETTE["amber"]),
+    ]
+    for box, title, subtitle, color in boxes:
+        draw_box(draw, box, title, subtitle, accent=color)
+
+    draw_polyline_arrow(draw, [(390, 160), (475, 160), (475, 300), (560, 300)])
+    draw_polyline_arrow(draw, [(390, 500), (475, 500), (475, 360), (560, 360)])
+    draw_polyline_arrow(draw, [(890, 300), (980, 300), (980, 160), (1060, 160)])
+    draw_polyline_arrow(draw, [(890, 360), (980, 360), (980, 500), (1060, 500)])
+    draw_polyline_arrow(draw, [(1380, 160), (1450, 160), (1450, 305), (1510, 305)])
+    draw_polyline_arrow(draw, [(1380, 500), (1450, 500), (1450, 355), (1510, 355)])
+
+    note_font = load_font(20)
+    draw.text(
+        (70, 675),
+        f"输入维度：Text={stats['feature_meta']['text_dim']}，Text+Image={int(stats['feature_meta']['text_dim']) + int(stats['feature_meta']['image_dim'])}，Text+Image+Value={int(stats['feature_meta']['text_dim']) + int(stats['feature_meta']['image_dim']) + len(VALUE_DIMENSIONS) + 1}。",
+        font=note_font,
+        fill=PALETTE["muted"],
+    )
+    path = FIGURE_DIR / "recommendation_model_architecture.png"
+    image.save(path, quality=95)
+    return path
+
+
+def draw_training_evaluation_flow(stats: dict) -> Path:
+    image, draw = make_canvas(1800, 760, "推荐模型训练与评价流程")
+    boxes = [
+        ((70, 120, 360, 290), "实验输入", "训练样本、验证集\nSigLIP 特征、价值标注", PALETTE["blue"]),
+        ((510, 70, 820, 210), "Text", "仅使用文本特征", PALETTE["blue"]),
+        ((510, 270, 820, 410), "Text+Image", "文本特征 + 图像特征", PALETTE["green"]),
+        ((510, 470, 820, 610), "Text+Image+Value", "图文特征 + 新闻价值向量", PALETTE["amber"]),
+        ((990, 200, 1290, 360), "验证集排序", "同一 impression 内\n按模型得分排序", PALETTE["gray"]),
+        ((1450, 200, 1720, 360), "指标计算", "AUC、MRR\nnDCG@5、nDCG@10", PALETTE["cyan"]),
+    ]
+    for box, title, subtitle, color in boxes:
+        draw_box(draw, box, title, subtitle, accent=color)
+
+    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 140), (510, 140)])
+    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 340), (510, 340)])
+    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 540), (510, 540)])
+    draw_polyline_arrow(draw, [(820, 140), (905, 140), (905, 250), (990, 250)])
+    draw_polyline_arrow(draw, [(820, 340), (990, 280)])
+    draw_polyline_arrow(draw, [(820, 540), (905, 540), (905, 315), (990, 315)])
+    draw_arrow(draw, (1290, 280), (1450, 280))
+
+    note_font = load_font(20)
+    draw.text(
+        (70, 690),
+        f"三组实验使用相同验证集，共 {stats['dev_impressions']:,} 个 impression；图中只展示评价流程，具体训练参数见表 4-1。",
+        font=note_font,
+        fill=PALETTE["muted"],
+    )
+    path = FIGURE_DIR / "training_evaluation_flow.png"
+    image.save(path, quality=95)
+    return path
+
+
+def draw_experiment_metrics_comparison(stats: dict) -> Path:
+    rows = load_experiment_results()
+    by_experiment = {row["experiment"]: row for row in rows}
+    image, draw = make_canvas(1800, 920, "三组实验指标对比")
+
+    chart = (150, 90, 1420, 730)
+    x0, y0, x1, y1 = chart
+    axis_font = load_font(21)
+    label_font = load_font(25, bold=True)
+    value_font = load_font(20)
+    y_max = 0.65
+
+    for step in range(0, 8):
+        value = step * 0.1
+        y = y1 - int((y1 - y0) * value / y_max)
+        draw.line((x0, y, x1, y), fill=PALETTE["grid"], width=1)
+        draw.text((70, y - 13), f"{value:.1f}", font=axis_font, fill=PALETTE["muted"])
+    draw.line((x0, y0, x0, y1), fill=PALETTE["ink"], width=2)
+    draw.line((x0, y1, x1, y1), fill=PALETTE["ink"], width=2)
+
+    colors = {
+        "Text": PALETTE["blue"],
+        "Text+Image": PALETTE["green"],
+        "Text+Image+Value": PALETTE["amber"],
+    }
+    group_width = (x1 - x0) / len(METRICS)
+    bar_width = 70
+    bar_gap = 24
+    total_bar_width = bar_width * len(EXPERIMENTS) + bar_gap * (len(EXPERIMENTS) - 1)
+    for metric_idx, (metric_key_name, metric_label) in enumerate(METRICS):
+        group_center = x0 + group_width * metric_idx + group_width / 2
+        start_x = int(group_center - total_bar_width / 2)
+        for exp_idx, (experiment, _) in enumerate(EXPERIMENTS):
+            value = as_float(by_experiment[experiment][metric_key_name])
+            bx0 = start_x + exp_idx * (bar_width + bar_gap)
+            bx1 = bx0 + bar_width
+            by0 = y1 - int((y1 - y0) * value / y_max)
+            draw.rounded_rectangle((bx0, by0, bx1, y1), radius=3, fill=colors[experiment], outline=PALETTE["ink"], width=1)
+            draw.text((bx0 - 6, by0 - 30), f"{value:.3f}", font=value_font, fill=PALETTE["ink"])
+        metric_width = text_size(draw, metric_label, label_font)[0]
+        draw.text((group_center - metric_width / 2, y1 + 32), metric_label, font=label_font, fill=PALETTE["ink"])
+
+    legend_x, legend_y = 1500, 140
+    for idx, (experiment, _) in enumerate(EXPERIMENTS):
+        y = legend_y + idx * 58
+        draw.rounded_rectangle((legend_x, y, legend_x + 34, y + 22), radius=2, fill=colors[experiment], outline=PALETTE["ink"], width=1)
+        draw.text((legend_x + 52, y - 3), experiment, font=axis_font, fill=PALETTE["ink"])
+
+    path = FIGURE_DIR / "experiment_metrics_comparison.png"
+    image.save(path, quality=95)
+    return path
+
+
+def draw_metric_improvement_heatmap(stats: dict) -> Path:
+    rows = load_metric_improvements()
+    row_names = ["Text+Image", "Text+Image+Value"]
+    metric_names = [label.replace("nDCG", "NDCG") for _, label in METRICS]
+    values = {(row["experiment"], row["metric"]): row for row in rows}
+    gains = [as_float(row["absolute_gain"]) for row in rows]
+    max_pos = max([gain for gain in gains if gain > 0], default=1.0)
+    max_neg = max([abs(gain) for gain in gains if gain < 0], default=1.0)
+
+    image, draw = make_canvas(1800, 780, "相对文本基线的指标增益")
+    x0, y0 = 420, 140
+    cell_w, cell_h = 260, 150
+    header_font = load_font(28, bold=True)
+    label_font = load_font(24, bold=True)
+    gain_font = load_font(26, bold=True)
+    rel_font = load_font(21)
+
+    for col_idx, metric in enumerate(metric_names):
+        x = x0 + col_idx * cell_w
+        metric_width = text_size(draw, metric, header_font)[0]
+        draw.text((x + (cell_w - metric_width) / 2, 80), metric, font=header_font, fill=PALETTE["ink"])
+
+    for row_idx, experiment in enumerate(row_names):
+        y = y0 + row_idx * cell_h
+        draw.text((80, y + 55), experiment, font=label_font, fill=PALETTE["ink"])
+        for col_idx, metric in enumerate(metric_names):
+            row = values[(experiment, metric)]
+            gain = as_float(row["absolute_gain"])
+            if gain >= 0:
+                ratio = 0.15 + 0.65 * (gain / max_pos)
+                fill = blend_hex(PALETTE["light_green"], PALETTE["green"], ratio)
+            else:
+                ratio = 0.15 + 0.65 * (abs(gain) / max_neg)
+                fill = blend_hex(PALETTE["light_red"], PALETTE["red"], ratio)
+            x = x0 + col_idx * cell_w
+            draw.rounded_rectangle((x, y, x + cell_w - 18, y + cell_h - 22), radius=3, fill=fill, outline="#ffffff", width=3)
+            sign = "+" if gain >= 0 else ""
+            gain_text = f"{sign}{gain:.6f}"
+            rel_text = row["relative_gain_percent"]
+            gain_width = text_size(draw, gain_text, gain_font)[0]
+            rel_width = text_size(draw, rel_text, rel_font)[0]
+            draw.text((x + (cell_w - 18 - gain_width) / 2, y + 42), gain_text, font=gain_font, fill=PALETTE["ink"])
+            draw.text((x + (cell_w - 18 - rel_width) / 2, y + 92), rel_text, font=rel_font, fill=PALETTE["ink"])
+
+    note_font = load_font(20)
+    draw.text(
+        (80, 610),
+        "单元格上方为绝对增益，下方为相对增益；正负号表示相对于 Text 基线的提升或下降。",
+        font=note_font,
+        fill=PALETTE["muted"],
+    )
+    path = FIGURE_DIR / "metric_improvement_heatmap.png"
+    image.save(path, quality=95)
+    return path
 
 
 def markdown_table(rows: Sequence[dict], columns: Sequence[str]) -> str:
@@ -826,6 +1078,10 @@ def main() -> None:
         "value_flow": draw_news_value_labeling_flow(stats),
         "value_dist": draw_value_dimension_distribution(stats),
         "model_inputs": draw_model_input_comparison(stats),
+        "recommendation_model": draw_recommendation_model_architecture(stats),
+        "training_evaluation": draw_training_evaluation_flow(stats),
+        "experiment_metrics": draw_experiment_metrics_comparison(stats),
+        "metric_improvement": draw_metric_improvement_heatmap(stats),
     }
     write_markdown(stats, figure_paths, table_paths)
     print(f"Wrote {len(figure_paths)} figures to {FIGURE_DIR}")
