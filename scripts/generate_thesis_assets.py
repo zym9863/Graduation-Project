@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 import csv
+import html
 import json
-import math
+import shutil
 from collections import Counter
 from pathlib import Path
 from typing import Iterable, Sequence
 
-from PIL import Image, ImageDraw, ImageFont
+import matplotlib as mpl
+
+mpl.use("Agg")
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import font_manager
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,23 +50,25 @@ METRICS = [
 ]
 
 PALETTE = {
-    "ink": "#222222",
-    "muted": "#5f6875",
-    "line": "#b8c0cc",
-    "grid": "#e4e7eb",
+    "ink": "#1f2933",
+    "muted": "#5b6472",
+    "line": "#8f9aa8",
+    "grid": "#e6e9ee",
     "paper": "#ffffff",
-    "soft": "#ffffff",
-    "blue": "#6f8fbe",
-    "green": "#79a88d",
-    "amber": "#d1a05f",
-    "red": "#c98b8b",
-    "violet": "#9887b5",
-    "cyan": "#75a7b5",
-    "gray": "#8a93a0",
-    "light_blue": "#e9eef7",
-    "light_green": "#eaf3ee",
-    "light_amber": "#f5eee2",
-    "light_red": "#f5eaea",
+    "soft": "#f7f8fa",
+    "blue": "#2f5f9f",
+    "green": "#2f7f6f",
+    "amber": "#b7791f",
+    "red": "#b44a4a",
+    "violet": "#6f5aa7",
+    "cyan": "#2c7a9a",
+    "gray": "#6b7280",
+    "light_blue": "#eaf1fb",
+    "light_green": "#e8f3ee",
+    "light_amber": "#f8efdf",
+    "light_red": "#f6e8e8",
+    "light_violet": "#eeeafb",
+    "light_cyan": "#e6f2f5",
 }
 
 
@@ -93,122 +103,157 @@ def write_csv(path: Path, fieldnames: Sequence[str], rows: Sequence[dict]) -> No
         writer.writerows(rows)
 
 
-def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    candidates = [
-        "C:/Windows/Fonts/simhei.ttf" if bold else "C:/Windows/Fonts/simsun.ttc",
-        "C:/Windows/Fonts/msyhbd.ttc" if bold else "C:/Windows/Fonts/msyh.ttc",
-        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-        "/System/Library/Fonts/PingFang.ttc",
+FONT_PATHS = [
+    Path("C:/Windows/Fonts/msyh.ttc"),
+    Path("C:/Windows/Fonts/msyhbd.ttc"),
+    Path("C:/Windows/Fonts/simhei.ttf"),
+    Path("C:/Windows/Fonts/simsun.ttc"),
+    Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
+    Path("/System/Library/Fonts/PingFang.ttc"),
+]
+
+
+def choose_font_family() -> str:
+    for path in FONT_PATHS:
+        if path.exists():
+            try:
+                font_manager.fontManager.addfont(str(path))
+                return font_manager.FontProperties(fname=str(path)).get_name()
+            except RuntimeError:
+                continue
+    for family in ["Microsoft YaHei", "SimHei", "SimSun", "Noto Sans CJK SC", "PingFang SC"]:
+        if any(font.name == family for font in font_manager.fontManager.ttflist):
+            return family
+    return "DejaVu Sans"
+
+
+FONT_FAMILY = choose_font_family()
+GRAPHVIZ_FONT = FONT_FAMILY
+
+
+def configure_matplotlib_style() -> None:
+    mpl.rcParams.update(
+        {
+            "font.family": "sans-serif",
+            "font.sans-serif": [FONT_FAMILY, "Microsoft YaHei", "SimHei", "Arial", "DejaVu Sans"],
+            "axes.unicode_minus": False,
+            "figure.dpi": 140,
+            "savefig.dpi": 300,
+            "axes.edgecolor": PALETTE["line"],
+            "axes.labelcolor": PALETTE["ink"],
+            "xtick.color": PALETTE["muted"],
+            "ytick.color": PALETTE["muted"],
+            "text.color": PALETTE["ink"],
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
+
+
+configure_matplotlib_style()
+
+
+def save_figure(fig, stem: str) -> Path:
+    png_path = FIGURE_DIR / f"{stem}.png"
+    pdf_path = FIGURE_DIR / f"{stem}.pdf"
+    fig.savefig(png_path, dpi=300, bbox_inches="tight", pad_inches=0.08, facecolor=PALETTE["paper"])
+    fig.savefig(pdf_path, bbox_inches="tight", pad_inches=0.08, facecolor=PALETTE["paper"])
+    plt.close(fig)
+    return png_path
+
+
+def require_graphviz() -> None:
+    try:
+        import graphviz  # noqa: F401
+    except ImportError as exc:
+        raise RuntimeError("缺少 Python graphviz 包。请先运行 `uv sync` 或 `uv run python scripts/generate_thesis_assets.py`。") from exc
+    if shutil.which("dot") is None:
+        raise RuntimeError(
+            "未检测到 Graphviz 的 `dot` 命令。请先安装 Graphviz CLI 并确保 `dot` 已加入 PATH；"
+            "Windows 可使用 `winget install Graphviz.Graphviz`，安装后重新打开终端再运行脚本。"
+        )
+
+
+def make_graph(name: str, rankdir: str = "LR", nodesep: str = "0.55", ranksep: str = "0.80"):
+    require_graphviz()
+    from graphviz import Digraph
+
+    graph = Digraph(name=name, engine="dot")
+    graph.attr(
+        bgcolor=PALETTE["paper"],
+        color=PALETTE["line"],
+        fontname=GRAPHVIZ_FONT,
+        margin="0.04",
+        nodesep=nodesep,
+        outputorder="edgesfirst",
+        pad="0.18",
+        rankdir=rankdir,
+        ranksep=ranksep,
+        splines="ortho",
+    )
+    graph.attr(
+        "node",
+        color=PALETTE["line"],
+        fillcolor=PALETTE["soft"],
+        fontname=GRAPHVIZ_FONT,
+        fontsize="18",
+        margin="0.18,0.12",
+        penwidth="1.6",
+        shape="box",
+        style="rounded,filled",
+    )
+    graph.attr("edge", arrowsize="0.75", color=PALETTE["gray"], fontname=GRAPHVIZ_FONT, penwidth="1.5")
+    return graph
+
+
+def graph_label(title: str, body: str = "", prefix: str = "") -> str:
+    heading = f"{html.escape(prefix)} {html.escape(title)}".strip()
+    rows = [
+        '<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">',
+        f'<TR><TD ALIGN="LEFT"><FONT POINT-SIZE="22"><B>{heading}</B></FONT></TD></TR>',
     ]
-    for candidate in candidates:
-        if candidate and Path(candidate).exists():
-            return ImageFont.truetype(candidate, size=size)
-    return ImageFont.load_default()
+    if body:
+        lines = '<BR ALIGN="LEFT"/>'.join(html.escape(line) for line in str(body).split("\n"))
+        rows.append(f'<TR><TD ALIGN="LEFT"><FONT POINT-SIZE="16" COLOR="{PALETTE["muted"]}">{lines}</FONT></TD></TR>')
+    rows.append("</TABLE>")
+    return "<" + "".join(rows) + ">"
 
 
-def text_size(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont) -> tuple[int, int]:
-    bbox = draw.textbbox((0, 0), text, font=font)
-    return bbox[2] - bbox[0], bbox[3] - bbox[1]
-
-
-def wrap_by_width(
-    draw: ImageDraw.ImageDraw,
-    text: str,
-    font: ImageFont.ImageFont,
-    max_width: int,
-) -> list[str]:
-    lines: list[str] = []
-    for paragraph in str(text).split("\n"):
-        current = ""
-        for char in paragraph:
-            test = current + char
-            if current and text_size(draw, test, font)[0] > max_width:
-                lines.append(current)
-                current = char
-            else:
-                current = test
-        if current:
-            lines.append(current)
-    return lines or [""]
-
-
-def draw_centered_text(
-    draw: ImageDraw.ImageDraw,
-    box: tuple[int, int, int, int],
-    text: str,
-    font: ImageFont.ImageFont,
-    fill: str = PALETTE["ink"],
-    max_width: int | None = None,
-    line_gap: int = 8,
-) -> None:
-    x0, y0, x1, y1 = box
-    width = x1 - x0
-    max_width = max_width or width - 34
-    lines = wrap_by_width(draw, text, font, max_width)
-    line_heights = [text_size(draw, line, font)[1] for line in lines]
-    total_height = sum(line_heights) + line_gap * (len(lines) - 1)
-    y = y0 + ((y1 - y0) - total_height) / 2
-    for line, line_height in zip(lines, line_heights, strict=True):
-        line_width = text_size(draw, line, font)[0]
-        draw.text((x0 + (width - line_width) / 2, y), line, font=font, fill=fill)
-        y += line_height + line_gap
-
-
-def draw_box(
-    draw: ImageDraw.ImageDraw,
-    box: tuple[int, int, int, int],
+def add_graph_node(
+    graph,
+    node_id: str,
     title: str,
-    subtitle: str = "",
-    fill: str = "#ffffff",
-    outline: str = PALETTE["line"],
-    accent: str = PALETTE["blue"],
+    body: str = "",
+    fill: str = PALETTE["soft"],
+    color: str = PALETTE["line"],
+    prefix: str = "",
 ) -> None:
-    x0, y0, x1, y1 = box
-    draw.rounded_rectangle(box, radius=4, fill=fill, outline=outline, width=2)
-    draw.line((x0, y0, x0, y1), fill=accent, width=5)
-    title_font = load_font(24, bold=True)
-    body_font = load_font(19)
-    if subtitle:
-        draw.text((x0 + 26, y0 + 24), title, font=title_font, fill=PALETTE["ink"])
-        lines = wrap_by_width(draw, subtitle, body_font, x1 - x0 - 54)
-        y = y0 + 66
-        for line in lines[:3]:
-            draw.text((x0 + 24, y), line, font=body_font, fill=PALETTE["muted"])
-            y += 30
-    else:
-        draw_centered_text(draw, box, title, title_font)
+    graph.node(node_id, label=graph_label(title, body, prefix), fillcolor=fill, color=color)
 
 
-def draw_arrow(
-    draw: ImageDraw.ImageDraw,
-    start: tuple[int, int],
-    end: tuple[int, int],
-    color: str = PALETTE["gray"],
-    width: int = 3,
-) -> None:
-    draw.line((start, end), fill=color, width=width)
-    angle = math.atan2(end[1] - start[1], end[0] - start[0])
-    arrow_len = 14
-    arrow_angle = math.pi / 8
-    points = [
-        end,
-        (
-            end[0] - arrow_len * math.cos(angle - arrow_angle),
-            end[1] - arrow_len * math.sin(angle - arrow_angle),
-        ),
-        (
-            end[0] - arrow_len * math.cos(angle + arrow_angle),
-            end[1] - arrow_len * math.sin(angle + arrow_angle),
-        ),
-    ]
-    draw.polygon(points, fill=color)
+def save_graph(graph, stem: str) -> Path:
+    png_path = FIGURE_DIR / f"{stem}.png"
+    pdf_path = FIGURE_DIR / f"{stem}.pdf"
+    png_path.write_bytes(graph.pipe(format="png"))
+    pdf_path.write_bytes(graph.pipe(format="pdf"))
+    return png_path
 
 
-def make_canvas(width: int, height: int, title: str) -> tuple[Image.Image, ImageDraw.ImageDraw]:
-    image = Image.new("RGB", (width, height), PALETTE["paper"])
-    draw = ImageDraw.Draw(image)
-    draw.rectangle((0, 0, width, height), fill=PALETTE["paper"])
-    return image, draw
+def style_axis(ax, xgrid: bool = True, ygrid: bool = False) -> None:
+    ax.set_facecolor(PALETTE["paper"])
+    for spine in ["top", "right"]:
+        ax.spines[spine].set_visible(False)
+    ax.spines["left"].set_color(PALETTE["line"])
+    ax.spines["bottom"].set_color(PALETTE["line"])
+    if xgrid:
+        ax.grid(axis="x", color=PALETTE["grid"], linewidth=0.8)
+    if ygrid:
+        ax.grid(axis="y", color=PALETTE["grid"], linewidth=0.8)
+    ax.set_axisbelow(True)
+
+
+def format_percent(value: float) -> str:
+    return f"{value:.1f}%"
 
 
 def collect_stats() -> dict:
@@ -371,189 +416,159 @@ def write_tables(stats: dict) -> dict[str, Path]:
     }
 
 
-def draw_data_processing_flow(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 1000, "数据采集与预处理流程")
-    boxes = [
-        ((70, 160, 410, 330), "MIND-small 文本数据", "news.tsv：类别、子类、标题、摘要\nbehaviors.tsv：用户历史与曝光点击", PALETTE["blue"]),
-        ((520, 160, 860, 330), "V-MIND 图像数据", "newData/{news_id}.jpg\n以新闻 ID 完成图片对齐", PALETTE["green"]),
-        ((970, 160, 1310, 330), "新闻主表构建", f"合并去重 {len(stats['news_records']):,} 条新闻\n写入 news.jsonl", PALETTE["cyan"]),
-        ((1420, 160, 1760, 330), "频次统计", "统计历史点击与候选曝光\n用于高频新闻价值标注", PALETTE["amber"]),
-        ((300, 590, 640, 760), "训练样本生成", f"正样本 + 负采样\n{stats['train_samples']:,} 条训练样本", PALETTE["violet"]),
-        ((770, 590, 1110, 760), "验证样本生成", f"保留 impression 排序列表\n{stats['dev_impressions']:,} 个验证组", PALETTE["red"]),
-        ((1210, 590, 1720, 760), "中间数据产物", "news.jsonl、train_samples.jsonl\ndev_impressions.jsonl\nnews_frequency.json", PALETTE["blue"]),
-    ]
-    for box, title, subtitle, color in boxes:
-        draw_box(draw, box, title, subtitle, accent=color)
-    draw_arrow(draw, (410, 245), (520, 245))
-    draw_arrow(draw, (860, 245), (970, 245))
-    draw_arrow(draw, (1310, 245), (1420, 245))
-    draw_arrow(draw, (1140, 330), (520, 590))
-    draw_arrow(draw, (1140, 330), (940, 590))
-    draw_arrow(draw, (640, 675), (770, 675), color=PALETTE["line"])
-    draw_arrow(draw, (1110, 675), (1210, 675))
-    footer_font = load_font(20)
-    draw.text(
-        (70, 905),
-        "说明：工程中要求新闻文本与图片全部完成 ID 对齐；若缺少对应图片，数据准备阶段会直接报错。",
-        font=footer_font,
-        fill=PALETTE["muted"],
+def draw_technical_route(stats: dict) -> Path:
+    meta = stats["feature_meta"]
+    graph = make_graph("technical_route", rankdir="LR", nodesep="0.55", ranksep="0.70")
+    add_graph_node(graph, "s1", "研究对象", "多模态新闻推荐任务\nMIND-small + V-MIND\n新闻文本与图像按 ID 对齐", PALETTE["light_blue"], PALETTE["blue"], "01")
+    add_graph_node(
+        graph,
+        "s2",
+        "数据准备",
+        f"新闻去重与主表构建\n训练样本 {stats['train_samples']:,}\n验证 impression {stats['dev_impressions']:,}",
+        PALETTE["light_green"],
+        PALETTE["green"],
+        "02",
     )
-    path = FIGURE_DIR / "data_processing_flow.png"
-    image.save(path, quality=95)
-    return path
+    add_graph_node(
+        graph,
+        "s3",
+        "特征提取",
+        f"SigLIP 文本编码 {meta['text_dim']} 维\nSigLIP 图像编码 {meta['image_dim']} 维\nL2 归一化后缓存",
+        PALETTE["light_cyan"],
+        PALETTE["cyan"],
+        "03",
+    )
+    add_graph_node(
+        graph,
+        "s4",
+        "价值量化",
+        f"五维新闻价值评分\n成功标注 {len(stats['labels']):,}\n5 个分数 + missing mask",
+        PALETTE["light_amber"],
+        PALETTE["amber"],
+        "04",
+    )
+    add_graph_node(graph, "s5", "推荐建模", "共享 MLP 新闻编码器\n历史点击平均池化\n候选新闻点积打分", PALETTE["light_violet"], PALETTE["violet"], "05")
+    add_graph_node(graph, "s6", "实验分析", "Text / Text+Image / TIV\nAUC、MRR、nDCG\n对比与消融验证", PALETTE["light_red"], PALETTE["red"], "06")
+    for start, end in [("s1", "s2"), ("s2", "s3"), ("s3", "s4"), ("s4", "s5"), ("s5", "s6")]:
+        graph.edge(start, end)
+    return save_graph(graph, "technical_route")
+
+
+def draw_data_processing_flow(stats: dict) -> Path:
+    graph = make_graph("data_processing_flow", rankdir="LR", nodesep="0.45", ranksep="0.70")
+    add_graph_node(graph, "mind", "MIND-small 文本数据", "news.tsv：类别、子类、标题、摘要\nbehaviors.tsv：历史点击与候选曝光", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "vmind", "V-MIND 图像数据", "newData/{news_id}.jpg\n按新闻 ID 对齐图像", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "master", "新闻主表构建", f"合并去重 {len(stats['news_records']):,} 条新闻\n写入 news.jsonl 并保留关键字段", PALETTE["light_cyan"], PALETTE["cyan"])
+    add_graph_node(graph, "freq", "频次统计", "统计历史点击与候选曝光\n支撑高频新闻价值标注抽样", PALETTE["light_amber"], PALETTE["amber"])
+    add_graph_node(graph, "train", "训练样本生成", f"正样本 + 负采样\n{stats['train_samples']:,} 条训练样本", PALETTE["light_violet"], PALETTE["violet"])
+    add_graph_node(graph, "dev", "验证样本生成", f"保留 impression 内候选排序\n{stats['dev_impressions']:,} 个验证组", PALETTE["light_red"], PALETTE["red"])
+    add_graph_node(graph, "outputs", "中间数据产物", "news.jsonl\ntrain_samples.jsonl\ndev_impressions.jsonl\nnews_frequency.json", PALETTE["soft"], PALETTE["gray"])
+    graph.edge("mind", "master")
+    graph.edge("vmind", "master")
+    graph.edge("master", "freq")
+    graph.edge("master", "train")
+    graph.edge("master", "dev")
+    graph.edge("freq", "outputs")
+    graph.edge("train", "outputs")
+    graph.edge("dev", "outputs")
+    return save_graph(graph, "data_processing_flow")
 
 
 def draw_category_distribution(stats: dict) -> Path:
-    width, height = 1800, 1050
-    image, draw = make_canvas(width, height, "新闻类别分布")
     counts = stats["category_counts"]
     news_count = len(stats["news_records"])
     top = counts.most_common(10)
     other = news_count - sum(count for _, count in top)
     rows = top + [("other", other)]
-    max_count = max(count for _, count in rows)
-    left, top_y = 280, 150
-    bar_width, row_height = 1180, 68
-    colors = [
-        PALETTE["blue"],
-        PALETTE["green"],
-        PALETTE["amber"],
-        PALETTE["red"],
-        PALETTE["violet"],
-        PALETTE["cyan"],
-    ]
-    label_font = load_font(24, bold=True)
-    body_font = load_font(22)
-    for idx, (category, count) in enumerate(rows):
-        y = top_y + idx * row_height
-        draw.text((70, y + 12), category, font=label_font, fill=PALETTE["ink"])
-        draw.rounded_rectangle((left, y + 10, left + bar_width, y + 46), radius=3, fill=PALETTE["grid"])
-        fill_width = int(bar_width * count / max_count)
-        draw.rounded_rectangle(
-            (left, y + 10, left + fill_width, y + 46),
-            radius=3,
-            fill=colors[idx % len(colors)],
-        )
+    labels = [category for category, _ in rows]
+    values = [count for _, count in rows]
+    y = np.arange(len(rows))
+
+    fig, ax = plt.subplots(figsize=(8.4, 5.6))
+    colors = [PALETTE["blue"] if idx < 10 else PALETTE["gray"] for idx in range(len(rows))]
+    bars = ax.barh(y, values, color=colors, edgecolor=PALETTE["ink"], linewidth=0.4)
+    ax.set_yticks(y, labels)
+    ax.invert_yaxis()
+    ax.set_xlabel("新闻数量")
+    ax.set_title("新闻类别分布（Top 10 + other）", fontsize=15, weight="bold", pad=12)
+    style_axis(ax, xgrid=True)
+    ax.set_xlim(0, max(values) * 1.22)
+    for bar, count in zip(bars, values, strict=True):
         pct = count / news_count * 100
-        draw.text((left + bar_width + 35, y + 9), f"{count:,}  ({pct:.1f}%)", font=body_font, fill=PALETTE["muted"])
-    draw.text(
-        (70, 930),
-        f"合计：{news_count:,} 条新闻；图中展示前 10 类，其余类别合并为 other。",
-        font=body_font,
-        fill=PALETTE["muted"],
-    )
-    path = FIGURE_DIR / "category_distribution.png"
-    image.save(path, quality=95)
-    return path
+        ax.text(bar.get_width() + max(values) * 0.015, bar.get_y() + bar.get_height() / 2, f"{count:,}  {format_percent(pct)}", va="center", fontsize=9)
+    ax.text(0, 1.02, f"合计：{news_count:,} 条新闻", transform=ax.transAxes, fontsize=9, color=PALETTE["muted"])
+    fig.tight_layout()
+    return save_figure(fig, "category_distribution")
 
 
 def draw_feature_extraction_flow(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 740, "多模态特征提取结构")
     meta = stats["feature_meta"]
-    boxes = [
-        ((70, 160, 480, 330), "文本字段拼接", "category [SEP] subcategory\n[SEP] title [SEP] abstract", PALETTE["blue"]),
-        ((70, 460, 480, 630), "新闻图片输入", "newData/{news_id}.jpg\nRGB 图像", PALETTE["green"]),
-        ((610, 160, 1010, 330), "SigLIP 文本编码器", f"{meta['model_name']}\n输出 {meta['text_dim']} 维文本向量", PALETTE["blue"]),
-        ((610, 460, 1010, 630), "SigLIP 图像编码器", f"{meta['model_name']}\n输出 {meta['image_dim']} 维图像向量", PALETTE["green"]),
-        ((1130, 160, 1450, 330), "L2 归一化", "得到 e_t\n用于统一向量尺度", PALETTE["cyan"]),
-        ((1130, 460, 1450, 630), "L2 归一化", "得到 e_i\n用于统一向量尺度", PALETTE["cyan"]),
-        ((1540, 310, 1760, 500), "特征拼接", "Text: 768\nT+I: 1536\nT+I+V: 1542", PALETTE["amber"]),
-    ]
-    for box, title, subtitle, color in boxes:
-        draw_box(draw, box, title, subtitle, accent=color)
-    draw_arrow(draw, (480, 245), (610, 245))
-    draw_arrow(draw, (480, 545), (610, 545))
-    draw_arrow(draw, (1010, 245), (1130, 245))
-    draw_arrow(draw, (1010, 545), (1130, 545))
-    draw_arrow(draw, (1450, 245), (1540, 380))
-    draw_arrow(draw, (1450, 545), (1540, 430))
-    path = FIGURE_DIR / "feature_extraction_flow.png"
-    image.save(path, quality=95)
-    return path
+    graph = make_graph("feature_extraction_flow", rankdir="LR", nodesep="0.45", ranksep="0.70")
+    add_graph_node(graph, "text", "文本字段拼接", "category [SEP] subcategory\n[SEP] title [SEP] abstract", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "image", "新闻图片输入", "newData/{news_id}.jpg\nRGB 图像", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "text_encoder", "SigLIP 文本编码器", f"{meta['model_name']}\n输出 {meta['text_dim']} 维文本向量", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "image_encoder", "SigLIP 图像编码器", f"{meta['model_name']}\n输出 {meta['image_dim']} 维图像向量", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "text_norm", "L2 归一化", "得到 e_t\n统一向量尺度", PALETTE["light_cyan"], PALETTE["cyan"])
+    add_graph_node(graph, "image_norm", "L2 归一化", "得到 e_i\n统一向量尺度", PALETTE["light_cyan"], PALETTE["cyan"])
+    add_graph_node(graph, "concat", "特征拼接", "Text: 768\nT+I: 1536\nT+I+V: 1542", PALETTE["light_amber"], PALETTE["amber"])
+    graph.edge("text", "text_encoder")
+    graph.edge("image", "image_encoder")
+    graph.edge("text_encoder", "text_norm")
+    graph.edge("image_encoder", "image_norm")
+    graph.edge("text_norm", "concat")
+    graph.edge("image_norm", "concat")
+    return save_graph(graph, "feature_extraction_flow")
 
 
 def draw_news_value_labeling_flow(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 1000, "新闻价值量化流程")
     manifest = stats["manifest"]
     label_count = len(stats["labels"])
     request_counts = manifest.get("batch", {}).get("request_counts", {})
-    boxes = [
-        ((70, 180, 390, 350), "新闻频次排序", "基于历史点击和候选曝光\n优先选择高频新闻", PALETTE["blue"]),
-        ((500, 180, 820, 350), "Prompt 构造", "只使用类别、标题、摘要\n不评价时效性和接近性", PALETTE["green"]),
-        ((930, 180, 1250, 350), "LLM 批量评分", f"{manifest.get('model', 'qwen3.5-flash')}\n五维度均为 0-3 分", PALETTE["violet"]),
-        ((1360, 180, 1680, 350), "JSON 校验", "字段完整性、整数分数\n范围必须为 0-3", PALETTE["amber"]),
-        ((330, 600, 650, 770), "成功缓存", f"{label_count:,} 条写入\nnews_value_labels.jsonl", PALETTE["green"]),
-        ((760, 600, 1080, 770), "缺失处理", "未标注新闻使用零向量\nmissing mask = 1", PALETTE["red"]),
-        ((1190, 600, 1510, 770), "价值向量", "5 个价值分数 + mask\n共 6 维", PALETTE["cyan"]),
-    ]
-    for box, title, subtitle, color in boxes:
-        draw_box(draw, box, title, subtitle, accent=color)
-    draw_arrow(draw, (390, 265), (500, 265))
-    draw_arrow(draw, (820, 265), (930, 265))
-    draw_arrow(draw, (1250, 265), (1360, 265))
-    draw_arrow(draw, (1520, 350), (520, 600))
-    draw_arrow(draw, (650, 685), (760, 685))
-    draw_arrow(draw, (1080, 685), (1190, 685))
-    body_font = load_font(22)
     completed = request_counts.get("completed", label_count)
     failed = request_counts.get("failed", 0)
-    draw.text(
-        (70, 900),
-        f"批处理统计：目标 3,000 条，完成 {completed:,} 条，失败 {failed:,} 条；解析无效结果 0 条。",
-        font=body_font,
-        fill=PALETTE["muted"],
-    )
-    path = FIGURE_DIR / "news_value_labeling_flow.png"
-    image.save(path, quality=95)
-    return path
+
+    graph = make_graph("news_value_labeling_flow", rankdir="LR", nodesep="0.45", ranksep="0.70")
+    add_graph_node(graph, "freq", "新闻频次排序", "基于历史点击和候选曝光\n优先选择高频新闻", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "prompt", "Prompt 构造", "只使用类别、标题、摘要\n不评价时效性和接近性", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "llm", "LLM 批量评分", f"{manifest.get('model', 'qwen3.5-flash')}\n五维度均为 0-3 分", PALETTE["light_violet"], PALETTE["violet"])
+    add_graph_node(graph, "validate", "JSON 校验", "字段完整性、整数分数\n范围必须为 0-3", PALETTE["light_amber"], PALETTE["amber"])
+    add_graph_node(graph, "cache", "成功缓存", f"{label_count:,} 条写入\nnews_value_labels.jsonl", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "missing", "缺失处理", "未标注新闻使用零向量\nmissing mask = 1", PALETTE["light_red"], PALETTE["red"])
+    add_graph_node(graph, "vector", "价值向量", "5 个价值分数 + mask\n共 6 维", PALETTE["light_cyan"], PALETTE["cyan"])
+    add_graph_node(graph, "summary", "批处理统计", f"目标 3,000 条\n完成 {completed:,} 条\n失败 {failed:,} 条", PALETTE["soft"], PALETTE["gray"])
+    for start, end in [("freq", "prompt"), ("prompt", "llm"), ("llm", "validate"), ("validate", "cache"), ("cache", "vector"), ("missing", "vector")]:
+        graph.edge(start, end)
+    graph.edge("validate", "missing")
+    graph.edge("llm", "summary", style="dashed")
+    return save_graph(graph, "news_value_labeling_flow")
 
 
 def draw_value_dimension_distribution(stats: dict) -> Path:
-    width, height = 1800, 1050
-    image, draw = make_canvas(width, height, "五维新闻价值评分分布")
-    chart = (160, 180, 1640, 850)
-    x0, y0, x1, y1 = chart
-    draw.rectangle(chart, fill="#ffffff", outline=PALETTE["line"], width=2)
     label_count = len(stats["labels"])
-    max_count = max(
-        stats["value_dist"][name].get(score, 0)
-        for name, _ in VALUE_DIMENSIONS
-        for score in range(4)
-    )
-    grid_font = load_font(18)
-    for step in range(0, 5):
-        value = max_count * step / 4
-        y = y1 - int((y1 - y0 - 80) * step / 4) - 40
-        draw.line((x0 + 70, y, x1 - 30, y), fill=PALETTE["grid"], width=1)
-        draw.text((x0 + 15, y - 12), f"{int(value)}", font=grid_font, fill=PALETTE["muted"])
+    dimensions = [cn for _, cn in VALUE_DIMENSIONS]
+    matrix = np.array([[stats["value_dist"][name].get(score, 0) for score in range(4)] for name, _ in VALUE_DIMENSIONS])
+    x = np.arange(len(dimensions))
+    width = 0.18
     colors = [PALETTE["blue"], PALETTE["green"], PALETTE["amber"], PALETTE["red"]]
-    group_width = (x1 - x0 - 150) / len(VALUE_DIMENSIONS)
-    bar_width = 42
-    axis_bottom = y1 - 40
-    for group_idx, (name, cn) in enumerate(VALUE_DIMENSIONS):
-        group_x = x0 + 95 + group_idx * group_width
-        for score in range(4):
-            count = stats["value_dist"][name].get(score, 0)
-            bar_h = int((axis_bottom - y0 - 45) * count / max_count)
-            bx0 = int(group_x + score * (bar_width + 12))
-            bx1 = bx0 + bar_width
-            by0 = axis_bottom - bar_h
-            draw.rounded_rectangle((bx0, by0, bx1, axis_bottom), radius=2, fill=colors[score])
-            draw.text((bx0 - 5, by0 - 26), str(count), font=grid_font, fill=PALETTE["muted"])
-        draw.text((int(group_x), axis_bottom + 24), cn, font=load_font(22, bold=True), fill=PALETTE["ink"])
-    legend_x = 1220
-    for score, color in enumerate(colors):
-        y = 900 + score * 34
-        draw.rounded_rectangle((legend_x, y, legend_x + 28, y + 20), radius=2, fill=color)
-        draw.text((legend_x + 42, y - 3), f"{score} 分", font=load_font(20), fill=PALETTE["ink"])
-    draw.text((160, 912), f"样本量：{label_count:,} 条成功标注新闻。", font=load_font(22), fill=PALETTE["muted"])
-    path = FIGURE_DIR / "value_dimension_distribution.png"
-    image.save(path, quality=95)
-    return path
+
+    fig, ax = plt.subplots(figsize=(8.6, 5.4))
+    for score in range(4):
+        offset = (score - 1.5) * width
+        bars = ax.bar(x + offset, matrix[:, score], width=width, label=f"{score} 分", color=colors[score], edgecolor=PALETTE["ink"], linewidth=0.35)
+        for bar in bars:
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + matrix.max() * 0.012, f"{int(bar.get_height())}", ha="center", va="bottom", fontsize=8)
+    ax.set_xticks(x, dimensions)
+    ax.set_ylabel("新闻数量")
+    ax.set_title("五维新闻价值评分分布", fontsize=15, weight="bold", pad=12)
+    ax.legend(frameon=False, ncols=4, loc="upper right")
+    style_axis(ax, xgrid=False, ygrid=True)
+    ax.set_ylim(0, matrix.max() * 1.16)
+    ax.text(0, 1.02, f"样本量：{label_count:,} 条成功标注新闻", transform=ax.transAxes, fontsize=9, color=PALETTE["muted"])
+    fig.tight_layout()
+    return save_figure(fig, "value_dimension_distribution")
 
 
 def draw_model_input_comparison(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 900, "三组推荐实验输入特征对比")
     meta = stats["feature_meta"]
     text_dim = int(meta["text_dim"])
     image_dim = int(meta["image_dim"])
@@ -561,44 +576,48 @@ def draw_model_input_comparison(stats: dict) -> Path:
     rows = [
         ("Text", [("文本", text_dim, PALETTE["blue"])]),
         ("Text+Image", [("文本", text_dim, PALETTE["blue"]), ("图像", image_dim, PALETTE["green"])]),
-        (
-            "Text+Image+Value",
-            [("文本", text_dim, PALETTE["blue"]), ("图像", image_dim, PALETTE["green"]), ("价值+mask", value_dim, PALETTE["amber"])],
-        ),
+        ("Text+Image+Value", [("文本", text_dim, PALETTE["blue"]), ("图像", image_dim, PALETTE["green"]), ("价值+mask", value_dim, PALETTE["amber"])]),
     ]
     max_total = text_dim + image_dim + value_dim
-    label_font = load_font(28, bold=True)
-    body_font = load_font(22)
-    start_y = 180
-    bar_x = 420
-    bar_width = 1050
-    for idx, (name, parts) in enumerate(rows):
-        y = start_y + idx * 180
-        total = sum(dim for _, dim, _ in parts)
-        draw.text((80, y + 38), name, font=label_font, fill=PALETTE["ink"])
-        cursor = bar_x
+    y = np.arange(len(rows))
+
+    fig, ax = plt.subplots(figsize=(8.6, 5.0))
+    for idx, (_, parts) in enumerate(rows):
+        left = 0
         for part_name, dim, color in parts:
-            part_width = max(8, int(bar_width * dim / max_total))
-            draw.rounded_rectangle((cursor, y + 28, cursor + part_width, y + 88), radius=3, fill=color)
-            if part_width > 110:
-                draw_centered_text(
-                    draw,
-                    (cursor, y + 28, cursor + part_width, y + 88),
+            ax.barh(idx, dim, left=left, height=0.48, color=color, edgecolor=PALETTE["ink"], linewidth=0.35)
+            if dim >= 120:
+                ax.text(left + dim / 2, idx, f"{part_name}\n{dim}", ha="center", va="center", fontsize=9, color="white", weight="bold")
+            else:
+                ax.annotate(
                     f"{part_name} {dim}",
-                    body_font,
-                    fill="#ffffff",
+                    xy=(left + dim / 2, idx),
+                    xytext=(max_total * 0.97, idx - 0.33),
+                    arrowprops={"arrowstyle": "-", "color": PALETTE["amber"], "lw": 1.0},
+                    ha="right",
+                    va="center",
+                    fontsize=8,
+                    color=PALETTE["amber"],
                 )
-            cursor += part_width
-        draw.text((bar_x + bar_width + 50, y + 42), f"{total} 维", font=label_font, fill=PALETTE["muted"])
-    draw.text(
-        (80, 760),
-        "说明：新闻价值向量由 5 个归一化价值分数和 1 个 missing mask 组成，因此为 6 维。",
-        font=body_font,
-        fill=PALETTE["muted"],
+            left += dim
+        ax.text(left + max_total * 0.035, idx, f"{left} 维", va="center", fontsize=10, color=PALETTE["muted"])
+
+    ax.set_yticks(y, [name for name, _ in rows])
+    ax.invert_yaxis()
+    ax.set_xlabel("输入特征维度")
+    ax.set_title("三组推荐实验输入特征对比", fontsize=15, weight="bold", pad=12)
+    ax.set_xlim(0, max_total * 1.18)
+    style_axis(ax, xgrid=True)
+    ax.text(
+        0,
+        -0.20,
+        "颜色说明：蓝色为文本特征，绿色为图像特征，棕色为新闻价值向量；新闻价值向量由 5 个归一化价值分数和 1 个 missing mask 组成。",
+        transform=ax.transAxes,
+        fontsize=9,
+        color=PALETTE["muted"],
     )
-    path = FIGURE_DIR / "model_input_comparison.png"
-    image.save(path, quality=95)
-    return path
+    fig.tight_layout()
+    return save_figure(fig, "model_input_comparison")
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -670,130 +689,69 @@ def load_metric_improvements() -> list[dict[str, str]]:
     return improvements
 
 
-def draw_polyline_arrow(draw: ImageDraw.ImageDraw, points: Sequence[tuple[int, int]]) -> None:
-    if len(points) < 2:
-        return
-    for start, end in zip(points[:-2], points[1:-1], strict=False):
-        draw.line((start, end), fill=PALETTE["gray"], width=3)
-    draw_arrow(draw, points[-2], points[-1])
-
-
 def draw_recommendation_model_architecture(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 760, "个性化新闻推荐模型结构")
-    boxes = [
-        ((70, 90, 390, 230), "候选新闻输入", "z_c：文本/图像/价值特征", PALETTE["blue"]),
-        ((70, 430, 390, 570), "历史点击序列", "H_u = {n_1,...,n_L}", PALETTE["green"]),
-        ((560, 245, 890, 415), "共享 MLP 新闻编码器", "候选新闻与历史新闻共用参数\n输出 256 维隐藏表示", PALETTE["gray"]),
-        ((1060, 90, 1380, 230), "候选新闻表示", "h_c", PALETTE["blue"]),
-        ((1060, 430, 1380, 570), "用户兴趣表示", "历史新闻表示平均池化\n得到 p_u", PALETTE["green"]),
-        ((1510, 250, 1730, 410), "点积打分", "r(u,c)", PALETTE["amber"]),
-    ]
-    for box, title, subtitle, color in boxes:
-        draw_box(draw, box, title, subtitle, accent=color)
-
-    draw_polyline_arrow(draw, [(390, 160), (475, 160), (475, 300), (560, 300)])
-    draw_polyline_arrow(draw, [(390, 500), (475, 500), (475, 360), (560, 360)])
-    draw_polyline_arrow(draw, [(890, 300), (980, 300), (980, 160), (1060, 160)])
-    draw_polyline_arrow(draw, [(890, 360), (980, 360), (980, 500), (1060, 500)])
-    draw_polyline_arrow(draw, [(1380, 160), (1450, 160), (1450, 305), (1510, 305)])
-    draw_polyline_arrow(draw, [(1380, 500), (1450, 500), (1450, 355), (1510, 355)])
-
-    note_font = load_font(20)
-    draw.text(
-        (70, 675),
-        f"输入维度：Text={stats['feature_meta']['text_dim']}，Text+Image={int(stats['feature_meta']['text_dim']) + int(stats['feature_meta']['image_dim'])}，Text+Image+Value={int(stats['feature_meta']['text_dim']) + int(stats['feature_meta']['image_dim']) + len(VALUE_DIMENSIONS) + 1}。",
-        font=note_font,
-        fill=PALETTE["muted"],
-    )
-    path = FIGURE_DIR / "recommendation_model_architecture.png"
-    image.save(path, quality=95)
-    return path
+    meta = stats["feature_meta"]
+    text_dim = int(meta["text_dim"])
+    image_dim = int(meta["image_dim"])
+    value_dim = len(VALUE_DIMENSIONS) + 1
+    graph = make_graph("recommendation_model_architecture", rankdir="LR", nodesep="0.45", ranksep="0.75")
+    add_graph_node(graph, "candidate", "候选新闻输入", f"z_c：文本/图像/价值特征\nT={text_dim}, TI={text_dim + image_dim}, TIV={text_dim + image_dim + value_dim}", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "history", "历史点击序列", "H_u = {n_1, ..., n_L}\n读取同一特征空间下新闻向量", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "encoder", "共享 MLP 新闻编码器", "候选新闻与历史新闻共用参数\n输出 256 维隐藏表示", PALETTE["soft"], PALETTE["gray"])
+    add_graph_node(graph, "cand_repr", "候选新闻表示", "h_c", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "user_repr", "用户兴趣表示", "历史新闻表示平均池化\n得到 p_u", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "score", "点积打分", "r(u,c) = p_u · h_c", PALETTE["light_amber"], PALETTE["amber"])
+    graph.edge("candidate", "encoder")
+    graph.edge("history", "encoder")
+    graph.edge("encoder", "cand_repr")
+    graph.edge("encoder", "user_repr")
+    graph.edge("cand_repr", "score")
+    graph.edge("user_repr", "score")
+    return save_graph(graph, "recommendation_model_architecture")
 
 
 def draw_training_evaluation_flow(stats: dict) -> Path:
-    image, draw = make_canvas(1800, 760, "推荐模型训练与评价流程")
-    boxes = [
-        ((70, 120, 360, 290), "实验输入", "训练样本、验证集\nSigLIP 特征、价值标注", PALETTE["blue"]),
-        ((510, 70, 820, 210), "Text", "仅使用文本特征", PALETTE["blue"]),
-        ((510, 270, 820, 410), "Text+Image", "文本特征 + 图像特征", PALETTE["green"]),
-        ((510, 470, 820, 610), "Text+Image+Value", "图文特征 + 新闻价值向量", PALETTE["amber"]),
-        ((990, 200, 1290, 360), "验证集排序", "同一 impression 内\n按模型得分排序", PALETTE["gray"]),
-        ((1450, 200, 1720, 360), "指标计算", "AUC、MRR\nnDCG@5、nDCG@10", PALETTE["cyan"]),
-    ]
-    for box, title, subtitle, color in boxes:
-        draw_box(draw, box, title, subtitle, accent=color)
-
-    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 140), (510, 140)])
-    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 340), (510, 340)])
-    draw_polyline_arrow(draw, [(360, 205), (435, 205), (435, 540), (510, 540)])
-    draw_polyline_arrow(draw, [(820, 140), (905, 140), (905, 250), (990, 250)])
-    draw_polyline_arrow(draw, [(820, 340), (990, 280)])
-    draw_polyline_arrow(draw, [(820, 540), (905, 540), (905, 315), (990, 315)])
-    draw_arrow(draw, (1290, 280), (1450, 280))
-
-    note_font = load_font(20)
-    draw.text(
-        (70, 690),
-        f"三组实验使用相同验证集，共 {stats['dev_impressions']:,} 个 impression；图中只展示评价流程，具体训练参数见表 4-1。",
-        font=note_font,
-        fill=PALETTE["muted"],
-    )
-    path = FIGURE_DIR / "training_evaluation_flow.png"
-    image.save(path, quality=95)
-    return path
+    graph = make_graph("training_evaluation_flow", rankdir="LR", nodesep="0.45", ranksep="0.70")
+    add_graph_node(graph, "input", "实验输入", f"训练样本 {stats['train_samples']:,}\n验证 impression {stats['dev_impressions']:,}\nSigLIP 特征与价值标注", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "text", "Text", "仅使用文本特征", PALETTE["light_blue"], PALETTE["blue"])
+    add_graph_node(graph, "ti", "Text+Image", "文本特征 + 图像特征", PALETTE["light_green"], PALETTE["green"])
+    add_graph_node(graph, "tiv", "Text+Image+Value", "图文特征 + 新闻价值向量", PALETTE["light_amber"], PALETTE["amber"])
+    add_graph_node(graph, "sort", "验证集排序", "同一 impression 内\n按模型得分排序", PALETTE["soft"], PALETTE["gray"])
+    add_graph_node(graph, "metrics", "指标计算", "AUC、MRR\nnDCG@5、nDCG@10", PALETTE["light_cyan"], PALETTE["cyan"])
+    add_graph_node(graph, "compare", "消融对比", "三组实验使用同一验证集\n归因图像与新闻价值增益", PALETTE["light_violet"], PALETTE["violet"])
+    for exp in ["text", "ti", "tiv"]:
+        graph.edge("input", exp)
+        graph.edge(exp, "sort")
+    graph.edge("sort", "metrics")
+    graph.edge("metrics", "compare")
+    return save_graph(graph, "training_evaluation_flow")
 
 
 def draw_experiment_metrics_comparison(stats: dict) -> Path:
     rows = load_experiment_results()
     by_experiment = {row["experiment"]: row for row in rows}
-    image, draw = make_canvas(1800, 920, "三组实验指标对比")
-
-    chart = (150, 90, 1420, 730)
-    x0, y0, x1, y1 = chart
-    axis_font = load_font(21)
-    label_font = load_font(25, bold=True)
-    value_font = load_font(20)
-    y_max = 0.65
-
-    for step in range(0, 8):
-        value = step * 0.1
-        y = y1 - int((y1 - y0) * value / y_max)
-        draw.line((x0, y, x1, y), fill=PALETTE["grid"], width=1)
-        draw.text((70, y - 13), f"{value:.1f}", font=axis_font, fill=PALETTE["muted"])
-    draw.line((x0, y0, x0, y1), fill=PALETTE["ink"], width=2)
-    draw.line((x0, y1, x1, y1), fill=PALETTE["ink"], width=2)
-
     colors = {
         "Text": PALETTE["blue"],
         "Text+Image": PALETTE["green"],
         "Text+Image+Value": PALETTE["amber"],
     }
-    group_width = (x1 - x0) / len(METRICS)
-    bar_width = 70
-    bar_gap = 24
-    total_bar_width = bar_width * len(EXPERIMENTS) + bar_gap * (len(EXPERIMENTS) - 1)
-    for metric_idx, (metric_key_name, metric_label) in enumerate(METRICS):
-        group_center = x0 + group_width * metric_idx + group_width / 2
-        start_x = int(group_center - total_bar_width / 2)
-        for exp_idx, (experiment, _) in enumerate(EXPERIMENTS):
-            value = as_float(by_experiment[experiment][metric_key_name])
-            bx0 = start_x + exp_idx * (bar_width + bar_gap)
-            bx1 = bx0 + bar_width
-            by0 = y1 - int((y1 - y0) * value / y_max)
-            draw.rounded_rectangle((bx0, by0, bx1, y1), radius=3, fill=colors[experiment], outline=PALETTE["ink"], width=1)
-            draw.text((bx0 - 6, by0 - 30), f"{value:.3f}", font=value_font, fill=PALETTE["ink"])
-        metric_width = text_size(draw, metric_label, label_font)[0]
-        draw.text((group_center - metric_width / 2, y1 + 32), metric_label, font=label_font, fill=PALETTE["ink"])
+    x = np.arange(len(METRICS))
+    width = 0.22
 
-    legend_x, legend_y = 1500, 140
-    for idx, (experiment, _) in enumerate(EXPERIMENTS):
-        y = legend_y + idx * 58
-        draw.rounded_rectangle((legend_x, y, legend_x + 34, y + 22), radius=2, fill=colors[experiment], outline=PALETTE["ink"], width=1)
-        draw.text((legend_x + 52, y - 3), experiment, font=axis_font, fill=PALETTE["ink"])
-
-    path = FIGURE_DIR / "experiment_metrics_comparison.png"
-    image.save(path, quality=95)
-    return path
+    fig, ax = plt.subplots(figsize=(8.6, 5.2))
+    for exp_idx, (experiment, _) in enumerate(EXPERIMENTS):
+        values = [as_float(by_experiment[experiment][metric_key]) for metric_key, _ in METRICS]
+        bars = ax.bar(x + (exp_idx - 1) * width, values, width=width, label=experiment, color=colors[experiment], edgecolor=PALETTE["ink"], linewidth=0.35)
+        for bar, value in zip(bars, values, strict=True):
+            ax.text(bar.get_x() + bar.get_width() / 2, value + 0.009, f"{value:.3f}", ha="center", va="bottom", fontsize=8.5)
+    ax.set_xticks(x, [label for _, label in METRICS])
+    ax.set_ylabel("指标值")
+    ax.set_ylim(0, 0.65)
+    ax.set_title("三组实验指标对比", fontsize=15, weight="bold", pad=12)
+    ax.legend(frameon=False, loc="upper right")
+    style_axis(ax, xgrid=False, ygrid=True)
+    fig.tight_layout()
+    return save_figure(fig, "experiment_metrics_comparison")
 
 
 def draw_metric_improvement_heatmap(stats: dict) -> Path:
@@ -801,55 +759,34 @@ def draw_metric_improvement_heatmap(stats: dict) -> Path:
     row_names = ["Text+Image", "Text+Image+Value"]
     metric_names = [label.replace("nDCG", "NDCG") for _, label in METRICS]
     values = {(row["experiment"], row["metric"]): row for row in rows}
-    gains = [as_float(row["absolute_gain"]) for row in rows]
-    max_pos = max([gain for gain in gains if gain > 0], default=1.0)
-    max_neg = max([abs(gain) for gain in gains if gain < 0], default=1.0)
+    gain_matrix = np.array([[as_float(values[(experiment, metric)]["absolute_gain"]) for metric in metric_names] for experiment in row_names])
+    max_abs = max(abs(gain_matrix.min()), abs(gain_matrix.max()), 0.001)
+    cmap = LinearSegmentedColormap.from_list("gain_cmap", [PALETTE["red"], "#ffffff", PALETTE["green"]])
+    norm = TwoSlopeNorm(vmin=-max_abs, vcenter=0, vmax=max_abs)
 
-    image, draw = make_canvas(1800, 780, "相对文本基线的指标增益")
-    x0, y0 = 420, 140
-    cell_w, cell_h = 260, 150
-    header_font = load_font(28, bold=True)
-    label_font = load_font(24, bold=True)
-    gain_font = load_font(26, bold=True)
-    rel_font = load_font(21)
-
-    for col_idx, metric in enumerate(metric_names):
-        x = x0 + col_idx * cell_w
-        metric_width = text_size(draw, metric, header_font)[0]
-        draw.text((x + (cell_w - metric_width) / 2, 80), metric, font=header_font, fill=PALETTE["ink"])
-
+    fig, ax = plt.subplots(figsize=(8.2, 3.8))
+    image = ax.imshow(gain_matrix, cmap=cmap, norm=norm, aspect="auto")
+    ax.set_xticks(np.arange(len(metric_names)), metric_names)
+    ax.set_yticks(np.arange(len(row_names)), row_names)
+    ax.set_title("相对 Text 基线的指标增益", fontsize=15, weight="bold", pad=12)
     for row_idx, experiment in enumerate(row_names):
-        y = y0 + row_idx * cell_h
-        draw.text((80, y + 55), experiment, font=label_font, fill=PALETTE["ink"])
         for col_idx, metric in enumerate(metric_names):
             row = values[(experiment, metric)]
             gain = as_float(row["absolute_gain"])
-            if gain >= 0:
-                ratio = 0.15 + 0.65 * (gain / max_pos)
-                fill = blend_hex(PALETTE["light_green"], PALETTE["green"], ratio)
-            else:
-                ratio = 0.15 + 0.65 * (abs(gain) / max_neg)
-                fill = blend_hex(PALETTE["light_red"], PALETTE["red"], ratio)
-            x = x0 + col_idx * cell_w
-            draw.rounded_rectangle((x, y, x + cell_w - 18, y + cell_h - 22), radius=3, fill=fill, outline="#ffffff", width=3)
             sign = "+" if gain >= 0 else ""
-            gain_text = f"{sign}{gain:.6f}"
-            rel_text = row["relative_gain_percent"]
-            gain_width = text_size(draw, gain_text, gain_font)[0]
-            rel_width = text_size(draw, rel_text, rel_font)[0]
-            draw.text((x + (cell_w - 18 - gain_width) / 2, y + 42), gain_text, font=gain_font, fill=PALETTE["ink"])
-            draw.text((x + (cell_w - 18 - rel_width) / 2, y + 92), rel_text, font=rel_font, fill=PALETTE["ink"])
-
-    note_font = load_font(20)
-    draw.text(
-        (80, 610),
-        "单元格上方为绝对增益，下方为相对增益；正负号表示相对于 Text 基线的提升或下降。",
-        font=note_font,
-        fill=PALETTE["muted"],
-    )
-    path = FIGURE_DIR / "metric_improvement_heatmap.png"
-    image.save(path, quality=95)
-    return path
+            ax.text(col_idx, row_idx, f"{sign}{gain:.6f}\n{row['relative_gain_percent']}", ha="center", va="center", fontsize=9, color=PALETTE["ink"])
+    ax.tick_params(length=0)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.set_xticks(np.arange(-0.5, len(metric_names), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(row_names), 1), minor=True)
+    ax.tick_params(which="minor", bottom=False, left=False, labelbottom=False, labelleft=False)
+    ax.grid(which="minor", color=PALETTE["paper"], linewidth=2)
+    cbar = fig.colorbar(image, ax=ax, fraction=0.045, pad=0.04)
+    cbar.set_label("绝对增益", rotation=270, labelpad=14)
+    fig.text(0.02, 0.02, "单元格第一行为绝对增益，第二行为相对增益。", fontsize=9, color=PALETTE["muted"])
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    return save_figure(fig, "metric_improvement_heatmap")
 
 
 def markdown_table(rows: Sequence[dict], columns: Sequence[str]) -> str:
@@ -880,18 +817,35 @@ def write_markdown(stats: dict, figure_paths: dict[str, Path], table_paths: dict
     value_dist_rows = read_csv_rows(table_paths["value_dist"])
     category_rows = read_csv_rows(table_paths["category"])[:12]
     model_rows = read_csv_rows(table_paths["model_inputs"])
+    experiment_rows = load_experiment_results()
+    improvement_rows = load_metric_improvements()
 
     content = f"""# 论文图表与公式补充素材
 
-本文档为《基于新闻价值理论的多模态特征提取及其在个性化新闻推荐中的应用》中“数据采集”“特征提取”“新闻价值量化”三节提供可直接插入论文的图表、表格、公式和衔接文字。图表均由现有实验产物生成，避免手工统计误差。
+本文档为《基于新闻价值理论的多模态特征提取及其在个性化新闻推荐中的应用》提供可直接插入论文的图表、表格、公式和衔接文字。图表均由现有实验产物生成，避免手工统计误差。
 
 ## 生成文件总览
 
 - 图表目录：`artifacts/thesis/figures/`
 - 表格目录：`artifacts/thesis/tables/`
+- 本脚本生成 11 张正式图示；每张图均同步保存 PNG 与 PDF，论文正文引用 PNG，同名 PDF 可用于矢量排版归档。
 - 核心统计：新闻 `{news_count:,}` 条，训练样本 `{stats['train_samples']:,}` 条，验证 impression `{stats['dev_impressions']:,}` 个，新闻价值成功标注 `{label_count:,}` 条。
 
-## 一、数据采集章节补充
+## 一、技术路线总览
+
+### 建议插入位置
+
+建议放在研究方法章节开头，用于承接研究目标、数据基础、特征构建、推荐建模和实验验证之间的关系。
+
+### 图：技术路线图
+
+![技术路线图]({rel(figure_paths['technical_route'])})
+
+**建议图题：** 图 2-1 技术路线图
+
+**正文衔接句：** 本研究按照“数据准备—特征提取—新闻价值量化—推荐建模—实验评估”的路径展开。首先完成新闻文本、图像和用户行为数据的结构化处理，再基于 SigLIP 提取图文特征，并将新闻价值维度作为可解释增强信号注入推荐模型，最终通过三组消融实验验证图像模态和新闻价值特征的增量贡献。
+
+## 二、数据采集章节补充
 
 ### 建议插入位置
 
@@ -927,7 +881,7 @@ CSV 文件：`{rel(table_paths['data'])}`
 
 CSV 文件：`{rel(table_paths['category'])}`
 
-## 二、特征提取章节补充
+## 三、特征提取章节补充
 
 ### 建议插入位置
 
@@ -984,7 +938,7 @@ CSV 文件：`{rel(table_paths['feature'])}`
 
 CSV 文件：`{rel(table_paths['model_inputs'])}`
 
-## 三、新闻价值量化章节补充
+## 四、新闻价值量化章节补充
 
 ### 建议插入位置
 
@@ -1048,7 +1002,51 @@ CSV 文件：`{rel(table_paths['value_stats'])}`
 
 CSV 文件：`{rel(table_paths['value_dist'])}`
 
-## 四、符号统一建议
+## 五、推荐建模与实验评价章节补充
+
+### 建议插入位置
+
+建议放在推荐模型结构和实验设计章节中。先展示模型结构，再展示训练评价流程，最后给出指标对比图与增益热力图。
+
+### 图：个性化新闻推荐模型结构
+
+![个性化新闻推荐模型结构]({rel(figure_paths['recommendation_model'])})
+
+**建议图题：** 图 4-1 个性化新闻推荐模型结构
+
+**正文衔接句：** 推荐模型对候选新闻和用户历史点击新闻使用共享 MLP 编码器，将不同实验设置下的新闻输入特征映射到统一隐藏空间。用户兴趣表示由历史点击新闻表示平均池化得到，并与候选新闻表示进行点积打分。
+
+### 图：推荐模型训练与评价流程
+
+![推荐模型训练与评价流程]({rel(figure_paths['training_evaluation'])})
+
+**建议图题：** 图 4-2 推荐模型训练与评价流程
+
+**正文衔接句：** 三组实验使用相同的训练样本、验证 impression 和评价指标，仅改变新闻输入特征，从而将性能差异主要归因于图像特征和新闻价值特征的引入。
+
+### 图：三组实验指标对比
+
+![三组实验指标对比]({rel(figure_paths['experiment_metrics'])})
+
+**建议图题：** 图 4-3 三组实验指标对比
+
+### 表：三组实验指标
+
+{markdown_table(experiment_rows, ['experiment', 'mode', 'auc', 'mrr', 'ndcg5', 'ndcg10'])}
+
+### 图：相对文本基线的指标增益
+
+![相对文本基线的指标增益]({rel(figure_paths['metric_improvement'])})
+
+**建议图题：** 图 4-4 相对文本基线的指标增益
+
+**正文衔接句：** 与仅使用文本特征相比，单独加入图像特征在部分排序指标上存在波动，而进一步加入新闻价值特征后，各项指标均取得提升，说明新闻价值信号能够为图文推荐特征提供额外的解释性补充。
+
+### 表：相对文本基线的指标增益
+
+{markdown_table(improvement_rows, ['experiment', 'metric', 'baseline', 'value', 'absolute_gain', 'relative_gain_percent'])}
+
+## 六、符号统一建议
 
 | 符号 | 含义 |
 | --- | --- |
@@ -1072,6 +1070,7 @@ def main() -> None:
     stats = collect_stats()
     table_paths = write_tables(stats)
     figure_paths = {
+        "technical_route": draw_technical_route(stats),
         "data_flow": draw_data_processing_flow(stats),
         "category": draw_category_distribution(stats),
         "feature_flow": draw_feature_extraction_flow(stats),
