@@ -45,3 +45,22 @@ uv run gpnews label-values --backend aliyun-batch --batch-id "batch_xxx" --batch
 ```
 
 成功解析的结果追加到主缓存；HTTP 行级失败保存在 `error.jsonl`；无法解析、缺少字段或分数不在 `0-3` 的结果保存在 `invalid_results.jsonl`。
+
+## 双模型交叉标注复核
+
+可信性验证不覆盖原主缓存，而是先生成 300 条分层样本，再把 `label-values` 限定在该样本上调用 `qwen3.5-plus`：
+
+```powershell
+uv run gpnews prepare-cross-label-sample
+$env:DASHSCOPE_API_KEY="..."
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --submit-only
+```
+
+任务完成后恢复并合并：
+
+```powershell
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --batch-id "batch_xxx" --batch-run-dir "artifacts/labels/batches/news-value-YYYYMMDD-HHMMSS"
+uv run gpnews analyze-cross-labels
+```
+
+`analyze-cross-labels` 会输出总分散点图、五维混淆矩阵、一致率柱状图、差异分布图，以及一致性统计表和样例表。

@@ -104,6 +104,53 @@ class ValueLabelTest(unittest.TestCase):
         self.assertEqual(stats["cached_in_target"], 1)
         self.assertEqual(rows[0]["custom_id"], "N2")
 
+    def test_prepare_aliyun_batch_input_can_use_sample_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            output_path = root / "plus_labels.jsonl"
+            input_path = root / "input.jsonl"
+            sample_path = root / "sample.jsonl"
+            write_jsonl(
+                data_dir / "news.jsonl",
+                [
+                    {"news_id": "N1", "title": "Outside sample", "abstract": ""},
+                    {"news_id": "N2", "title": "Needs plus check", "abstract": ""},
+                    {"news_id": "N3", "title": "Cached plus check", "abstract": ""},
+                ],
+            )
+            write_jsonl(sample_path, [{"news_id": "N2"}, {"news_id": "N3"}])
+            cached = validate_value_payload(
+                "N3",
+                {
+                    "scores": {
+                        "importance": 1,
+                        "prominence": 1,
+                        "conflict": 1,
+                        "novelty": 1,
+                        "human_interest": 1,
+                    },
+                    "reason": "plus 已缓存",
+                },
+            )
+            write_jsonl(output_path, [asdict(cached)])
+
+            stats = prepare_aliyun_batch_input(
+                data_dir=data_dir,
+                output_path=output_path,
+                input_path=input_path,
+                max_news=3000,
+                model="qwen3.5-plus",
+                sample_path=sample_path,
+            )
+            rows = list(read_jsonl(input_path))
+
+        self.assertEqual(stats["target"], 2)
+        self.assertEqual(stats["request_count"], 1)
+        self.assertEqual(stats["cached_in_target"], 1)
+        self.assertEqual(rows[0]["custom_id"], "N2")
+        self.assertEqual(rows[0]["body"]["model"], "qwen3.5-plus")
+
     def test_merge_aliyun_batch_results_appends_valid_label(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

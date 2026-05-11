@@ -59,6 +59,19 @@ uv run gpnews label-values --backend aliyun-batch --batch-id "batch_xxx" --batch
 
 如果不加 `--submit-only`，命令会按 `--poll-interval` 轮询直到任务结束。成功结果会追加到 `artifacts/labels/news_value_labels.jsonl`，行级失败写入 `error.jsonl`，JSON 或分数校验失败写入 `invalid_results.jsonl`。
 
+## 双模型交叉标注验证
+
+为回应新闻价值标注可信性问题，工程提供 `qwen3.5-flash + qwen3.5-plus` 交叉复核流程。该流程只生成验证证据，不替换推荐模型训练使用的主标签。
+
+```powershell
+uv run gpnews prepare-cross-label-sample
+$env:DASHSCOPE_API_KEY="..."
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --submit-only
+uv run gpnews analyze-cross-labels
+```
+
+复核样本为 300 条，按 `qwen3.5-flash` 总分分成低价值、中等价值和高价值三档，并在档内按类别比例抽样。分析结果会写入 `artifacts/thesis/tables/cross_model_agreement.csv`、`artifacts/thesis/tables/cross_model_examples.csv` 和四张论文图。
+
 项目不会读取或打印 `.env` 文件内容。
 
 ## 云端完整流程

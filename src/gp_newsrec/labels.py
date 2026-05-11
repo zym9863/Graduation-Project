@@ -169,6 +169,27 @@ def _ordered_news_ids(news: dict[str, dict[str, Any]], frequency: dict[str, int]
     ][:max_news]
 
 
+def _sample_news_ids(sample_path: str | Path, news: dict[str, dict[str, Any]], max_news: int) -> list[str]:
+    ids: list[str] = []
+    missing: list[str] = []
+    seen: set[str] = set()
+    for record in read_jsonl(sample_path):
+        news_id = str(record.get("news_id", "")).strip()
+        if not news_id or news_id in seen:
+            continue
+        seen.add(news_id)
+        if news_id not in news:
+            missing.append(news_id)
+            continue
+        ids.append(news_id)
+        if len(ids) >= max_news:
+            break
+    if missing:
+        preview = ", ".join(missing[:5])
+        raise ValueError(f"Sample file contains news IDs not found in data: {preview}")
+    return ids
+
+
 def build_aliyun_batch_request(
     news: dict[str, Any],
     model: str = DEFAULT_ALIYUN_BATCH_MODEL,
@@ -187,14 +208,18 @@ def prepare_aliyun_batch_input(
     input_path: str | Path = "artifacts/labels/batches/input.jsonl",
     max_news: int = 3000,
     model: str = DEFAULT_ALIYUN_BATCH_MODEL,
-) -> dict[str, int]:
+    sample_path: str | Path | None = None,
+) -> dict[str, Any]:
     data_dir = Path(data_dir)
     output_path = Path(output_path)
     input_path = Path(input_path)
     news = load_news_records(data_dir / "news.jsonl")
-    frequency = load_frequency(data_dir / "news_frequency.json")
     cache = load_value_cache(output_path)
-    ordered_ids = _ordered_news_ids(news, frequency, max_news)
+    if sample_path is None:
+        frequency = load_frequency(data_dir / "news_frequency.json")
+        ordered_ids = _ordered_news_ids(news, frequency, max_news)
+    else:
+        ordered_ids = _sample_news_ids(sample_path, news, max_news)
     pending_ids = [news_id for news_id in ordered_ids if news_id not in cache]
     request_count = write_jsonl(
         input_path,
@@ -205,6 +230,7 @@ def prepare_aliyun_batch_input(
         "cached_in_target": len(ordered_ids) - len(pending_ids),
         "target": len(ordered_ids),
         "available": len(cache),
+        "sample_path": str(sample_path) if sample_path is not None else "",
     }
 
 
@@ -371,6 +397,7 @@ def label_values_aliyun_batch(
     batch_id: str | None = None,
     batch_run_dir: str | Path | None = None,
     timeout: float = 60.0,
+    sample_path: str | Path | None = None,
 ) -> dict[str, Any]:
     run_dir = Path(batch_run_dir) if batch_run_dir is not None else _default_batch_run_dir()
     ensure_dir(run_dir)
@@ -394,6 +421,7 @@ def label_values_aliyun_batch(
             "invalid_path": str(invalid_path),
             "label_output_path": str(output_path),
             "run_dir": str(run_dir),
+            "sample_path": str(sample_path) if sample_path is not None else "",
         }
     )
 
@@ -405,6 +433,7 @@ def label_values_aliyun_batch(
             input_path=input_path,
             max_news=max_news,
             model=batch_model,
+            sample_path=sample_path,
         )
         manifest.update(input_stats)
         manifest["created_at"] = datetime.now().isoformat(timespec="seconds")
@@ -501,6 +530,7 @@ def label_values(
     submit_only: bool = False,
     batch_id: str | None = None,
     batch_run_dir: str | Path | None = None,
+    sample_path: str | Path | None = None,
 ) -> dict[str, Any]:
     if backend == "aliyun-batch":
         return label_values_aliyun_batch(
@@ -514,6 +544,7 @@ def label_values(
             submit_only=submit_only,
             batch_id=batch_id,
             batch_run_dir=batch_run_dir,
+            sample_path=sample_path,
         )
     if backend != "realtime":
         raise ValueError(f"Unknown label backend: {backend}")
@@ -522,10 +553,13 @@ def label_values(
     output_path = Path(output_path)
     ensure_dir(output_path.parent)
     news = load_news_records(data_dir / "news.jsonl")
-    frequency = load_frequency(data_dir / "news_frequency.json")
     cache = load_value_cache(output_path)
 
-    ordered_ids = _ordered_news_ids(news, frequency, max_news)
+    if sample_path is None:
+        frequency = load_frequency(data_dir / "news_frequency.json")
+        ordered_ids = _ordered_news_ids(news, frequency, max_news)
+    else:
+        ordered_ids = _sample_news_ids(sample_path, news, max_news)
     created = 0
     skipped = 0
     for news_id in ordered_ids:

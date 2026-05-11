@@ -223,7 +223,27 @@ CSV 文件：`../artifacts/thesis/tables/news_value_labeling_statistics.csv`
 
 CSV 文件：`../artifacts/thesis/tables/value_dimension_distribution.csv`
 
-## 五、推荐建模与实验评价章节补充
+## 五、新闻价值标注可信性检验
+
+### 建议插入位置
+
+建议放在“新闻价值量化”小节之后，用于回应自动标注可信性问题。本节采用“双模型交叉标注一致性检验”：保留 `qwen3.5-flash` 的 2,999 条主标注结果，再用 `qwen3.5-plus` 对 300 条分层抽样新闻进行独立复核。
+
+### 复核命令
+
+```powershell
+uv run gpnews prepare-cross-label-sample
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --submit-only
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --batch-id "batch_xxx" --batch-run-dir "artifacts/labels/batches/news-value-YYYYMMDD-HHMMSS"
+uv run gpnews analyze-cross-labels
+```
+
+### 正文衔接句
+
+为验证大模型自动标注的稳定性，本研究进一步引入 `qwen3.5-plus` 作为复核模型，对 `qwen3.5-flash` 主标注结果中的 300 条新闻进行分层抽样复标。复核样本按 flash 总分划分为低价值、中等价值和高价值三档，并在每档内按新闻类别比例抽样，以避免只验证单一类别或单一分数区间。
+
+
+## 六、推荐建模与实验评价章节补充
 
 ### 建议插入位置
 
@@ -280,7 +300,7 @@ CSV 文件：`../artifacts/thesis/tables/value_dimension_distribution.csv`
 | Text+Image+Value | NDCG@5 | 0.250176 | 0.273259 | 0.023084 | 9.23% |
 | Text+Image+Value | NDCG@10 | 0.313733 | 0.340781 | 0.027047 | 8.62% |
 
-## 六、符号统一建议
+## 七、符号统一建议
 
 | 符号 | 含义 |
 | --- | --- |

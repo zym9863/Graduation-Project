@@ -17,11 +17,15 @@ import numpy as np
 from matplotlib import font_manager
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 
+from gp_newsrec.cross_validation import analyze_cross_model_validation
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "artifacts" / "data"
 FEATURE_DIR = ROOT / "artifacts" / "features" / "siglip"
 LABEL_PATH = ROOT / "artifacts" / "labels" / "news_value_labels.jsonl"
+CROSS_SAMPLE_PATH = ROOT / "artifacts" / "labels" / "cross_model_sample.jsonl"
+PLUS_LABEL_PATH = ROOT / "artifacts" / "labels" / "news_value_labels_qwen35_plus_sample.jsonl"
 BATCH_DIR = ROOT / "artifacts" / "labels" / "batches" / "news-value-20260425-181001"
 OUTPUT_DIR = ROOT / "artifacts" / "thesis"
 FIGURE_DIR = OUTPUT_DIR / "figures"
@@ -804,7 +808,93 @@ def rel(path: Path) -> str:
     return path.as_posix()
 
 
-def write_markdown(stats: dict, figure_paths: dict[str, Path], table_paths: dict[str, Path]) -> None:
+def build_cross_model_section(cross_stats: dict | None) -> str:
+    if not cross_stats or cross_stats.get("status") != "created":
+        return """## 五、新闻价值标注可信性检验
+
+### 建议插入位置
+
+建议放在“新闻价值量化”小节之后，用于回应自动标注可信性问题。本节采用“双模型交叉标注一致性检验”：保留 `qwen3.5-flash` 的 2,999 条主标注结果，再用 `qwen3.5-plus` 对 300 条分层抽样新闻进行独立复核。
+
+### 复核命令
+
+```powershell
+uv run gpnews prepare-cross-label-sample
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --submit-only
+uv run gpnews label-values --backend aliyun-batch --sample-path artifacts/labels/cross_model_sample.jsonl --output-path artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl --batch-model qwen3.5-plus --batch-id "batch_xxx" --batch-run-dir "artifacts/labels/batches/news-value-YYYYMMDD-HHMMSS"
+uv run gpnews analyze-cross-labels
+```
+
+### 正文衔接句
+
+为验证大模型自动标注的稳定性，本研究进一步引入 `qwen3.5-plus` 作为复核模型，对 `qwen3.5-flash` 主标注结果中的 300 条新闻进行分层抽样复标。复核样本按 flash 总分划分为低价值、中等价值和高价值三档，并在每档内按新闻类别比例抽样，以避免只验证单一类别或单一分数区间。
+"""
+
+    metric_rows = read_csv_rows(TABLE_DIR / "cross_model_agreement.csv")
+    example_rows = read_csv_rows(TABLE_DIR / "cross_model_examples.csv")
+    figure_paths = cross_stats.get("figure_paths", {})
+    total_scatter = rel(Path(figure_paths["total_scatter"]))
+    confusion = rel(Path(figure_paths["confusion_matrices"]))
+    agreement = rel(Path(figure_paths["agreement_rates"]))
+    delta = rel(Path(figure_paths["delta_distribution"]))
+    return f"""## 五、新闻价值标注可信性检验
+
+### 建议插入位置
+
+建议放在“新闻价值量化”小节之后，用于回应自动标注可信性问题。该部分不把大模型输出视为绝对真值，而是通过不同能力层级模型之间的一致性来证明标注结果具有稳定性。
+
+### 图：双模型总分散点图
+
+![双模型总分散点图]({total_scatter})
+
+**建议图题：** 图 3-7 双模型新闻价值总分一致性散点图
+
+### 图：五维评分混淆矩阵
+
+![五维评分混淆矩阵]({confusion})
+
+**建议图题：** 图 3-8 五维新闻价值评分混淆矩阵
+
+### 图：五维一致率
+
+![五维一致率]({agreement})
+
+**建议图题：** 图 3-9 五维新闻价值双模型一致率
+
+### 图：五维分数差异分布
+
+![五维分数差异分布]({delta})
+
+**建议图题：** 图 3-10 双模型五维评分差异分布
+
+### 表：双模型一致性统计
+
+**建议表题：** 表 3-4 双模型交叉标注一致性统计
+
+{markdown_table(metric_rows, ['target_cn', 'n', 'flash_mean', 'plus_mean', 'mean_delta', 'exact_agreement', 'within_one_agreement', 'mae', 'pearson', 'spearman', 'quadratic_weighted_kappa'])}
+
+CSV 文件：`{rel(TABLE_DIR / 'cross_model_agreement.csv')}`
+
+### 表：一致与分歧样例
+
+**建议表题：** 表 3-5 双模型交叉标注样例
+
+{markdown_table(example_rows, ['example_type', 'news_id', 'category', 'title', 'flash_total', 'plus_total', 'total_delta', 'flash_reason', 'plus_reason'])}
+
+CSV 文件：`{rel(TABLE_DIR / 'cross_model_examples.csv')}`
+
+### 正文衔接句
+
+本研究采用“双模型交叉标注一致性检验”验证新闻价值标签的可信性。`qwen3.5-flash` 用于大规模主标注，`qwen3.5-plus` 作为能力更强的复核模型，对 300 条分层抽样新闻进行独立评分。散点图用于观察总分趋势，混淆矩阵用于检查五个价值维度是否集中在对角线附近，一致率和 Kappa 等指标用于量化跨模型稳定性，分歧样例则用于说明新闻价值判断中不可避免的主观边界。
+"""
+
+
+def write_markdown(
+    stats: dict,
+    figure_paths: dict[str, Path],
+    table_paths: dict[str, Path],
+    cross_stats: dict | None = None,
+) -> None:
     news_count = len(stats["news_records"])
     label_count = len(stats["labels"])
     meta = stats["feature_meta"]
@@ -819,6 +909,7 @@ def write_markdown(stats: dict, figure_paths: dict[str, Path], table_paths: dict
     model_rows = read_csv_rows(table_paths["model_inputs"])
     experiment_rows = load_experiment_results()
     improvement_rows = load_metric_improvements()
+    cross_model_section = build_cross_model_section(cross_stats)
 
     content = f"""# 论文图表与公式补充素材
 
@@ -1002,7 +1093,9 @@ CSV 文件：`{rel(table_paths['value_stats'])}`
 
 CSV 文件：`{rel(table_paths['value_dist'])}`
 
-## 五、推荐建模与实验评价章节补充
+{cross_model_section}
+
+## 六、推荐建模与实验评价章节补充
 
 ### 建议插入位置
 
@@ -1046,7 +1139,7 @@ CSV 文件：`{rel(table_paths['value_dist'])}`
 
 {markdown_table(improvement_rows, ['experiment', 'metric', 'baseline', 'value', 'absolute_gain', 'relative_gain_percent'])}
 
-## 六、符号统一建议
+## 七、符号统一建议
 
 | 符号 | 含义 |
 | --- | --- |
@@ -1082,9 +1175,21 @@ def main() -> None:
         "experiment_metrics": draw_experiment_metrics_comparison(stats),
         "metric_improvement": draw_metric_improvement_heatmap(stats),
     }
-    write_markdown(stats, figure_paths, table_paths)
+    cross_stats = analyze_cross_model_validation(
+        sample_path=CROSS_SAMPLE_PATH,
+        flash_label_path=LABEL_PATH,
+        plus_label_path=PLUS_LABEL_PATH,
+        output_dir=OUTPUT_DIR,
+        write_figures=True,
+        strict=False,
+    )
+    write_markdown(stats, figure_paths, table_paths, cross_stats)
     print(f"Wrote {len(figure_paths)} figures to {FIGURE_DIR}")
     print(f"Wrote {len(table_paths)} tables to {TABLE_DIR}")
+    if cross_stats.get("status") == "created":
+        print(f"Wrote cross-model validation assets for {cross_stats['pairs']} paired labels")
+    else:
+        print(f"Skipped cross-model validation assets: {cross_stats.get('status')}")
     print(f"Wrote supplement markdown to {DOC_PATH}")
 
 

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from .constants import DEFAULT_SEED
+from .cross_validation import CROSS_MODEL_EXAMPLE_IDS, analyze_cross_model_validation, prepare_cross_model_sample
 from .features import extract_siglip_features
 from .labels import label_values
 from .mind import prepare_data
@@ -51,6 +52,36 @@ def build_parser() -> argparse.ArgumentParser:
     value.add_argument("--submit-only", action="store_true")
     value.add_argument("--batch-id")
     value.add_argument("--batch-run-dir")
+    value.add_argument("--sample-path", help="Restrict labeling to news IDs listed in a JSONL sample file.")
+
+    cross_sample = subparsers.add_parser(
+        "prepare-cross-label-sample",
+        help="Create the 300-item stratified sample for qwen3.5-plus cross-model validation.",
+    )
+    cross_sample.add_argument("--data-dir", default="artifacts/data")
+    cross_sample.add_argument("--flash-label-path", default="artifacts/labels/news_value_labels.jsonl")
+    cross_sample.add_argument("--output-path", default="artifacts/labels/cross_model_sample.jsonl")
+    cross_sample.add_argument("--seed", type=int, default=DEFAULT_SEED)
+    cross_sample.add_argument(
+        "--anchor-news-id",
+        action="append",
+        dest="anchor_news_ids",
+        help="News ID to force into the validation sample; can be passed multiple times.",
+    )
+
+    cross_analyze = subparsers.add_parser(
+        "analyze-cross-labels",
+        help="Compute agreement statistics and thesis figures for flash vs plus value labels.",
+    )
+    cross_analyze.add_argument("--sample-path", default="artifacts/labels/cross_model_sample.jsonl")
+    cross_analyze.add_argument("--flash-label-path", default="artifacts/labels/news_value_labels.jsonl")
+    cross_analyze.add_argument(
+        "--plus-label-path",
+        default="artifacts/labels/news_value_labels_qwen35_plus_sample.jsonl",
+    )
+    cross_analyze.add_argument("--output-dir", default="artifacts/thesis")
+    cross_analyze.add_argument("--no-figures", action="store_true")
+    cross_analyze.add_argument("--allow-partial", action="store_true")
 
     train_parser = subparsers.add_parser("train", help="Train one recommender experiment from a YAML config.")
     train_parser.add_argument("--config", required=True)
@@ -108,6 +139,30 @@ def main(argv: list[str] | None = None) -> None:
                 submit_only=args.submit_only,
                 batch_id=args.batch_id,
                 batch_run_dir=args.batch_run_dir,
+                sample_path=args.sample_path,
+            )
+        )
+    elif args.command == "prepare-cross-label-sample":
+        _print_json(
+            prepare_cross_model_sample(
+                data_dir=args.data_dir,
+                flash_label_path=args.flash_label_path,
+                output_path=args.output_path,
+                seed=args.seed,
+                anchor_news_ids=args.anchor_news_ids
+                if args.anchor_news_ids is not None
+                else CROSS_MODEL_EXAMPLE_IDS,
+            )
+        )
+    elif args.command == "analyze-cross-labels":
+        _print_json(
+            analyze_cross_model_validation(
+                sample_path=args.sample_path,
+                flash_label_path=args.flash_label_path,
+                plus_label_path=args.plus_label_path,
+                output_dir=args.output_dir,
+                write_figures=not args.no_figures,
+                strict=not args.allow_partial,
             )
         )
     elif args.command == "train":
